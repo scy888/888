@@ -6,9 +6,11 @@ import javax.persistence.Table;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.HashMap;
 
 @Table(name = "tb_order")
 public class TbOrder implements Serializable {
+
     /**
      * 订单id
      */
