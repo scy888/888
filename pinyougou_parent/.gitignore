@@ -1,5 +1,5 @@
 ﻿### Maven
-### idea自带的忽略+助教建议的忽略
+### idea自带的忽略 + 助教建议的忽略
 target/
 logs/
 .iml/
