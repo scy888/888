@@ -1,7 +1,10 @@
 package com.pinyougou.sellergoods.service;
 import java.util.List;
+
+import com.pinyougou.pojo.TbOrder;
 import com.pinyougou.pojo.TbOrderItem;
 
+import com.pinyougou.pojo.TbSeckillGoods;
 import entity.PageResult;
 /**
  * 业务逻辑接口
@@ -57,5 +60,5 @@ public interface OrderItemService {
 	 * @return
 	 */
 	public PageResult findPage(TbOrderItem orderItem, int pageNum, int pageSize);
-	
+
 }
