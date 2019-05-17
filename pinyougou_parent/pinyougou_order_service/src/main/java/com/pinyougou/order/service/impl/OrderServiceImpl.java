@@ -1,26 +1,26 @@
 package com.pinyougou.order.service.impl;
+import com.alibaba.dubbo.config.annotation.Service;
+import com.github.abel533.entity.Example;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+import com.pinyougou.mapper.TbOrderItemMapper;
+import com.pinyougou.mapper.TbOrderMapper;
+import com.pinyougou.mapper.TbPayLogMapper;
+import com.pinyougou.order.service.OrderService;
+import com.pinyougou.pojo.TbOrder;
+import com.pinyougou.pojo.TbOrderItem;
+import com.pinyougou.pojo.TbPayLog;
+import com.pinyougou.pojogroup.Cart;
+import com.pinyougou.utils.IdWorker;
+import entity.PageResult;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-
-import com.pinyougou.mapper.TbOrderItemMapper;
-import com.pinyougou.mapper.TbPayLogMapper;
-import com.pinyougou.order.service.OrderService;
-import com.pinyougou.pojo.TbOrderItem;
-import com.pinyougou.pojo.TbPayLog;
-import com.pinyougou.pojogroup.Cart;
-import com.pinyougou.utils.IdWorker;
-import org.springframework.beans.factory.annotation.Autowired;
-import com.alibaba.dubbo.config.annotation.Service;
-import com.github.abel533.entity.Example;
-import com.github.pagehelper.PageInfo;
-import com.github.pagehelper.PageHelper;
-import com.pinyougou.mapper.TbOrderMapper;
-import com.pinyougou.pojo.TbOrder;
-import entity.PageResult;
-import org.springframework.data.redis.core.RedisTemplate;
 
 /**
  * 业务逻辑实现
@@ -169,6 +169,22 @@ public class OrderServiceImpl implements OrderService {
 		}
 		//3. 清除缓存中的支付日志对象
 		redisTemplate.boundHashOps("payLogs").delete(payLog.getUserId());
+	}
+
+	/**查询订单和订单里的商品详情
+	 * @return
+	 */
+	@Override
+	public List<TbOrder> findOrderAndOrderItem() {
+
+        List<TbOrder> tbOrderList = orderMapper.select(null);
+        for (TbOrder tbOrder : tbOrderList) {
+            TbOrderItem where=new TbOrderItem();
+            where.setOrderId(tbOrder.getOrderId());
+            List<TbOrderItem> tbOrderItemList = orderItemMapper.select(where);
+            tbOrder.setOrderItemList(tbOrderItemList);
+        }
+        return tbOrderList;
 	}
 
 
