@@ -110,5 +110,13 @@ app.controller('userController' ,function($scope,$controller,userService){
 			}			
 		);
 	}
-    
+
+	//查询实体
+	$scope.findUserByUserId=function(){
+		userService.findUserByUserId().success(
+			function(response){
+				$scope.entity= response;
+			}
+		);
+	}
 });	

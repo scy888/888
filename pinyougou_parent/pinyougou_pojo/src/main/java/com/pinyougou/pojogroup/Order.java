@@ -4,8 +4,14 @@ import com.pinyougou.pojo.TbOrder;
 
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.List;
 
 public class Order implements Serializable {
+    private TbOrder order;//订单
+
+    private List<OrderItem> orderItemList;//订单清单
+    private HashMap dateMap;
+
     public HashMap getDateMap() {
         return dateMap;
     }
@@ -14,15 +20,20 @@ public class Order implements Serializable {
         this.dateMap = dateMap;
     }
 
-    private HashMap dateMap;
 
-    private TbOrder tbOrder;
-
-    public TbOrder getTbOrder() {
-        return tbOrder;
+    public TbOrder getOrder() {
+        return order;
     }
 
-    public void setTbOrder(TbOrder tbOrder) {
-        this.tbOrder = tbOrder;
+    public void setOrder(TbOrder order) {
+        this.order = order;
+    }
+
+    public List<OrderItem> getOrderItemList() {
+        return orderItemList;
+    }
+
+    public void setOrderItemList(List<OrderItem> orderItemList) {
+        this.orderItemList = orderItemList;
     }
 }
