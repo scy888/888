@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 
 public class Order implements Serializable {
-    private TbOrder order;//订单
+    private TbOrder tbOrder;//订单
 
     private List<OrderItem> orderItemList;//订单清单
     private HashMap dateMap;
@@ -21,12 +21,12 @@ public class Order implements Serializable {
     }
 
 
-    public TbOrder getOrder() {
-        return order;
+    public TbOrder getTbOrder() {
+        return tbOrder;
     }
 
-    public void setOrder(TbOrder order) {
-        this.order = order;
+    public void setTbOrder(TbOrder tbOrder) {
+        this.tbOrder = tbOrder;
     }
 
     public List<OrderItem> getOrderItemList() {
