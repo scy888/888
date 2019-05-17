@@ -2,6 +2,10 @@ package com.pinyougou.user.service.impl;
 import java.util.*;
 
 import com.alibaba.fastjson.JSON;
+import com.pinyougou.mapper.*;
+import com.pinyougou.pojo.*;
+import com.pinyougou.pojogroup.Order;
+import com.pinyougou.pojogroup.OrderItem;
 import com.pinyougou.user.service.UserService;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,8 +13,6 @@ import com.alibaba.dubbo.config.annotation.Service;
 import com.github.abel533.entity.Example;
 import com.github.pagehelper.PageInfo;
 import com.github.pagehelper.PageHelper;
-import com.pinyougou.mapper.TbUserMapper;
-import com.pinyougou.pojo.TbUser;
 import entity.PageResult;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.jms.core.JmsTemplate;
@@ -28,6 +30,12 @@ public class UserServiceImpl implements UserService {
 
 	@Autowired
 	private TbUserMapper userMapper;
+	@Autowired
+	private TbOrderMapper orderMapper;
+	@Autowired
+	private TbOrderItemMapper orderItemMapper;
+	@Autowired
+	private TbItemMapper itemMapper;
 	
 	/**
 	 * 查询全部
@@ -196,6 +204,7 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	private Destination queueSmsDestination;
 
+
 	@Override
 	public void createSmsCode(String phone) {
 		//1、生成验证码
@@ -223,6 +232,43 @@ public class UserServiceImpl implements UserService {
 	public boolean checkSmsCode(String phone, String code) {
 		String smsCodes = (String) redisTemplate.boundHashOps("smsCodes").get(phone);
 		return code.equals(smsCodes);
+	}
+
+	@Override
+	public List<Order> findOrderByUserId(String userId) {
+	     List<Order> orderList = new ArrayList<>();
+		TbOrder where = new TbOrder();
+		where.setUserId(userId);
+		List<TbOrder> orders = orderMapper.select(where);
+		for (TbOrder tbOrder : orders) {
+			Order order = new Order();
+			//设置order的Tborder
+			order.setOrder(tbOrder);
+
+			TbOrderItem tbOrderItem = new TbOrderItem();
+			tbOrderItem.setOrderId(tbOrder.getOrderId());
+			List<TbOrderItem> tbOrderItems = orderItemMapper.select(tbOrderItem);
+
+			//new一个OrderItem的集合
+			List<OrderItem> orderItemList = new ArrayList<>();
+			for (TbOrderItem tbOrderItem1 : tbOrderItems) {
+				//new一个orderItem
+				OrderItem orderItem = new OrderItem();
+
+				//设置orderItem的OrderItem
+				orderItem.setOrderItem(tbOrderItem1);
+				//设置orderItem的item
+				TbItem item = itemMapper.selectByPrimaryKey(tbOrderItem1.getItemId());
+				orderItem.setItem(item);
+				//设置order的OrderItemList
+				orderItemList.add(orderItem);
+			}
+			//设置order的OrderItemList
+			order.setOrderItemList(orderItemList);
+
+			orderList.add(order);
+		}
+		return orderList;
 	}
 
 }

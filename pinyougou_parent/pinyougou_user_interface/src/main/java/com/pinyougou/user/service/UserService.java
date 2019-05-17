@@ -1,7 +1,11 @@
 package com.pinyougou.user.service;
 import java.util.List;
+import java.util.Map;
+
+import com.pinyougou.pojo.TbOrder;
 import com.pinyougou.pojo.TbUser;
 
+import com.pinyougou.pojogroup.Order;
 import entity.PageResult;
 /**
  * 业务逻辑接口
@@ -70,5 +74,11 @@ public interface UserService {
 	 * @return
 	 */
 	public boolean  checkSmsCode(String phone,String code);
+
+	/**
+	 * 查询用户订单
+	 * @return
+	 */
+	public List<Order> findOrderByUserId(String userId);
 
 }
