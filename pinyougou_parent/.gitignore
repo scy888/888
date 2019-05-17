@@ -1,0 +1,8 @@
+﻿### Maven
+### idea自带的忽略+助教建议的忽略
+target/
+logs/
+.iml
+.idea/
+target/
+!.mvn/wrapper/maven-wrapper.jar
