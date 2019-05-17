@@ -1,7 +1,8 @@
 package com.pinyougou.manager.controller;
+
 import com.alibaba.dubbo.config.annotation.Reference;
-import com.pinyougou.pojo.TbItemCat;
-import com.pinyougou.sellergoods.service.ItemCatService;
+import com.pinyougou.pojo.TbSeckillGoods;
+import com.pinyougou.seckill.service.SeckillGoodsService;
 
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,25 +12,26 @@ import java.util.List;
 
 import entity.PageResult;
 import entity.Result;
+
 /**
  * 请求处理器
  * @author Steven
  *
  */
 @RestController
-@RequestMapping("/itemCat")
-public class ItemCatController {
+@RequestMapping("/seckillGoods")
+public class SeckillGoodsController {
 
 	@Reference
-	private ItemCatService itemCatService;
+	private SeckillGoodsService seckillGoodsService;
 	
 	/**
 	 * 返回全部列表
 	 * @return
 	 */
 	@RequestMapping("/findAll")
-	public List<TbItemCat> findAll(){			
-		return itemCatService.findAll();
+	public List<TbSeckillGoods> findAll(){			
+		return seckillGoodsService.findAll();
 	}
 	
 	
@@ -39,18 +41,18 @@ public class ItemCatController {
 	 */
 	@RequestMapping("/findPage")
 	public PageResult  findPage(int page,int rows){			
-		return itemCatService.findPage(page, rows);
+		return seckillGoodsService.findPage(page, rows);
 	}
 	
 	/**
 	 * 增加
-	 * @param itemCat
+	 * @param seckillGoods
 	 * @return
 	 */
 	@RequestMapping("/add")
-	public Result add(@RequestBody TbItemCat itemCat){
+	public Result add(@RequestBody TbSeckillGoods seckillGoods){
 		try {
-			itemCatService.add(itemCat);
+			seckillGoodsService.add(seckillGoods);
 			return new Result(true, "增加成功");
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -60,13 +62,13 @@ public class ItemCatController {
 	
 	/**
 	 * 修改
-	 * @param itemCat
+	 * @param seckillGoods
 	 * @return
 	 */
 	@RequestMapping("/update")
-	public Result update(@RequestBody TbItemCat itemCat){
+	public Result update(@RequestBody TbSeckillGoods seckillGoods){
 		try {
-			itemCatService.update(itemCat);
+			seckillGoodsService.update(seckillGoods);
 			return new Result(true, "修改成功");
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -80,8 +82,8 @@ public class ItemCatController {
 	 * @return
 	 */
 	@RequestMapping("/findOne")
-	public TbItemCat findOne(Long id){
-		return itemCatService.findOne(id);		
+	public TbSeckillGoods findOne(Long id){
+		return seckillGoodsService.findOne(id);		
 	}
 	
 	/**
@@ -92,7 +94,7 @@ public class ItemCatController {
 	@RequestMapping("/delete")
 	public Result delete(Long [] ids){
 		try {
-			itemCatService.delete(ids);
+			seckillGoodsService.delete(ids);
 			return new Result(true, "删除成功"); 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -102,24 +104,28 @@ public class ItemCatController {
 	
 	/**
 	 * 查询+分页
-	 * @param itemCat
+	 * @param seckillGoods
 	 * @param page
 	 * @param rows
 	 * @return
 	 */
 	@RequestMapping("/search")
-	public PageResult search(@RequestBody TbItemCat itemCat, int page, int rows  ){
-		return itemCatService.findPage(itemCat, page, rows);		
+	public PageResult search(@RequestBody TbSeckillGoods seckillGoods, int page, int rows  ){
+		return seckillGoodsService.findPage(seckillGoods, page, rows);		
 	}
 
-	@RequestMapping("findByParentId")
-	public List<TbItemCat> findByParentId(Long parentId){
-		return itemCatService.findByParentId(parentId);
+	@RequestMapping("findList")
+	public List<TbSeckillGoods> findList(){
+		return seckillGoodsService.findList();
 	}
 
+	@RequestMapping("findOneFromRedis")
+	public TbSeckillGoods findOneFromRedis(Long id){
+		return seckillGoodsService.findOneFromRedis(id);
+	}
 
 	/**
-	 * 分类审核
+	 * 秒杀商品审核
 	 * @param ids
 	 * @param status
 	 * @return
@@ -128,7 +134,7 @@ public class ItemCatController {
 	public Result updateStatus(Long[] ids, String status){
 		try {
 			//审核
-			itemCatService.updateStatus(ids, status);
+			seckillGoodsService.updateStatus(ids, status);
 			return new Result(true, "审核操作成功！");
 		} catch (Exception e) {
 			e.printStackTrace();

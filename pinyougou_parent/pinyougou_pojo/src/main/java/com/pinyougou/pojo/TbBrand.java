@@ -1,7 +1,12 @@
 package com.pinyougou.pojo;
 
-import javax.persistence.*;
 import java.io.Serializable;
+
+import javax.persistence.Column;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 @Table(name = "tb_brand")
 public class TbBrand implements Serializable {
@@ -19,6 +24,20 @@ public class TbBrand implements Serializable {
      */
     @Column(name = "first_char")
     private String firstChar;
+
+    /**
+     * 状态
+     */
+    @Column(name = "audit_status")
+    private String auditStatus;
+
+    public String getAuditStatus() {
+        return auditStatus;
+    }
+
+    public void setAuditStatus(String auditStatus) {
+        this.auditStatus = auditStatus;
+    }
 
     private static final long serialVersionUID = 1L;
 
@@ -82,15 +101,11 @@ public class TbBrand implements Serializable {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(getClass().getSimpleName());
-        sb.append(" [");
-        sb.append("Hash = ").append(hashCode());
-        sb.append(", id=").append(id);
-        sb.append(", name=").append(name);
-        sb.append(", firstChar=").append(firstChar);
-        sb.append(", serialVersionUID=").append(serialVersionUID);
-        sb.append("]");
-        return sb.toString();
+        return "TbBrand{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", firstChar='" + firstChar + '\'' +
+                ", auditStatus='" + auditStatus + '\'' +
+                '}';
     }
 }

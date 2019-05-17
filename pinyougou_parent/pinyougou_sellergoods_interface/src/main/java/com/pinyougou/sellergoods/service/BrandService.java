@@ -1,6 +1,7 @@
 package com.pinyougou.sellergoods.service;
-import java.util.List;
 import com.pinyougou.pojo.TbBrand;
+
+import java.util.List;
 
 import entity.PageResult;
 /**
@@ -57,5 +58,11 @@ public interface BrandService {
 	 * @return
 	 */
 	public PageResult findPage(TbBrand brand, int pageNum, int pageSize);
-	
+
+	/**
+	 * 审核状态
+	 * @param ids
+	 * @param status
+	 */
+    void updateStatus(Long[] ids, String status);
 }

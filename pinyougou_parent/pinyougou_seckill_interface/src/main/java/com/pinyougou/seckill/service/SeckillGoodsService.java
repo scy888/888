@@ -1,6 +1,7 @@
 package com.pinyougou.seckill.service;
-import java.util.List;
 import com.pinyougou.pojo.TbSeckillGoods;
+
+import java.util.List;
 
 import entity.PageResult;
 /**
@@ -69,4 +70,5 @@ public interface SeckillGoodsService {
 	 */
 	public TbSeckillGoods findOneFromRedis(Long id);
 
+	void updateStatus(Long[] ids, String status);
 }

@@ -1,8 +1,9 @@
 package com.pinyougou.sellergoods.service;
-import java.util.List;
 import com.pinyougou.pojo.TbSpecification;
-
 import com.pinyougou.pojogroup.Specification;
+
+import java.util.List;
+
 import entity.PageResult;
 /**
  * 业务逻辑接口
@@ -58,5 +59,6 @@ public interface SpecificationService {
 	 * @return
 	 */
 	public PageResult findPage(TbSpecification specification, int pageNum, int pageSize);
-	
+
+    void updateStatus(Long[] ids, String status);
 }

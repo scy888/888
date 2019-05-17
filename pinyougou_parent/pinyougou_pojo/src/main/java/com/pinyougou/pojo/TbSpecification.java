@@ -1,7 +1,12 @@
 package com.pinyougou.pojo;
 
-import javax.persistence.*;
 import java.io.Serializable;
+
+import javax.persistence.Column;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 @Table(name = "tb_specification")
 public class TbSpecification implements Serializable {
@@ -27,6 +32,21 @@ public class TbSpecification implements Serializable {
     }
 
     private static final long serialVersionUID = 1L;
+
+
+    /**
+     * 状态
+     */
+    @Column(name = "audit_status")
+    private String auditStatus;
+
+    public String getAuditStatus() {
+        return auditStatus;
+    }
+
+    public void setAuditStatus(String auditStatus) {
+        this.auditStatus = auditStatus;
+    }
 
     /**
      * 获取主键
@@ -66,14 +86,10 @@ public class TbSpecification implements Serializable {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(getClass().getSimpleName());
-        sb.append(" [");
-        sb.append("Hash = ").append(hashCode());
-        sb.append(", id=").append(id);
-        sb.append(", specName=").append(specName);
-        sb.append(", serialVersionUID=").append(serialVersionUID);
-        sb.append("]");
-        return sb.toString();
+        return "TbSpecification{" +
+                "id=" + id +
+                ", specName='" + specName + '\'' +
+                ", auditStatus='" + auditStatus + '\'' +
+                '}';
     }
 }

@@ -28,5 +28,9 @@ app.service('seckillGoodsService',function($http){
 	//搜索
 	this.search=function(page,rows,searchEntity){
 		return $http.post('../seckillGoods/search.do?page='+page+"&rows="+rows, searchEntity);
-	}    	
+	}
+	//更改状态
+	this.updateStatus=function(ids,status){
+		return $http.get('../seckillGoods/updateStatus.do?ids='+ids+"&status="+status);
+	}
 });
