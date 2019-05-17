@@ -6,4 +6,4 @@ logs/
 .idea/
 target/
 !.mvn/wrapper/maven-wrapper.jar
-/pinyougou_dao/src/main/resources/properties/db.properties
+/pinyougou_parent/pinyougou_dao/src/main/resources/properties/db.properties
