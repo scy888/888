@@ -63,7 +63,9 @@ app.controller('payLogController' ,function($scope,$controller,payLogService){
 			}		
 		);				
 	}
-	
+    //订单状态
+    $scope.status=["1、未付款，2、已付款，3、未发货，4、已发货，5、交易成功，6、交易关闭,7、待评价"];
+
 	$scope.searchEntity={};//定义搜索对象 
 	
 	//搜索
