@@ -1,8 +1,10 @@
 package com.pinyougou.order.service;
+import java.util.HashMap;
 import java.util.List;
 import com.pinyougou.pojo.TbOrder;
 
 import com.pinyougou.pojo.TbPayLog;
+import com.pinyougou.pojogroup.Order;
 import entity.PageResult;
 /**
  * 业务逻辑接口
@@ -57,7 +59,7 @@ public interface OrderService {
 	 * @param pageSize 每页记录数
 	 * @return
 	 */
-	public PageResult findPage(TbOrder order, int pageNum, int pageSize);
+	public PageResult findPage(Order order, int pageNum, int pageSize);
 
 	/**
 	 * 根据用户查询payLog
