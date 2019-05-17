@@ -53,10 +53,8 @@
                 <div class="btn-group">
                     <button type="button" class="btn btn-default" title="新建"><i class="fa fa-file-o"></i> 新建</button>
                     <button type="button" class="btn btn-default" title="删除"><i class="fa fa-trash-o"></i> 删除</button>
-                    <button type="button" class="btn btn-default" title="提交审核"><i class="fa fa-check"></i> 提交审核</button>
-                    <button type="button" class="btn btn-default" title="屏蔽" onclick='confirm("你确认要屏蔽吗？")'><i
-                            class="fa fa-ban"></i> 屏蔽
-                    </button>
+                    <button type="button" class="btn btn-default" ng-click="confirm('你确认要上架吗？');updateMarketStatus('1')" title="上架"><i class="fa fa-check"></i> 上架</button>
+                    <button type="button" class="btn btn-default" ng-click="confirm('你确认要下架吗？');updateMarketStatus('0')" title="下架"><i class="fa fa-check"></i> 下架</button>
                     <button type="button" class="btn btn-default" title="刷新" onclick="window.location.reload();"><i
                             class="fa fa-refresh"></i> 刷新
                     </button>
@@ -65,13 +63,11 @@
         </div>
         <div class="box-tools pull-right">
             <div class="has-feedback">
-                状态：<select ng-model="searchEntity.auditStatus">
-                    <option value="">全部</option>
-                    <option value="0">未审核</option>
-                    <option value="1">已审核</option>
-                    <option value="2">审核未通过</option>
-                    <option value="3">关闭</option>
-                </select>
+                状态：<select ng-model="searchEntity.isMarketable">
+                <option ng-model="isMarketable" value="">全部</option>
+                <option ng-model="isMarketable" value="0">已下架</option>
+                <option ng-model="isMarketable" value="1">已上架</option>
+            </select>
                 商品名称：<input ng-model="searchEntity.goodsName">
                 <button class="btn btn-default" ng-click="reloadList()">查询</button>
             </div>
@@ -91,13 +87,14 @@
                 <th class="sorting">一级分类</th>
                 <th class="sorting">二级分类</th>
                 <th class="sorting">三级分类</th>
-                <th class="sorting">状态</th>
+                <th class="sorting">审核状态</th>
+                <th class="sorting">上下架状态</th>
                 <th class="text-center">操作</th>
             </tr>
             </thead>
             <tbody>
             <tr ng-repeat="entity in list">
-                <td><input type="checkbox"></td>
+                <td><input type="checkbox" ng-click="updateSelection($event,entity.id)"></td>
                 <td>{{entity.id}}</td>
                 <td>{{entity.goodsName}}</td>
                 <td>{{entity.price}}</td>
@@ -105,6 +102,7 @@
                 <td>{{itemCatList[entity.category2Id]}}</td>
                 <td>{{itemCatList[entity.category3Id]}}</td>
                 <td>{{status[entity.auditStatus]}}</td>
+                <td>{{marketableStatus[entity.isMarketable]}}</td>
                 <td class="text-center">
                     <a type="button" href="goods_edit.html#?id={{entity.id}}" class="btn bg-olive btn-xs">修改</a>
                 </td>

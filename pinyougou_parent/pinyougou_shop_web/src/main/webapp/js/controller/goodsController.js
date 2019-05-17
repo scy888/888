@@ -266,7 +266,7 @@ app.controller('goodsController' ,function($scope,$controller,$location,goodsSer
         })
     }
 
-    //商品状态
+    //商品审核状态
     $scope.status=['未审核','已审核','审核未通过','关闭'];
     /**
 	 * 识别checkbox是否要勾中
@@ -282,6 +282,23 @@ app.controller('goodsController' ,function($scope,$controller,$location,goodsSer
 			}
 		}
         return false;
+    }
+
+    /**
+     * 商品上下架
+     * @param marketStatus
+     */
+    //商品上下架状态
+    $scope.marketableStatus=['下架', '上架'];
+    $scope.updateMarketStatus=function (marketStatus) {
+        goodsService.updateMarketStatus($scope.selectIds, marketStatus).success(function (response) {
+            alert(response.message);
+            if (response.success){
+                $scope.reloadList();
+                //清空审核列表
+                $scope.selectIds = [];
+            }
+        })
     }
 
 });

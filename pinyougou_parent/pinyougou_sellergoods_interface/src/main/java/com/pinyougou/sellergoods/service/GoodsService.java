@@ -75,4 +75,6 @@ public interface GoodsService {
 	 */
 	public List<TbItem> findItemListByGoodsIdsAndStatus(Long[] goodsIds, String status );
 
+    void updateMarketStatus(Long[] ids, String marketStatus);
+
 }

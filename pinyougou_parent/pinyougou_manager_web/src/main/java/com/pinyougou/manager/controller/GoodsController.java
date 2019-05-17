@@ -8,6 +8,8 @@ import com.pinyougou.pojogroup.Goods;
 import com.pinyougou.sellergoods.service.GoodsService;
 import entity.PageResult;
 import entity.Result;
+import entity.SolrItem;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.core.MessageCreator;
@@ -19,6 +21,7 @@ import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.Session;
+import java.util.ArrayList;
 import java.util.List;
 /**
  * 请求处理器
@@ -116,20 +119,20 @@ public class GoodsController {
 			goodsService.delete(ids);
 			//删除索引库
 			//itemSearchService.deleteByGoodsIds(ids);
-            jmsTemplate.send(queueSolrDeleteDestination, new MessageCreator() {
+            /*jmsTemplate.send(queueSolrDeleteDestination, new MessageCreator() {
                 @Override
                 public Message createMessage(Session session) throws JMSException {
                     return session.createObjectMessage(ids);
                 }
-            });
+            });*/
 
             //删除商品详情页
-			jmsTemplate.send(topicPageDeleteDestination, new MessageCreator() {
+			/*jmsTemplate.send(topicPageDeleteDestination, new MessageCreator() {
 				@Override
 				public Message createMessage(Session session) throws JMSException {
 					return session.createObjectMessage(ids);
 				}
-			});
+			});*/
 
 			return new Result(true, "删除成功"); 
 		} catch (Exception e) {
@@ -157,11 +160,11 @@ public class GoodsController {
 			goodsService.updateStatus(ids, status);
 
 			//只有审核通过是商品，才能导入索引库
-			if("1".equals(status)){
+			/*if("1".equals(status)){
 				//先查询所有商品sku列表
 				List<TbItem> itemList = goodsService.findItemListByGoodsIdsAndStatus(ids, status);
 				//组装导入对象,这一步相当关键
-				/*List<SolrItem> solrItemList = new ArrayList<>();
+				*//*List<SolrItem> solrItemList = new ArrayList<>();
 				for (TbItem item : itemList) {
 					SolrItem solrItem = new SolrItem();
 					//复制所有属性
@@ -171,7 +174,7 @@ public class GoodsController {
 					solrItem.setSpecMap(specMap);
 
 					solrItemList.add(solrItem);
-				}*/
+				}*//*
 				// /导入索引库
 				//itemSearchService.importList(solrItemList);
 
@@ -185,9 +188,9 @@ public class GoodsController {
 				});
 
 				//生成商品静态页
-				/*for (Long id : ids) {
+				*//*for (Long id : ids) {
 					itemPageService.genItemHtml(id);
-				}*/
+				}*//*
 				//发消息生成商品详情页
 				jmsTemplate.send(topicPageDestination, new MessageCreator() {
 					@Override
@@ -195,7 +198,7 @@ public class GoodsController {
 						return session.createObjectMessage(ids);
 					}
 				});
-			}
+			}*/
 
 			return new Result(true, "审核操作成功！");
 		} catch (Exception e) {

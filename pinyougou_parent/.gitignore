@@ -6,4 +6,4 @@ logs/
 .idea/
 target/
 !.mvn/wrapper/maven-wrapper.jar
-.properties
+/pinyougou_common\src\main\resources\properties\redis-config.properties
