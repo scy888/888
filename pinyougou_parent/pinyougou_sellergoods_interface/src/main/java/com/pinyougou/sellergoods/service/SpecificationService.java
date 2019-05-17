@@ -1,9 +1,10 @@
 package com.pinyougou.sellergoods.service;
-import java.util.List;
-import com.pinyougou.pojo.TbSpecification;
 
+import com.pinyougou.pojo.TbSpecification;
 import com.pinyougou.pojogroup.Specification;
 import entity.PageResult;
+
+import java.util.List;
 /**
  * 业务逻辑接口
  * @author Steven
@@ -58,5 +59,19 @@ public interface SpecificationService {
 	 * @return
 	 */
 	public PageResult findPage(TbSpecification specification, int pageNum, int pageSize);
+
+	/**
+	 * 商家规格查询：查询+分页（区别在于商家查询只返回自己所申请过的规格）
+	 * @param loginName 当前商家名
+	 * @return
+	 */
+	public List<TbSpecification> sellerFindAll(String loginName);
+	/**
+	 * 商家品牌查询：查询+分页（区别在于商家查询只返回自己所申请过的品牌）
+	 * @param pageNum 当前页 码
+	 * @param pageSize 每页记录数
+	 * @return
+	 */
+	public PageResult sellerFindPage(TbSpecification specification, int pageNum, int pageSize, String sellerId);
 	
 }
