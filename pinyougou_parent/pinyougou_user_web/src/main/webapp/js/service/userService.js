@@ -35,4 +35,8 @@ app.service('userService',function($http){
 		return $http.get("../user/sendSmsCode.do?phone="+phone);
 	}
 
+	//查询实体
+	this.findUserByUserId=function(){
+		return $http.get('../user/findUserByUserId.do');
+	}
 });

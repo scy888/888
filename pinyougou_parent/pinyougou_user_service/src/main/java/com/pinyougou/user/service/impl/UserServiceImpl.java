@@ -271,4 +271,12 @@ public class UserServiceImpl implements UserService {
 		return orderList;
 	}
 
+	@Override
+	public TbUser findUserByUserId(String userName) {
+		TbUser where = new TbUser();
+		where.setUsername(userName);
+		TbUser user = userMapper.selectOne(where);
+		return user;
+	}
+
 }

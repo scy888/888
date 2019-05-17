@@ -81,4 +81,10 @@ public interface UserService {
 	 */
 	public List<Order> findOrderByUserId(String userId);
 
+
+	/**
+	 * 查询用户信息
+	 * @return
+	 */
+	public TbUser findUserByUserId(String userName);
 }

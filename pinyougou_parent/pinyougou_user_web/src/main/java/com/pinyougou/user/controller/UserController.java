@@ -4,6 +4,7 @@ import java.util.regex.PatternSyntaxException;
 
 import com.pinyougou.user.service.UserService;
 import com.pinyougou.utils.PhoneFormatCheckUtils;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -133,5 +134,16 @@ public class UserController {
         }
         return new Result(false, "验证码发送失败!");
     }
-	
+
+	/**
+	 * 查询用户信息
+	 * @param
+	 * @return
+	 */
+	@RequestMapping("/findUserByUserId")
+	public TbUser findUserByUserId(){
+		String userName = SecurityContextHolder.getContext().getAuthentication().getName();
+		return userService.findUserByUserId(userName);
+	}
+
 }
