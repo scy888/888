@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/userOrder1")
+@RequestMapping("/userOrder")
 public class UserOrderController {
     @Reference
     private OrderService orderService;

@@ -28,5 +28,9 @@ app.service('orderService',function($http){
 	//搜索
 	this.search=function(page,rows,searchEntity){
 		return $http.post('../order/search.do?page='+page+"&rows="+rows,searchEntity);
-	}    	
+	}
+	//导出为XLSX
+	this.outPutAsXlsx=function (tbOrderIds) {
+		return $http.get('../userOrder/findOrderAndOrderItem.do?tbOrderIds='+tbOrderIds);
+    }
 });
