@@ -50,31 +50,31 @@
                     </tr>
                     <tr>
                         <td>订单创建时间：</td>
-                        <td><input ng-model="searchEntity.dateMap.createTimeStart" type="date">至<input ng-model="searchEntity.dateMap.createTimeEnd" type="date"></td>
+                        <td><input ng-model="searchEntity.dateMap.createTime.start" type="date">至<input ng-model="searchEntity.dateMap.createTime.end" type="date"></td>
                     </tr>
                     <tr>
                         <td>订单更新时间:</td>
-                        <td><input ng-model="searchEntity.dateMap.updateTimeStart" type="date">至<input ng-model="searchEntity.dateMap.updateTimeEnd" type="date"></td>
+                        <td><input ng-model="searchEntity.dateMap.updateTime.start" type="date">至<input ng-model="searchEntity.dateMap.updateTime.end" type="date"></td>
                     </tr>
                     <tr>
                         <td>付款时间:</td>
-                        <td><input ng-model="searchEntity.dateMap.paymentTimeStart" type="date">至<input ng-model="searchEntity.dateMap.paymentTimeEnd" type="date"></td>
+                        <td><input ng-model="searchEntity.dateMap.paymentTime.start" type="date">至<input ng-model="searchEntity.dateMap.paymentTime.end" type="date"></td>
                     </tr>
                     <tr>
                         <td>发货时间:</td>
-                        <td><input ng-model="searchEntity.dateMap.consignTimeStart" type="date">至<input ng-model="searchEntity.dateMap.consignTimeEnd" type="date"></td>
+                        <td><input ng-model="searchEntity.dateMap.consignTime.start" type="date">至<input ng-model="searchEntity.dateMap.consignTime.end" type="date"></td>
                     </tr>
                     <tr>
                         <td>交易完成时间:</td>
-                        <td><input ng-model="searchEntity.dateMap.endTimeStart" type="date">至<input ng-model="searchEntity.dateMap.endTimeEnd" type="date"></td>
+                        <td><input ng-model="searchEntity.dateMap.endTime.start" type="date">至<input ng-model="searchEntity.dateMap.endTime.end" type="date"></td>
                     </tr>
                     <tr>
                         <td>交易关闭时间:</td>
-                        <td><input ng-model="searchEntity.dateMap.closeTimeStart" type="date">至<input ng-model="searchEntity.dateMap.closeTimeEnd" type="date"></td>
+                        <td><input ng-model="searchEntity.dateMap.closeTime.start" type="date">至<input ng-model="searchEntity.dateMap.closeTime.end" type="date"></td>
                     </tr>
                     <tr>
                         <td>过期时间:</td>
-                        <td><input ng-model="searchEntity.dateMap.expireStart" type="date">至<input ng-model="searchEntity.dateMap.expireEnd" type="date"></td>
+                        <td><input ng-model="searchEntity.dateMap.expire.start" type="date">至<input ng-model="searchEntity.dateMap.expire.end" type="date"></td>
                     </tr>
                 </table>
             </div>
@@ -210,7 +210,7 @@
                 <td>{{entity.updateTime}}</td>
                 <td>{{entity.paymentTime}}</td>
                 <td>{{entity.consignTime}}</td>
-                <td>{{entity.endTime}}</td>
+                <td>{{entity..endTime}}</td>
                 <td>{{entity.closeTime}}</td>
                 <td>{{entity.shippingName}}</td>
                 <td>{{entity.shippingCode}}</td>
@@ -317,7 +317,7 @@
 
                         <td>交易完成时间</td>
 
-                        <td><input class="form-control" ng-model="entity.endTime" placeholder="交易完成时间"></td>
+                        <td><input class="form-control" ng-model="entity..endTime" placeholder="交易完成时间"></td>
 
                     </tr>
                     <tr>

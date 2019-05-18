@@ -207,16 +207,37 @@ public class OrderServiceImpl implements OrderService {
 		orderMapper.deleteByExample(example);
 	}
 
-    private Date parseToDate(Object timeStr) {
+	/**
+	 * 日期转换方法
+	 * @param timeStr
+	 * @return
+	 */
+    private Date parseToDate(String timeStr) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         Date date = null;
         try {
-            date = sdf.parse((String) timeStr);
+            date = sdf.parse( timeStr);
         } catch (ParseException e) {
             System.out.println("日期格式错误!");
         }
         return date;
     }
+
+	/**
+	 * 添加日期查询条件
+	 * @param timeCriteria
+	 */
+	private void addTimeCriteria(Map timeCriteria,String timeProperty,Example.Criteria criteria) {
+		if (timeCriteria != null && timeCriteria.size()!=0) {
+			if (timeCriteria.get("start")!=null&&!timeCriteria.get("start").equals("")){
+				criteria.andGreaterThanOrEqualTo(timeProperty, parseToDate((String) timeCriteria.get("start")));
+			}
+			if(timeCriteria.get("end")!=null&&!timeCriteria.get("end").equals("")){
+				criteria.andLessThanOrEqualTo(timeProperty, parseToDate((String) timeCriteria.get("end")));
+			}
+		}
+	}
+
 	@Override
 	public PageResult findPage(Order border, int pageNum, int pageSize)  {
 		PageResult<TbOrder> result = new PageResult<TbOrder>();
@@ -228,58 +249,16 @@ public class OrderServiceImpl implements OrderService {
 		Example.Criteria criteria = example.createCriteria();
         TbOrder order = border.getTbOrder();
         HashMap dateMap = border.getDateMap();
-        
-        
+
+
         if (dateMap!=null){
-                if (dateMap.get("createTimeStart") != null && !dateMap.get("createTimeStart") .equals("")) {
-                    criteria.andGreaterThanOrEqualTo("createTime", parseToDate(dateMap.get("createTimeStart")));
-                }
-                if (dateMap.get("createTimeEnd") != null && !dateMap.get("createTimeEnd") .equals("")) {
-                    criteria.andLessThanOrEqualTo("createTime", parseToDate( dateMap.get("createTimeEnd")));
-                }
-
-                if (dateMap.get("updateTimeStart") != null && !dateMap.get("updateTimeStart") .equals("")) {
-                    criteria.andGreaterThanOrEqualTo("updateTime", parseToDate( dateMap.get("updateTimeStart")));
-                }
-                if (dateMap.get("updateTimeEnd") != null && !dateMap.get("updateTimeEnd").equals("")) {
-                    criteria.andLessThanOrEqualTo("updateTime", parseToDate( dateMap.get("updateTimeEnd")));
-                }
-
-                if (dateMap.get("paymentTimeStart") != null && !dateMap.get("paymentTimeStart") .equals("")) {
-                    criteria.andGreaterThanOrEqualTo("paymentTime", parseToDate( dateMap.get("paymentTimeStart")));
-                }
-                if (dateMap.get("paymentTimeEnd") != null && !dateMap.get("paymentTimeEnd") .equals("")) {
-                    criteria.andLessThanOrEqualTo("paymentTime", parseToDate( dateMap.get("paymentTimeEnd")));
-                }
-
-                if (dateMap.get("consignTimeStart") != null && !dateMap.get("consignTimeStart") .equals("")) {
-                    criteria.andGreaterThanOrEqualTo("consignTime", parseToDate( dateMap.get("consignTimeStart")));
-                }
-                if (dateMap.get("consignTimeEnd") != null && !dateMap.get("consignTimeEnd") .equals("")) {
-                    criteria.andLessThanOrEqualTo("consignTime", parseToDate( dateMap.get("consignTimeEnd")));
-                }
-
-                if (dateMap.get("endTimeStart") != null && !dateMap.get("endTimeStart") .equals("")) {
-                    criteria.andGreaterThanOrEqualTo("endTime", parseToDate( dateMap.get("endTimeStart")));
-                }
-                if (dateMap.get("endTimeEnd") != null && !dateMap.get("endTimeEnd") .equals("")) {
-                    criteria.andLessThanOrEqualTo("endTime", parseToDate( dateMap.get("endTimeEnd")));
-                }
-
-                if (dateMap.get("closeTimeStart") != null && !dateMap.get("closeTimeStart") .equals("")) {
-                    criteria.andGreaterThanOrEqualTo("closeTime", parseToDate( dateMap.get("closeTimeStart")));
-                }
-                if (dateMap.get("closeTimeEnd") != null && !dateMap.get("closeTimeEnd") .equals("")) {
-                    criteria.andLessThanOrEqualTo("closeTime", parseToDate( dateMap.get("closeTimeEnd")));
-                }
-
-                if (dateMap.get("expireStart") != null && !dateMap.get("expireStart") .equals("")) {
-                    criteria.andGreaterThanOrEqualTo("expire", parseToDate( dateMap.get("expireStart")));
-                }
-                if (dateMap.get("expireEnd") != null && !dateMap.get("expireEnd") .equals("")) {
-                    criteria.andLessThanOrEqualTo("expire", parseToDate( dateMap.get("expireEnd")));
-                }
-            
+        	addTimeCriteria((Map)dateMap.get("createTime"),"createTime",criteria);
+        	addTimeCriteria((Map)dateMap.get("updateTime"),"updateTime",criteria);
+        	addTimeCriteria((Map)dateMap.get("paymentTime"),"paymentTime",criteria);
+        	addTimeCriteria((Map)dateMap.get("consignTime"),"consignTime",criteria);
+        	addTimeCriteria((Map)dateMap.get("endTime"),"endTime",criteria);
+        	addTimeCriteria((Map)dateMap.get("closeTime"),"closeTime",criteria);
+        	addTimeCriteria((Map)dateMap.get("expire"),"expire",criteria);
 		}
 
 		if (order != null) {
@@ -362,6 +341,7 @@ public class OrderServiceImpl implements OrderService {
 		return result;
 	}
 
-   
+
+
 
 }
