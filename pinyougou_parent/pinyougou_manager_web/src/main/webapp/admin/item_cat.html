@@ -87,7 +87,7 @@
                 <td>{{entity.id}}</td>
                 <td>{{entity.name}}</td>
                 <td>{{entity.typeId}}</td>
-                <td>{{status[entity.auditStatus]}}</td>
+                <td>{{status[entity.status]}}</td>
                 <td class="text-center">
                     <button ng-if="grade < 3" type="button" ng-click="setGrade(grade+1);selectList(entity)" class="btn bg-olive btn-xs">查询下级</button>
                     <button type="button" class="btn bg-olive btn-xs" data-toggle="modal" data-target="#editModal">修改

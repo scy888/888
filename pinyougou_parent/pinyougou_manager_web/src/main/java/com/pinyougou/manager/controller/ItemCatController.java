@@ -2,15 +2,13 @@ package com.pinyougou.manager.controller;
 import com.alibaba.dubbo.config.annotation.Reference;
 import com.pinyougou.pojo.TbItemCat;
 import com.pinyougou.sellergoods.service.ItemCatService;
-
+import entity.PageResult;
+import entity.Result;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-
-import entity.PageResult;
-import entity.Result;
 /**
  * 请求处理器
  * @author Steven
@@ -125,7 +123,7 @@ public class ItemCatController {
 	 * @return
 	 */
 	@RequestMapping("updateStatus")
-	public Result updateStatus(Long[] ids, String status){
+	public Result updateStatus(Long[] ids, Integer status){
 		try {
 			//审核
 			itemCatService.updateStatus(ids, status);

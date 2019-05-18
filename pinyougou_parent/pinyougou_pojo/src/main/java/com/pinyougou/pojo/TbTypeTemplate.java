@@ -1,12 +1,7 @@
 package com.pinyougou.pojo;
 
+import javax.persistence.*;
 import java.io.Serializable;
-
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
 
 @Table(name = "tb_type_template")
 public class TbTypeTemplate implements Serializable {
@@ -41,15 +36,14 @@ public class TbTypeTemplate implements Serializable {
     /**
      * 状态
      */
-    @Column(name = "audit_status")
-    private String auditStatus;
+    private Integer status;
 
-    public String getAuditStatus() {
-        return auditStatus;
+    public Integer getStatus() {
+        return status;
     }
 
-    public void setAuditStatus(String auditStatus) {
-        this.auditStatus = auditStatus;
+    public void setStatus(Integer status) {
+        this.status = status;
     }
 
     private static final long serialVersionUID = 1L;
@@ -148,7 +142,7 @@ public class TbTypeTemplate implements Serializable {
                 ", specIds='" + specIds + '\'' +
                 ", brandIds='" + brandIds + '\'' +
                 ", customAttributeItems='" + customAttributeItems + '\'' +
-                ", auditStatus='" + auditStatus + '\'' +
+                ", auditStatus='" + status + '\'' +
                 '}';
     }
 }
