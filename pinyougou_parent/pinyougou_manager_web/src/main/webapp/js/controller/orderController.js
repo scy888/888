@@ -1,5 +1,5 @@
  //控制层 
-app.controller('orderController' ,function($scope,$controller,orderService){	
+app.controller('orderController' ,function($scope,$controller,orderService,orderItemService){
 	
 	$controller('baseController',{$scope:$scope});//继承
 	
@@ -11,7 +11,13 @@ app.controller('orderController' ,function($scope,$controller,orderService){
 			}			
 		);
 	}
-	
+
+	$scope.findOrderItem=function(orderId){
+		orderItemService.findByOrderId(orderId).success(function (response) {
+			$scope.orderItemList=response;
+        })
+	}
+
 	//分页
 	$scope.findPage=function(page,rows){			
 		orderService.findPage(page,rows).success(

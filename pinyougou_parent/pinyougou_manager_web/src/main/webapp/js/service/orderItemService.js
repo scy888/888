@@ -28,5 +28,9 @@ app.service('orderItemService',function($http){
 	//搜索
 	this.search=function(page,rows,searchEntity){
 		return $http.post('../orderItem/search.do?page='+page+"&rows="+rows, searchEntity);
-	}    	
+	}
+	//根据orderId查询orderItem
+	this.findByOrderId=function (orderId) {
+		return $http.post('../orderItem/findByOrderId.do?orderId='+orderId);
+    }
 });

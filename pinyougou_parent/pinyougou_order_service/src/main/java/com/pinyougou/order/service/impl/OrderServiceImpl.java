@@ -281,17 +281,14 @@ public class OrderServiceImpl implements OrderService {
 		Example example = new Example(TbOrder.class);
 		Example.Criteria criteria = example.createCriteria();
         TbOrder order = border.getTbOrder();
-        HashMap dateMap = border.getDateMap();
+        Map dateMap = border.getDateMap();
 
-
+        
         if (dateMap!=null){
-        	addTimeCriteria((Map)dateMap.get("createTime"),"createTime",criteria);
-        	addTimeCriteria((Map)dateMap.get("updateTime"),"updateTime",criteria);
-        	addTimeCriteria((Map)dateMap.get("paymentTime"),"paymentTime",criteria);
-        	addTimeCriteria((Map)dateMap.get("consignTime"),"consignTime",criteria);
-        	addTimeCriteria((Map)dateMap.get("endTime"),"endTime",criteria);
-        	addTimeCriteria((Map)dateMap.get("closeTime"),"closeTime",criteria);
-        	addTimeCriteria((Map)dateMap.get("expire"),"expire",criteria);
+            for (Object o : dateMap.entrySet()) {
+                Map.Entry<String,Map>  entry = (Map.Entry<String, Map>) o;
+                addTimeCriteria(entry.getValue(),entry.getKey(),criteria);
+            }
 		}
 
 		if (order != null) {
