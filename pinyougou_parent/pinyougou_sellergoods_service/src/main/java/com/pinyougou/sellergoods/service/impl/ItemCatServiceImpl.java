@@ -1,25 +1,25 @@
 package com.pinyougou.sellergoods.service.impl;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import com.alibaba.dubbo.config.annotation.Service;
 import com.github.abel533.entity.Example;
-import com.github.pagehelper.PageInfo;
-import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.pinyougou.mapper.TbItemCatMapper;
 import com.pinyougou.pojo.TbItemCat;
 import com.pinyougou.sellergoods.service.ItemCatService;
 import entity.PageResult;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 业务逻辑实现
  * @author Steven
  *
  */
-@Service
+@Service(timeout = 15000)
 public class ItemCatServiceImpl implements ItemCatService {
 
 	@Autowired
@@ -164,5 +164,30 @@ public class ItemCatServiceImpl implements ItemCatService {
 		}
 		return itemCats;
     }
+
+	/**
+	 * 分类审核
+	 * @param ids
+	 * @param status
+	 */
+	@Override
+	public void updateStatus(Long[] ids, Integer status) {
+		//修改的结果
+		TbItemCat record = new TbItemCat();
+		record.setStatus(status);
+		//构建修改范围
+		Example example = new Example(TbItemCat.class);
+		Example.Criteria criteria = example.createCriteria();
+		//遍历子节点
+		List idList = new ArrayList();
+		for (Long id : ids) {
+			selectAllId(idList,id);
+		}
+
+		criteria.andIn("id", idList);
+		//开始更新
+		itemCatMapper.updateByExampleSelective(record,example);
+
+	}
 
 }

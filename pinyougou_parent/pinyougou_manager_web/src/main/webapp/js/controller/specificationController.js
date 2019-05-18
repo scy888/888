@@ -89,4 +89,22 @@ app.controller('specificationController' ,function($scope,$controller,specificat
     $scope.deleteTableRow=function (index) {
         $scope.entity.specificationOptionList.splice(index, 1);
     }
+
+	//规格状态
+	$scope.status=['未审核','已审核','审核未通过','关闭'];
+
+	//审核规格
+	$scope.updateStatus=function (status) {
+		specificationService.updateStatus($scope.selectIds,status).success(function (response) {
+			alert(response.message);
+			if(response.success){
+				$scope.reloadList();
+				//清空审核列表
+				$scope.selectIds = [];
+			}
+		})
+	}
+
+
+
 });	

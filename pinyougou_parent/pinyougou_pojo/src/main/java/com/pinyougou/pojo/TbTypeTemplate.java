@@ -32,6 +32,20 @@ public class TbTypeTemplate implements Serializable {
     @Column(name = "custom_attribute_items")
     private String customAttributeItems;
 
+
+    /**
+     * 状态
+     */
+    private Integer status;
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
+
     private static final long serialVersionUID = 1L;
 
     /**
@@ -122,17 +136,13 @@ public class TbTypeTemplate implements Serializable {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(getClass().getSimpleName());
-        sb.append(" [");
-        sb.append("Hash = ").append(hashCode());
-        sb.append(", id=").append(id);
-        sb.append(", name=").append(name);
-        sb.append(", specIds=").append(specIds);
-        sb.append(", brandIds=").append(brandIds);
-        sb.append(", customAttributeItems=").append(customAttributeItems);
-        sb.append(", serialVersionUID=").append(serialVersionUID);
-        sb.append("]");
-        return sb.toString();
+        return "TbTypeTemplate{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", specIds='" + specIds + '\'' +
+                ", brandIds='" + brandIds + '\'' +
+                ", customAttributeItems='" + customAttributeItems + '\'' +
+                ", auditStatus='" + status + '\'' +
+                '}';
     }
 }

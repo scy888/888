@@ -1,4 +1,5 @@
 package com.pinyougou.sellergoods.service.impl;
+
 import com.alibaba.dubbo.config.annotation.Service;
 import com.github.abel533.entity.Example;
 import com.github.pagehelper.PageHelper;
@@ -126,7 +127,7 @@ public class BrandServiceImpl implements BrandService {
         //获取总记录数
         PageInfo<TbBrand> info = new PageInfo<TbBrand>(list);
         result.setTotal(info.getTotal());
-		
+
 		return result;
 	}
 	//商家的查询另开了一个方法按sellerId查询，不影响运营管理商的全部查询
@@ -175,5 +176,25 @@ public class BrandServiceImpl implements BrandService {
 
 		return result;
 	}
+
+	/**
+	 * 状态审核
+	 * @param ids
+	 * @param status
+	 */
+	@Override
+	public void updateStatus(Long[] ids, Integer status) {
+		//修改的结果
+		TbBrand record = new TbBrand();
+		record.setStatus(status);
+		//构建修改范围
+		Example example = new Example(TbBrand.class);
+		Example.Criteria criteria = example.createCriteria();
+		List longs = Arrays.asList(ids);
+		criteria.andIn("id", longs);
+		//开始更新
+		brandMapper.updateByExampleSelective(record,example);
+	}
+
 
 }

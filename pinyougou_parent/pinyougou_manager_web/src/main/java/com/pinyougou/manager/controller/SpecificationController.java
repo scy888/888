@@ -1,16 +1,15 @@
 package com.pinyougou.manager.controller;
-import java.util.List;
-
+import com.alibaba.dubbo.config.annotation.Reference;
+import com.pinyougou.pojo.TbSpecification;
 import com.pinyougou.pojogroup.Specification;
+import com.pinyougou.sellergoods.service.SpecificationService;
+import entity.PageResult;
+import entity.Result;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import com.alibaba.dubbo.config.annotation.Reference;
-import com.pinyougou.pojo.TbSpecification;
-import com.pinyougou.sellergoods.service.SpecificationService;
 
-import entity.PageResult;
-import entity.Result;
+import java.util.List;
 /**
  * 请求处理器
  * @author Steven
@@ -110,6 +109,24 @@ public class SpecificationController {
 	@RequestMapping("/search")
 	public PageResult search(@RequestBody TbSpecification specification, int page, int rows  ){
 		return specificationService.findPage(specification, page, rows);		
+	}
+
+	/**
+	 * 规格审核
+	 * @param ids
+	 * @param status
+	 * @return
+	 */
+	@RequestMapping("updateStatus")
+	public Result updateStatus(Long[] ids, Integer status){
+		try {
+			//审核
+			specificationService.updateStatus(ids, status);
+			return new Result(true, "审核操作成功！");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return new Result(false, "审核操作失败！");
 	}
 	
 }

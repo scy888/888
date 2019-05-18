@@ -1,18 +1,21 @@
 package com.pinyougou.seckill.service.impl;
+
+import com.alibaba.dubbo.config.annotation.Service;
+import com.github.abel533.entity.Example;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+import com.pinyougou.mapper.TbSeckillGoodsMapper;
+import com.pinyougou.pojo.TbSeckillGoods;
+import com.pinyougou.seckill.service.SeckillGoodsService;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
+
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-import com.pinyougou.seckill.service.SeckillGoodsService;
-import org.springframework.beans.factory.annotation.Autowired;
-import com.alibaba.dubbo.config.annotation.Service;
-import com.github.abel533.entity.Example;
-import com.github.pagehelper.PageInfo;
-import com.github.pagehelper.PageHelper;
-import com.pinyougou.mapper.TbSeckillGoodsMapper;
-import com.pinyougou.pojo.TbSeckillGoods;
 import entity.PageResult;
-import org.springframework.data.redis.core.RedisTemplate;
 
 /**
  * 业务逻辑实现
@@ -180,6 +183,26 @@ public class SeckillGoodsServiceImpl implements SeckillGoodsService {
 	public TbSeckillGoods findOneFromRedis(Long id) {
 		TbSeckillGoods seckillGoods = (TbSeckillGoods) redisTemplate.boundHashOps("seckillGoodses").get(id);
 		return seckillGoods;
+	}
+
+	/**
+	 * 状态审核
+	 * @param ids
+	 * @param status
+	 */
+	@Override
+	public void updateStatus(Long[] ids, String status) {
+		//修改的结果
+		TbSeckillGoods record = new TbSeckillGoods();
+		record.setStatus(status);
+		record.setCheckTime(new Date());
+		//构建修改范围
+		Example example = new Example(TbSeckillGoods.class);
+		Example.Criteria criteria = example.createCriteria();
+		List longs = Arrays.asList(ids);
+		criteria.andIn("id", longs);
+		//开始更新
+		seckillGoodsMapper.updateByExampleSelective(record,example);
 	}
 
 }

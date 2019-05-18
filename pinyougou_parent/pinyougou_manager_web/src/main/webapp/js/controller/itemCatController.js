@@ -76,8 +76,15 @@ app.controller('itemCatController' ,function($scope,$controller,itemCatService){
 		);
 	}
 
+	//定义一个变量用来记录上级ID
+	$scope.parentId = 0;
+
 	//跟据父节点id查询子节点列表
 	$scope.findByParentId=function (parentId) {
+
+		//记录上级id
+		$scope.parentId = parentId;
+
 		itemCatService.findByParentId(parentId).success(function (response) {
             $scope.list = response;
         })
@@ -104,5 +111,21 @@ app.controller('itemCatController' ,function($scope,$controller,itemCatService){
 		//刷新数据
 		$scope.findByParentId(p_entity.id);
     }
+
+	//分类状态
+	$scope.status=['未审核','已审核','审核未通过','关闭'];
+
+	//审核分类
+	$scope.updateStatus=function (status) {
+		itemCatService.updateStatus($scope.selectIds,status).success(function (response) {
+			alert(response.message);
+			if(response.success){
+				$scope.findByParentId($scope.parentId);
+				// $scope.reloadList();
+				//清空审核列表
+				$scope.selectIds = [];
+			}
+		})
+	}
     
 });	

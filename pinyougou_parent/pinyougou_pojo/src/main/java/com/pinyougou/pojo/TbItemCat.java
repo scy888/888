@@ -29,6 +29,20 @@ public class TbItemCat implements Serializable {
     @Column(name = "type_id")
     private Long typeId;
 
+
+    /**
+     * 状态
+     */
+    private Integer status;
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
+
     private static final long serialVersionUID = 1L;
 
     /**
@@ -105,16 +119,12 @@ public class TbItemCat implements Serializable {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(getClass().getSimpleName());
-        sb.append(" [");
-        sb.append("Hash = ").append(hashCode());
-        sb.append(", id=").append(id);
-        sb.append(", parentId=").append(parentId);
-        sb.append(", name=").append(name);
-        sb.append(", typeId=").append(typeId);
-        sb.append(", serialVersionUID=").append(serialVersionUID);
-        sb.append("]");
-        return sb.toString();
+        return "TbItemCat{" +
+                "id=" + id +
+                ", parentId=" + parentId +
+                ", name='" + name + '\'' +
+                ", typeId=" + typeId +
+                ", auditStatus='" + status + '\'' +
+                '}';
     }
 }

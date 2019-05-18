@@ -74,4 +74,11 @@ public interface BrandService {
 	public PageResult sellerFindPage(TbBrand brand, int pageNum, int pageSize,String sellerId);
 
 
+
+	/**
+	 * 审核状态
+	 * @param ids
+	 * @param status
+	 */
+    void updateStatus(Long[] ids, Integer status);
 }

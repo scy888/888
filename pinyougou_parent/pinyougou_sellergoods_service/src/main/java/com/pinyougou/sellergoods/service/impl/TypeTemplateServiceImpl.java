@@ -1,4 +1,5 @@
 package com.pinyougou.sellergoods.service.impl;
+
 import com.alibaba.dubbo.config.annotation.Service;
 import com.alibaba.fastjson.JSON;
 import com.github.abel533.entity.Example;
@@ -186,5 +187,24 @@ public class TypeTemplateServiceImpl implements TypeTemplateService {
 		}
 		return null;
     }
+
+	/**
+	 * 状态审核
+	 * @param ids
+	 * @param status
+	 */
+	@Override
+	public void updateStatus(Long[] ids, Integer status) {
+		//修改的结果
+		TbTypeTemplate record = new TbTypeTemplate();
+		record.setStatus(status);
+		//构建修改范围
+		Example example = new Example(TbTypeTemplate.class);
+		Example.Criteria criteria = example.createCriteria();
+		List longs = Arrays.asList(ids);
+		criteria.andIn("id", longs);
+		//开始更新
+		typeTemplateMapper.updateByExampleSelective(record,example);
+	}
 
 }

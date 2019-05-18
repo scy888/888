@@ -1,17 +1,20 @@
-package com.pinyougou.cart.controller;
+package com.pinyougou.manager.controller;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 
-import com.alibaba.dubbo.config.annotation.Reference;
 import com.pinyougou.order.service.OrderService;
-import com.pinyougou.pojo.TbOrder;
 import com.pinyougou.pojogroup.Order;
-import entity.PageResult;
-import entity.Result;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import com.alibaba.dubbo.config.annotation.Reference;
+import com.pinyougou.pojo.TbOrder;
 
-import java.util.List;
+
+import entity.PageResult;
+import entity.Result;
 /**
  * 请求处理器
  * @author Steven
@@ -51,11 +54,6 @@ public class OrderController {
 	@RequestMapping("/add")
 	public Result add(@RequestBody TbOrder order){
 		try {
-			//用户id
-			String userId = SecurityContextHolder.getContext().getAuthentication().getName();
-			order.setUserId(userId);
-			//订单来源
-			order.setSourceType("2");
 			orderService.add(order);
 			return new Result(true, "增加成功");
 		} catch (Exception e) {
@@ -115,7 +113,7 @@ public class OrderController {
 	 */
 	@RequestMapping("/search")
 	public PageResult search(@RequestBody Order order, int page, int rows  ){
-		return orderService.findPage(order, page, rows);		
+        return orderService.findPage(order, page, rows);
 	}
 	
 }
