@@ -1,5 +1,9 @@
 package com.pinyougou.pojo;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+
 import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -15,8 +19,10 @@ public class TbOrder implements Serializable {
     /**
      * 订单id
      */
+    @JsonSerialize(using = ToStringSerializer.class)
     @Id
     @Column(name = "order_id")
+//    @JsonFormat(shape=JsonFormat.Shape.STRING)
     private Long orderId;
 
 
