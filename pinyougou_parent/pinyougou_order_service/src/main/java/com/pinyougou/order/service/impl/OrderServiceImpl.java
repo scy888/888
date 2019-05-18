@@ -3,6 +3,10 @@ import com.alibaba.dubbo.config.annotation.Service;
 import com.github.abel533.entity.Example;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.alibaba.dubbo.config.annotation.Service;
+import com.github.abel533.entity.Example;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -21,6 +25,7 @@ import com.pinyougou.pojogroup.Cart;
 import com.pinyougou.pojogroup.Order;
 import com.pinyougou.utils.IdWorker;
 import org.apache.commons.collections.OrderedMap;
+import entity.PageResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.alibaba.dubbo.config.annotation.Service;
 import com.github.abel533.entity.Example;
@@ -36,6 +41,12 @@ import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
 
 /**
  * 业务逻辑实现
@@ -184,6 +195,22 @@ public class OrderServiceImpl implements OrderService {
 		}
 		//3. 清除缓存中的支付日志对象
 		redisTemplate.boundHashOps("payLogs").delete(payLog.getUserId());
+	}
+
+	/**查询订单和订单里的商品详情
+	 * @return
+	 */
+	@Override
+	public List<TbOrder> findOrderAndOrderItem() {
+
+        List<TbOrder> tbOrderList = orderMapper.select(null);
+        for (TbOrder tbOrder : tbOrderList) {
+            TbOrderItem where=new TbOrderItem();
+            where.setOrderId(tbOrder.getOrderId());
+            List<TbOrderItem> tbOrderItemList = orderItemMapper.select(where);
+            tbOrder.setOrderItemList(tbOrderItemList);
+        }
+        return tbOrderList;
 	}
 
 

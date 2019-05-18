@@ -1,11 +1,16 @@
 package com.pinyougou.order.service;
-import java.util.HashMap;
-import java.util.List;
-import com.pinyougou.pojo.TbOrder;
 
+import com.pinyougou.pojo.TbOrder;
 import com.pinyougou.pojo.TbPayLog;
 import com.pinyougou.pojogroup.Order;
 import entity.PageResult;
+
+import java.util.List;
+import java.util.HashMap;
+import java.util.List;
+import com.pinyougou.pojogroup.Order;
+
+import java.util.List;
 /**
  * 业务逻辑接口
  * @author Steven
@@ -74,6 +79,11 @@ public interface OrderService {
 	 * @param transaction_id 微信返回的交易流水号
 	 */
 	public void updateOrderStatus(String out_trade_no,String transaction_id);
+
+	/**查询订单和订单里的商品详情
+	 * @return
+	 */
+	public List<TbOrder> findOrderAndOrderItem();
 
 
 	/**
