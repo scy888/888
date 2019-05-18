@@ -67,6 +67,8 @@ public class BrandController {
 	@RequestMapping("/update")
 	public Result update(@RequestBody TbBrand brand){
 		try {
+			//一旦修改，审核状态变更回未审核
+			brand.setStatus(0);
 			brandService.update(brand);
 			return new Result(true, "修改成功");
 		} catch (Exception e) {

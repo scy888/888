@@ -71,6 +71,8 @@ public class SpecificationController {
 	@RequestMapping("/update")
 	public Result update(@RequestBody Specification specification) {
 		try {
+			//一旦修改，审核状态变更回未审核
+			specification.getSpecification().setStatus(0);
 			specificationService.update(specification);
 			return new Result(true, "修改成功");
 		} catch (Exception e) {
