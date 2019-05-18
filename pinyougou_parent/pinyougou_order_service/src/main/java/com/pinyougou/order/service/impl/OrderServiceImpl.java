@@ -178,7 +178,7 @@ public class OrderServiceImpl implements OrderService {
 	@Override
 	public List<TbOrder> findOrderAndOrderItem(Long[] tbOrderIds) {
         List<TbOrder> tbOrderList=null;
-        if (tbOrderIds != null && tbOrderIds.length>0) {
+        if (tbOrderIds != null) {
             Example example=new Example(TbOrder.class);
             Example.Criteria criteria = example.createCriteria();
             criteria.andIn("orderId",Arrays.asList(tbOrderIds));
