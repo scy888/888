@@ -10,9 +10,14 @@
 
     <link rel="stylesheet" type="text/css" href="css/webbase.css" />
     <link rel="stylesheet" type="text/css" href="css/pages-seckillOrder.css" />
+	<script src="plugins/angularjs/angular.min.js"></script>
+	<script src="js/base.js"></script>
+	<script src="js/service/userService.js"></script>
+	<script src="js/controller/userController.js"></script>
+
 </head>
 
-<body>
+<body ng-app="pinyougou" ng-controller="userController" ng-init="findUserByUserId()">
     <!-- 头部栏位 -->
     <!--页面顶部-->
 <div id="nav-bottom">
@@ -210,16 +215,16 @@ $(function(){
                                     <div class="control-group">
                                         <label for="inputName" class="control-label">昵称：</label>
                                         <div class="controls">
-                                            <input type="text" id="inputName" name="email" placeholder="昵称">
+                                            <input type="text" id="inputName" name="email" value="{{entity.username}}" placeholder="{{entity.username}}">
                                         </div>
                                     </div>
                                     <div class="control-group">
-                                        <label for="inputGender" class="control-label">性别：</label>
+                                        <label  class="control-label">性别：</label>
                                         <div class="controls">
-                                            <label data-toggle="radio" class="radio-pretty inline">
-                                            <input type="radio" name="gender" value="1"><span>男</span>
+                                            <label data-toggle="radio" class="radio-pretty inline {{entity.sex=='1'?'checked':''}}" >
+                                            <input type="radio" name="gender" value="1"  ><span >男</span>
                                         </label>
-                                            <label data-toggle="radio" class="radio-pretty inline">
+                                            <label data-toggle="radio" class="radio-pretty inline {{entity.sex=='2'?'checked':''}}">
                                             <input type="radio" name="gender" value="2"><span>女</span>
                                         </label>
                                         </div>

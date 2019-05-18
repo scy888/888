@@ -6,5 +6,13 @@ app.controller("indexController",function ($scope,loginService) {
             $scope.loginName = response.loginName;
         })
     }
+    //查询用户订单
+    $scope.findOrderByUserId=function () {
+        loginService.findOrderByUserId().success(
+            function (response) {
+                $scope.orderList=response;
+            }
+        )
+    }
 
 })

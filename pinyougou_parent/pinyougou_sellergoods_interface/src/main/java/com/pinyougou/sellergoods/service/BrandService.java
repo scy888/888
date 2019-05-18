@@ -1,8 +1,11 @@
 package com.pinyougou.sellergoods.service;
-import java.util.List;
 import com.pinyougou.pojo.TbBrand;
 
+import java.util.List;
+
 import entity.PageResult;
+
+import java.util.List;
 /**
  * 业务逻辑接口
  * @author Steven
@@ -57,5 +60,28 @@ public interface BrandService {
 	 * @return
 	 */
 	public PageResult findPage(TbBrand brand, int pageNum, int pageSize);
-	
+
+	/**
+	 * 商家品牌查询：查询+分页（区别在于商家查询只返回自己所申请过的品牌）
+	 * @param loginName 当前商家名
+	 * @return
+	 */
+	public List<TbBrand> sellerFindAll(String loginName);
+
+	/**
+	 * 商家品牌查询：查询+分页（区别在于商家查询只返回自己所申请过的品牌）
+	 * @param pageNum 当前页 码
+	 * @param pageSize 每页记录数
+	 * @return
+	 */
+	public PageResult sellerFindPage(TbBrand brand, int pageNum, int pageSize,String sellerId);
+
+
+
+	/**
+	 * 审核状态
+	 * @param ids
+	 * @param status
+	 */
+    void updateStatus(Long[] ids, String status);
 }

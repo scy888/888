@@ -17,6 +17,15 @@ public class TbSpecification implements Serializable {
      */
     @Column(name = "spec_name")
     private String specName;
+    /**
+     * 申请的商家名称
+     */
+    @Column(name = "seller_id")
+    private String sellerId;
+    /**
+     * 审核状态
+     */
+    private Integer status;
 
     /**
      * 添加getText方法，主要是为了支持前端select2加载数据
@@ -27,6 +36,22 @@ public class TbSpecification implements Serializable {
     }
 
     private static final long serialVersionUID = 1L;
+
+    public String getSellerId() {
+        return sellerId;
+    }
+
+    public void setSellerId(String sellerId) {
+        this.sellerId = sellerId;
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
 
     /**
      * 获取主键
@@ -72,6 +97,8 @@ public class TbSpecification implements Serializable {
         sb.append("Hash = ").append(hashCode());
         sb.append(", id=").append(id);
         sb.append(", specName=").append(specName);
+        sb.append(", sellerId=").append(sellerId);
+        sb.append(", status=").append(status);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();

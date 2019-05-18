@@ -1,20 +1,26 @@
 package com.pinyougou.sellergoods.service.impl;
+
+import com.alibaba.dubbo.config.annotation.Service;
+import com.github.abel533.entity.Example;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+import com.pinyougou.mapper.TbSpecificationMapper;
+import com.pinyougou.mapper.TbSpecificationOptionMapper;
+import com.pinyougou.pojo.TbSpecification;
+import com.pinyougou.pojo.TbSpecificationOption;
+import com.pinyougou.pojogroup.Specification;
+import com.pinyougou.sellergoods.service.SpecificationService;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
 import java.util.Arrays;
 import java.util.List;
 
-import com.pinyougou.mapper.TbSpecificationOptionMapper;
-import com.pinyougou.pojo.TbSpecificationOption;
-import com.pinyougou.pojogroup.Specification;
-import org.springframework.beans.factory.annotation.Autowired;
-import com.alibaba.dubbo.config.annotation.Service;
-import com.github.abel533.entity.Example;
-import com.github.pagehelper.PageInfo;
-import com.github.pagehelper.Page;
-import com.github.pagehelper.PageHelper;
-import com.pinyougou.mapper.TbSpecificationMapper;
-import com.pinyougou.pojo.TbSpecification;
-import com.pinyougou.sellergoods.service.SpecificationService;
 import entity.PageResult;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * 业务逻辑实现
@@ -142,29 +148,83 @@ public class SpecificationServiceImpl implements SpecificationService {
 		PageResult<TbSpecification> result = new PageResult<TbSpecification>();
         //设置分页条件
         PageHelper.startPage(pageNum, pageSize);
-
         //构建查询条件
         Example example = new Example(TbSpecification.class);
         Example.Criteria criteria = example.createCriteria();
-		
 		if(specification!=null){			
 						//如果字段不为空
 			if (specification.getSpecName()!=null && specification.getSpecName().length()>0) {
 				criteria.andLike("specName", "%" + specification.getSpecName() + "%");
 			}
-	
 		}
-
         //查询数据
         List<TbSpecification> list = specificationMapper.selectByExample(example);
         //保存数据列表
         result.setRows(list);
-
         //获取总记录数
         PageInfo<TbSpecification> info = new PageInfo<TbSpecification>(list);
         result.setTotal(info.getTotal());
-		
+
 		return result;
 	}
-	
+
+	//商家的查询另开了一个方法按sellerId查询，不影响运营管理商的全部查询
+	@Override
+	public List<TbSpecification> sellerFindAll(String loginName) {
+		//根据商家ID查询，区别于运营管理商的查询结果这里只返回该商家的申请规格
+		TbSpecification where = new TbSpecification();
+		where.setSellerId(loginName);
+		return specificationMapper.select(where);
+	}
+
+
+	@Override
+	public PageResult sellerFindPage(TbSpecification specification, int pageNum, int pageSize, String sellerId) {
+		PageResult<TbSpecification> result = new PageResult<TbSpecification>();
+		//设置分页条件
+		PageHelper.startPage(pageNum, pageSize);
+		//构建查询条件
+		Example example = new Example(TbSpecification.class);
+		Example.Criteria criteria = example.createCriteria();
+		if(specification!=null){
+			//如果字段不为空
+			if (specification.getSpecName()!=null && specification.getSpecName().length()>0) {
+				criteria.andLike("specName", "%" + specification.getSpecName() + "%");
+			}
+			//如果用户名不为空
+			if (sellerId !=null && sellerId !="") {
+				criteria.andEqualTo("sellerId", sellerId);
+			}
+		}
+		//查询数据
+		List<TbSpecification> list = specificationMapper.selectByExample(example);
+		//保存数据列表
+		result.setRows(list);
+		//获取总记录数
+		PageInfo<TbSpecification> info = new PageInfo<TbSpecification>(list);
+		result.setTotal(info.getTotal());
+
+		return result;
+	}
+
+	/**
+	 * 状态审核
+	 * @param ids
+	 * @param status
+	 */
+	@Override
+	public void updateStatus(Long[] ids, String status) {
+		//修改的结果
+		TbSpecification record = new TbSpecification();
+		record.setAuditStatus(status);
+		//构建修改范围
+		Example example = new Example(TbSpecification.class);
+		Example.Criteria criteria = example.createCriteria();
+		List longs = Arrays.asList(ids);
+		criteria.andIn("id", longs);
+		//开始更新
+		specificationMapper.updateByExampleSelective(record,example);
+	}
+
+
 }

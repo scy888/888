@@ -10,7 +10,7 @@ app.controller('orderController' ,function($scope,$controller,orderService){
 				$scope.list=response;
 			}			
 		);
-	}    
+	}
 	
 	//分页
 	$scope.findPage=function(page,rows){			
@@ -63,11 +63,15 @@ app.controller('orderController' ,function($scope,$controller,orderService){
 			}		
 		);				
 	}
-	
-	$scope.searchEntity={};//定义搜索对象 
-	
+
+    $scope.status = ['','未付款','已付款','未发货','已发货','交易成功','交易关闭','待评价'];
+    $scope.payType = ['','在线支付','货到付款'];
+    $scope.sourceType=['','app端','pc端','M端','微信端','手机qq端']
+
+    $scope.searchEntity={};//定义搜索对象
 	//搜索
-	$scope.search=function(page,rows){			
+	$scope.search=function(page,rows){
+
 		orderService.search(page,rows,$scope.searchEntity).success(
 			function(response){
 				$scope.list=response.rows;	
