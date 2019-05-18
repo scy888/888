@@ -59,7 +59,6 @@ public class TbOrderItem implements Serializable {
     @Column(name = "seller_id")
     private String sellerId;
 
-    private static final long serialVersionUID = 1L;
 
     /**
      * @return id
@@ -252,7 +251,6 @@ public class TbOrderItem implements Serializable {
         sb.append(", totalFee=").append(totalFee);
         sb.append(", picPath=").append(picPath);
         sb.append(", sellerId=").append(sellerId);
-        sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();
     }

@@ -6,11 +6,7 @@ import com.pinyougou.pojogroup.Order;
 import entity.PageResult;
 
 import java.util.List;
-import java.util.HashMap;
-import java.util.List;
-import com.pinyougou.pojogroup.Order;
 
-import java.util.List;
 /**
  * 业务逻辑接口
  * @author Steven
@@ -82,8 +78,9 @@ public interface OrderService {
 
 	/**查询订单和订单里的商品详情
 	 * @return
+	 * @param tbOrderIds
 	 */
-	public List<TbOrder> findOrderAndOrderItem();
+	public List<TbOrder> findOrderAndOrderItem(Long[] tbOrderIds);
 
 
 	/**
