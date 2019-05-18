@@ -1,4 +1,11 @@
-app.controller("baseController",function ($scope) {
+app.controller("baseController",function ($scope,$http) {
+
+    //获取用户信息
+    $scope.getUserInfo=function () {
+        $http.get("../login/name.do").success(function (response) {
+            $scope.loginName = response.loginName;
+        })
+    }
     //分页控件属性配置
     $scope.paginationConf = {
         //当前页

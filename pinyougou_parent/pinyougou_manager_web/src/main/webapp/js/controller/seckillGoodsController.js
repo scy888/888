@@ -5,7 +5,7 @@ app.controller('seckillGoodsController' ,function($scope,$controller,seckillGood
 	
     //读取列表数据绑定到表单中  
 	$scope.findAll=function(){
-		seckillGoodsService.findAll().success(
+		seckillGoodsService.findList().success(
 			function(response){
 				$scope.list=response;
 			}			
@@ -75,5 +75,21 @@ app.controller('seckillGoodsController' ,function($scope,$controller,seckillGood
 			}			
 		);
 	}
+
+	//秒杀商品状态
+	$scope.status=['未审核','已审核','审核未通过','关闭'];
+
+	//审核品牌
+	$scope.updateStatus=function (status) {
+		seckillGoodsService.updateStatus($scope.selectIds,status).success(function (response) {
+			alert(response.message);
+			if(response.success){
+				$scope.reloadList();
+				//清空审核列表
+				$scope.selectIds = [];
+			}
+		})
+	}
+
     
 });	

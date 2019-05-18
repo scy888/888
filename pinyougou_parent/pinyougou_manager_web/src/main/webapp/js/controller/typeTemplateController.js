@@ -122,4 +122,24 @@ app.controller('typeTemplateController' ,function($scope,$controller,typeTemplat
     $scope.deleteTableRow=function (index) {
         $scope.entity.customAttributeItems.splice(index, 1);
     }
+
+
+	//模板状态
+	$scope.status=['未审核','已审核','审核未通过','关闭'];
+
+	//审核模板
+	$scope.updateStatus=function (status) {
+		typeTemplateService.updateStatus($scope.selectIds,status).success(function (response) {
+			alert(response.message);
+			if(response.success){
+				$scope.reloadList();
+				//清空审核列表
+				$scope.selectIds = [];
+			}
+		})
+	}
+
+
+
+
 });	

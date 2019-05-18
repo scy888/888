@@ -1,8 +1,8 @@
 package com.pinyougou.sellergoods.service;
+import com.pinyougou.pojo.TbTypeTemplate;
+
 import java.util.List;
 import java.util.Map;
-
-import com.pinyougou.pojo.TbTypeTemplate;
 
 import entity.PageResult;
 /**
@@ -66,5 +66,6 @@ public interface TypeTemplateService {
 	 * @return 规格与选项列表
 	 */
 	public List<Map> findSpecList(Long id);
-	
+
+    void updateStatus(Long[] ids, String status);
 }

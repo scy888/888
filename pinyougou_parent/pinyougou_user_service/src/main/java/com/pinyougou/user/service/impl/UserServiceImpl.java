@@ -1,24 +1,29 @@
 package com.pinyougou.user.service.impl;
-import java.util.*;
-
+import com.alibaba.dubbo.config.annotation.Service;
 import com.alibaba.fastjson.JSON;
-import com.pinyougou.mapper.*;
-import com.pinyougou.pojo.*;
+import com.github.abel533.entity.Example;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+import com.pinyougou.mapper.TbItemMapper;
+import com.pinyougou.mapper.TbOrderItemMapper;
+import com.pinyougou.mapper.TbOrderMapper;
+import com.pinyougou.mapper.TbUserMapper;
+import com.pinyougou.pojo.TbItem;
+import com.pinyougou.pojo.TbOrder;
+import com.pinyougou.pojo.TbOrderItem;
+import com.pinyougou.pojo.TbUser;
 import com.pinyougou.pojogroup.Order;
 import com.pinyougou.pojogroup.OrderItem;
 import com.pinyougou.user.service.UserService;
+import entity.PageResult;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import com.alibaba.dubbo.config.annotation.Service;
-import com.github.abel533.entity.Example;
-import com.github.pagehelper.PageInfo;
-import com.github.pagehelper.PageHelper;
-import entity.PageResult;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.core.MessageCreator;
 
 import javax.jms.*;
+import java.util.*;
 
 /**
  * 业务逻辑实现
@@ -85,6 +90,7 @@ public class UserServiceImpl implements UserService {
 	 */
 	@Override
 	public void update(TbUser user){
+
 		userMapper.updateByPrimaryKeySelective(user);
 	}	
 	
@@ -243,7 +249,7 @@ public class UserServiceImpl implements UserService {
 		for (TbOrder tbOrder : orders) {
 			Order order = new Order();
 			//设置order的Tborder
-			order.setOrder(tbOrder);
+			order.setTbOrder(tbOrder);
 
 			TbOrderItem tbOrderItem = new TbOrderItem();
 			tbOrderItem.setOrderId(tbOrder.getOrderId());

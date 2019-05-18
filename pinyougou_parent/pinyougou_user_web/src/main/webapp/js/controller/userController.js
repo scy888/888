@@ -1,5 +1,5 @@
  //控制层 
-app.controller('userController' ,function($scope,$controller,userService){	
+app.controller('userController' ,function($scope,$controller,userService,uploadService){
 	
 	/*$controller('baseController',{$scope:$scope});//继承*/
 	
@@ -35,6 +35,7 @@ app.controller('userController' ,function($scope,$controller,userService){
 	$scope.save=function(){				
 		var serviceObject;//服务层对象  				
 		if($scope.entity.id!=null){//如果有ID
+			// $scope.entity.birthday.setFullYear($scope.year, $scope.month, $scope.day);
 			serviceObject=userService.update( $scope.entity ); //修改  
 		}else{
 			serviceObject=userService.add( $scope.entity  );//增加 
@@ -43,7 +44,7 @@ app.controller('userController' ,function($scope,$controller,userService){
 			function(response){
 				if(response.success){
 					//重新查询 
-		        	$scope.reloadList();//重新加载
+		        	$scope.findUserByUserId();//重新加载
 				}else{
 					alert(response.message);
 				}
@@ -119,7 +120,24 @@ app.controller('userController' ,function($scope,$controller,userService){
 				$scope.month = new Date(response.birthday).getMonth()+1;
 				$scope.day = new Date(response.birthday).getDate();
 				$scope.entity= response;
+				$scope.year = new Date(response.birthday).getFullYear();
+				$scope.month = new Date(response.birthday).getMonth()+1;
+				$scope.day = new Date(response.birthday).getDate();
 			}
 		);
 	}
+	//上传图片
+	$scope.uploadFile=function () {
+		uploadService.uploadFile().success(function (response) {
+			//如果上传成功,绑定url到表单
+			if(response.success){
+				$scope.entity.headPic=response.message;
+			}else{
+				alert(response.message);
+			}
+		}).error(function() {
+			alert("上传发生错误");
+		});
+	}
+
 });	

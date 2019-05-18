@@ -75,5 +75,22 @@ app.controller('brandController' ,function($scope,$controller,brandService){
 			}			
 		);
 	}
+
+
+	//品牌状态
+	$scope.status=['未审核','已审核','审核未通过','关闭'];
+
+	//审核品牌
+	$scope.updateStatus=function (status) {
+		brandService.updateStatus($scope.selectIds,status).success(function (response) {
+			alert(response.message);
+			if(response.success){
+				$scope.reloadList();
+				//清空审核列表
+				$scope.selectIds = [];
+			}
+		})
+	}
+
     
 });	
