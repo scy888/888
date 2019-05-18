@@ -42,8 +42,8 @@
             <div class="form-group form-inline">
                 <div class="btn-group">
                     <div>
-                        时间类型：<select ng-model="searchEntity.dateMap.timeType">
-                        <option value="byYear">年度统计</option>
+                        时间类型：<select ng-model="searchEntity.dateMap.timeType" >
+                        <option value="byYear" ng-selected="true">年度统计</option>
                         <option value="bySeason">历年季度</option>
                         <option value="byMonth">历年月份</option>
                         <option value="byDefined">自定义统计</option>
