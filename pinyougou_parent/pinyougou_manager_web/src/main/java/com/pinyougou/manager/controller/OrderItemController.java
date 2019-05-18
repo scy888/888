@@ -1,6 +1,7 @@
 package com.pinyougou.manager.controller;
 import java.util.List;
 
+import com.pinyougou.pojo.TbOrder;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -27,9 +28,15 @@ public class OrderItemController {
 	 * @return
 	 */
 	@RequestMapping("/findAll")
-	public List<TbOrderItem> findAll(){			
+	public List<TbOrderItem> findAll(){
 		return orderItemService.findAll();
 	}
+
+    /**
+     * 根据订单id查订单商品
+     * @param orderId
+     * @return
+     */
 	@RequestMapping("/findByOrderId")
 	public List<TbOrderItem> findByOrderId(String orderId){
 		return orderItemService.findByOrderId(orderId);
@@ -111,7 +118,8 @@ public class OrderItemController {
 	 */
 	@RequestMapping("/search")
 	public PageResult search(@RequestBody TbOrderItem orderItem, int page, int rows  ){
-		return orderItemService.findPage(orderItem, page, rows);		
+
+        return orderItemService.findPage(orderItem, page, rows);
 	}
 	
 }

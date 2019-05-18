@@ -119,6 +119,9 @@ public class TbOrderItem implements Serializable {
     public Long getOrderId() {
         return orderId;
     }
+    public String getOrderIdStr() {
+        return orderId+"";
+    }
 
     /**
      * 设置订单id
