@@ -117,7 +117,13 @@ app.controller('orderController', function ($scope, $controller, orderService, o
     }
 
 
+
+
     //条件展开
     $scope.openTime='展开';
     $scope.openField='展开';
+
+    //
+    $scope.propertyTypeName=['商品名','商品ID','商品类型','品牌','商家ID'];
+    $scope.timeTypeName=['年度统计','历年季度','历年月份','自定义区间'];
 });

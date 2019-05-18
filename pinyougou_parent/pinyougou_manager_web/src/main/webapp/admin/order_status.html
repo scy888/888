@@ -26,7 +26,7 @@
     <script src="../js/controller/orderController.js"></script>
 
 </head>
-<body class="hold-transition skin-red sidebar-mini" ng-app="pinyougou" ng-controller="orderController">
+<body class="hold-transition skin-red sidebar-mini" ng-app="pinyougou" ng-controller="orderController" ng-init="searchEntity.dateMap.timeType='3';searchEntity.propertyMap.propertyType='0'">
 <!-- .box-body -->
 <div class="box-header with-border">
     <h3 class="box-title">管理</h3>
@@ -42,25 +42,25 @@
             <div class="form-group form-inline">
                 <div class="btn-group">
                     <div>
-                        时间类型：<select ng-model="searchEntity.dateMap.timeType" >
-                        <option value="byYear" ng-selected="true">年度统计</option>
-                        <option value="bySeason">历年季度</option>
-                        <option value="byMonth">历年月份</option>
-                        <option value="byDefined">自定义统计</option>
+                        时间类型：<select ng-model="searchEntity.dateMap.timeType">
+                        <option value="0">年度统计</option>
+                        <option value="1">历年季度</option>
+                        <option value="2">历年月份</option>
+                        <option value="3">自定义区间</option>
                     </select>
                     </div>
                     <br>
-                    <div ng-if="searchEntity.dateMap.timeType=='byYear'">
-                        年度统计：<select ng-model="searchEntity.dateMap.byYear">
-                        <option value="">---历年---</option>
-                        <option value="2016">2016</option>
-                        <option value="2017">2017</option>
-                        <option value="2018">2018</option>
-                        <option value="2019">2019</option>
-                    </select>
+                    <div ng-if="searchEntity.dateMap.timeType=='0'">
+                        年度统计：
+                        <select ng-model="searchEntity.dateMap.byYear">
+                            <option value="">---历年---</option>
+                            <option value="2016">2016</option>
+                            <option value="2017">2017</option>
+                            <option value="2018">2018</option>
+                            <option value="2019">2019</option>
+                        </select>
                     </div>
-                    <br>
-                    <div ng-if="searchEntity.dateMap.timeType=='bySeason'">
+                    <div ng-if="searchEntity.dateMap.timeType=='1'">
                         季度：<select ng-model="searchEntity.dateMap.bySeason">
                         <!--1:app端，2：pc端，3：M端，4：微信端，5：手机qq端-->
                         <option value="">---季度---</option>
@@ -70,7 +70,7 @@
                         <option value="4">4</option>
                     </select>
                     </div>
-                    <div ng-if="searchEntity.dateMap.timeType=='byMonth'">
+                    <div ng-if="searchEntity.dateMap.timeType=='2'">
                         月份：<select ng-model="searchEntity.dateMap.byMonth">
                         <!--1:app端，2：pc端，3：M端，4：微信端，5：手机qq端-->
                         <option value="">---月份---</option>
@@ -88,69 +88,58 @@
                         <option value="12">12月</option>
                     </select>
                     </div>
-                    <div ng-if="searchEntity.dateMap.timeType=='byDefined'">
+                    <div ng-if="searchEntity.dateMap.timeType=='3'">
                         自定义统计: <input ng-model="searchEntity.dateMap.paymentTime.start" type="date">至<input
                             ng-model="searchEntity.dateMap.paymentTime.end" type="date">
                     </div>
                 </div>
             </div>
         </div>
-        <div class="pull-right">
+        <div class="pull-left" style="margin-left: 20px">
             <div class="form-group form-inline">
                 <div class="btn-group">
                     <div>
-                        属性类型：<select ng-model="searchEntity.propertyMap.propertyType">
+                        统计类型：<select ng-model="searchEntity.propertyMap.propertyType">
                         <option value="">---请选择---</option>
-                        <option value="byType">商品类型</option>
-                        <option value="byName">商品名</option>
-                        <option value="byBrand">品牌</option>
-                        <option value="bySeller">商家</option>
+                        <option value="0">商品名</option>
+                        <option value="1">商品ID</option>
+                        <option value="2">商品类型</option>
+                        <option value="3">品牌</option>
+                        <option value="4">商家ID</option>
                     </select>
-                    </div>
-                    <br>
-                    <div ng-if="searchEntity.propertyMap.propertyType=='byType'">
-                        商品类型：<select ng-model="searchEntity.propertyMap.contentCategory">
-                        <option value="">---请选择---</option>
-                        <div ng-repeat="entity in ContentCategoryList">
-                            <option value="{{entity.contentCategory}}">{{entity.contentCategory}}</option>
-                        </div>
-                    </select>
-                    </div>
-                    <div ng-if="searchEntity.dateMap.timeType=='bySeason'">
-                        季度：<select ng-model="searchEntity.dateMap.bySeason">
-                        <!--1:app端，2：pc端，3：M端，4：微信端，5：手机qq端-->
-                        <option value="">---季度---</option>
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                        <option value="3">3</option>
-                        <option value="4">4</option>
-                    </select>
-                    </div>
-                    <div ng-if="searchEntity.dateMap.timeType=='byMonth'">
-                        月份：<select ng-model="searchEntity.dateMap.byMonth">
-                        <!--1:app端，2：pc端，3：M端，4：微信端，5：手机qq端-->
-                        <option value="">---月份---</option>
-                        <option value="1">1月</option>
-                        <option value="2">2月</option>
-                        <option value="3">3月</option>
-                        <option value="4">4月</option>
-                        <option value="5">5月</option>
-                        <option value="6">6月</option>
-                        <option value="7">7月</option>
-                        <option value="8">8月</option>
-                        <option value="9">9月</option>
-                        <option value="10">10月</option>
-                        <option value="11">11月</option>
-                        <option value="12">12月</option>
-                    </select>
-                    </div>
-                    <div ng-if="searchEntity.dateMap.timeType=='byDefined'">
-                        自定义统计: <input ng-model="searchEntity.dateMap.paymentTime.start" type="date">至<input
-                            ng-model="searchEntity.dateMap.paymentTime.end" type="date">
                     </div>
                 </div>
             </div>
+            <div class="form-group form-inline">
+                <div class="btn-group">
+                    <div ng-if="searchEntity.propertyMap.propertyType=='0'">
+                        商品名：<input type="text" ng-model="searchEntity.propertyMap.byGoodsName" placeholder="按商品名统计">
+                    </div>
+                    <div ng-if="searchEntity.propertyMap.propertyType=='1'">
+                        商品ID：<input type="text" ng-model="searchEntity.propertyMap.byGoodsId" placeholder="按商品ID统计">
+                    </div>
+                    <div ng-if="searchEntity.propertyMap.propertyType=='2'">
+                        商品类型：<input type="text" ng-model="searchEntity.propertyMap.byGoodsType" placeholder="按商品类型统计">
+                    </div>
+                    <div ng-if="searchEntity.propertyMap.propertyType=='3'">
+                        品牌：<input type="text" ng-model="searchEntity.propertyMap.byBrandName" placeholder="按品牌统计">
+                    </div>
+                    <div ng-if="searchEntity.propertyMap.propertyType=='4'">
+
+                        商家ID：<input type="text" ng-model="searchEntity.propertyMap.bySellerId" placeholder="按商家ID统计">
+                    </div>
+
+
+
+
+                </div>
+                <button class="btn btn-default" ng-click="reloadList()">查询</button><font size="2" color="red">*字段可填多项,id用半角逗号,隔开</font>
+                <!--<button class="btn btn-default" ng-click="outPutAsXlsx(1)">导出</button>-->
+                <!--<button class="btn btn-default" ng-click="outPutAsXlsx(0)">导出全部</button>-->
+            </div>
+
         </div>
+
         <!--工具栏/-->
 
         <!--数据列表-->
@@ -160,9 +149,15 @@
                 <th class="" style="padding-right:0px">
                     <input id="selall" type="checkbox" class="icheckbox_square-blue">
                 </th>
-                <th class="sorting"></th>
-                <th class="sorting">商品id</th>
-                <th class="sorting">SPU_ID</th>
+                <th class="sorting">统计类型</th>
+                <th class="sorting">{{propertyTypeName[searchEntity.propertyMap.propertyType]}}</th>
+                <div ng-if="{{searchEntity.dateMap.timeType}}==3">
+                    <th class="sorting">开始时间</th>
+                    <th class="sorting">截至时间</th>
+                </div>
+                <div ng-if="{{searchEntity.dateMap.timeType}}!=3">
+                    <th class="sorting">{{timeTypeName[searchEntity.dateMap.timeType]}}</th>
+                </div>
                 <th class="sorting">订单id</th>
                 <th class="sorting">商品标题</th>
                 <th class="sorting">商品单价</th>
@@ -177,8 +172,9 @@
             <tbody>
             <tr ng-repeat="entity in list">
                 <td><input type="checkbox" ng-click="updateSelection($event,entity.id)"></td>
-                <td>{{entity.id}}</td>
+                <td>按{{propertyTypeName[searchEntity.propertyMap.propertyType]}}统计</td>
                 <td>{{entity.itemId}}</td>
+
                 <td>{{entity.goodsId}}</td>
                 <td>{{entity.orderId}}</td>
                 <td>{{entity.title}}</td>
