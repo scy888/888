@@ -29,6 +29,10 @@ public class BrandController {
 	 */
 	@RequestMapping("/findAll")
 	public List<TbBrand> sellerFindAll(String loginName){
+		//前端初始化传值传不过来，在这直接取值覆盖掉
+		LoginController loginController = new LoginController();
+		loginName =(String) loginController.name().get("loginName");
+
 		return brandService.sellerFindAll(loginName);
 	}
 	
@@ -67,6 +71,8 @@ public class BrandController {
 	@RequestMapping("/update")
 	public Result update(@RequestBody TbBrand brand){
 		try {
+			//一旦修改，审核状态变更回未审核
+			brand.setStatus(0);
 			brandService.update(brand);
 			return new Result(true, "修改成功");
 		} catch (Exception e) {

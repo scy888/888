@@ -5,6 +5,7 @@ app.controller('specificationController' ,function($scope,$controller,specificat
 	
     //读取列表数据绑定到表单中  
 	$scope.findAll=function(){
+        $scope.getUserInfo();
 		specificationService.findAll($scope.loginName).success(
 			function(response){
 				$scope.list=response;
@@ -106,7 +107,7 @@ app.controller('specificationController' ,function($scope,$controller,specificat
         $scope.entity.specificationOptionList.splice(index, 1);
     }
 
-    //品牌的审核状态
+    //规格的审核状态
     $scope.specStatus=['未审核','已通过','驳回'];
 
 //end node.

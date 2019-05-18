@@ -25,12 +25,16 @@ public class TypeTemplateController {
 	private TypeTemplateService typeTemplateService;
 	
 	/**
-	 * 返回全部列表
+	 * 返回该商家全部列表——替换了原返回全部列表的方法，反正这个模块也调不到
 	 * @return
 	 */
 	@RequestMapping("/findAll")
-	public List<TbTypeTemplate> findAll(){
-		return typeTemplateService.findAll();
+	public List<TbTypeTemplate> findAll(String loginName){
+		//前端初始化传值传不过来，在这直接取值覆盖掉
+		LoginController loginController = new LoginController();
+		loginName =(String) loginController.name().get("loginName");
+
+		return typeTemplateService.sellerFindAll(loginName);
 	}
 	
 	
@@ -67,6 +71,8 @@ public class TypeTemplateController {
 	@RequestMapping("/update")
 	public Result update(@RequestBody TbTypeTemplate typeTemplate){
 		try {
+			//一旦修改，审核状态变更回未审核
+			typeTemplate.setStatus(0);
 			typeTemplateService.update(typeTemplate);
 			return new Result(true, "修改成功");
 		} catch (Exception e) {
@@ -116,6 +122,31 @@ public class TypeTemplateController {
 	@RequestMapping("findSpecList")
 	public List<Map> findSpecList(Long id){
 		return typeTemplateService.findSpecList(id);
+	}
+
+	/**zeke
+	 * 商家品牌查询：查询+分页（区别在于商家查询只返回自己所申请过的品牌）
+	 */
+	@RequestMapping("/sellerSearch")
+	public PageResult sellerSearch(@RequestBody TbTypeTemplate typeTemplate, int page, int rows, String sellerId) {
+		return typeTemplateService.sellerFindPage(typeTemplate, page, rows, sellerId);
+	}
+	/**
+	 * 商家品牌增加:（区别在于商家添加需增加商家及状态信息）
+	 */
+	@RequestMapping("/sellerAdd")
+	public Result sellerAdd(@RequestBody TbTypeTemplate typeTemplate, String loginName) {
+		try {
+			//添加加商家及状态信息
+			typeTemplate.setSellerId(loginName);
+			typeTemplate.setStatus(0);
+
+			typeTemplateService.add(typeTemplate);
+			return new Result(true, "增加成功");
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new Result(false, "增加失败");
+		}
 	}
 	
 }

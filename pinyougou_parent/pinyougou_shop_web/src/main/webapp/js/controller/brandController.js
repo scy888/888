@@ -5,7 +5,8 @@ app.controller('brandController' ,function($scope,$controller,brandService){
 
     //读取列表数据绑定到表单中  
 	$scope.findAll=function(){
-
+        $scope.getUserInfo();
+       alert("111--"+$scope.loginName);
 		brandService.findAll($scope.loginName).success(
 			function(response){
 				$scope.list=response;
@@ -36,6 +37,7 @@ app.controller('brandController' ,function($scope,$controller,brandService){
 	$scope.save=function(){
 		var serviceObject;//服务层对象  				
 		if($scope.entity.id!=null){//如果有ID
+
 			serviceObject=brandService.update( $scope.entity); //修改
 		}else{
             var flag = isExist();
@@ -84,7 +86,7 @@ app.controller('brandController' ,function($scope,$controller,brandService){
 
     //商家自家的品牌搜索
     $scope.search=function(page,rows){
-
+        alert("222--"+$scope.loginName);
         brandService.search($scope.loginName,page,rows,$scope.searchEntity).success(
             function(response){
                 $scope.list=response.rows;
