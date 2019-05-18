@@ -99,9 +99,6 @@
                 <th class="text-center">操作</th>
             </tr>
             </thead>
-            {{selectIds}}
-            {{selectAuditStatus}}
-            {{selectIsMarketable}}
             <tbody>
             <tr ng-repeat="entity in list">
                 <td><input type="checkbox" ng-click="updateSelection($event,entity.id);checkSelectStatus($event,entity.auditStatus,entity.isMarketable)"></td>
@@ -112,7 +109,7 @@
                 <td>{{itemCatList[entity.category2Id]}}</td>
                 <td>{{itemCatList[entity.category3Id]}}</td>
                 <td>{{status[entity.auditStatus]}}</td>
-                <td>{{marketableStatus[entity.isMarketable]}}</td>
+                <td style="color: {{entity.isMarketable=='0'?'red':''}}">{{marketableStatus[entity.isMarketable]}}</td>
                 <td class="text-center">
                     <a type="button" href="goods_edit.html#?id={{entity.id}}" class="btn bg-olive btn-xs">修改</a>
                 </td>

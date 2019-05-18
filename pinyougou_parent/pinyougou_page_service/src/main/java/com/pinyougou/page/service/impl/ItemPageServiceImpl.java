@@ -79,7 +79,7 @@ public class ItemPageServiceImpl implements ItemPageService {
                 List<TbItem> itemList = itemMapper.selectByExample(example);
                 map.put("itemList", itemList);
                 //输出对象
-                String parentPath = new File("").getCanonicalPath().replace("\\", "/").split("pinyougou_page_service")[0];//读取项目路径并且转义（"\"替换为"/"）,去除多余"\pinyougou_page_service"后缀
+                String parentPath = new File("").getCanonicalPath().replace("\\", "/").split("pinyougou_page_service")[0];//读取项目路径并且转义（"\"替换为"/"）,去除多余"pinyougou_page_service"后缀
                 Writer out = new OutputStreamWriter(new FileOutputStream(parentPath + PAGE_SERVICE_DIR + goodsId + ".html"), "UTF-8");
                 //保存文档
                 template.process(map,out);

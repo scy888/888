@@ -32,7 +32,7 @@ public class PageDeleteListener implements MessageListener {
 
             //删除商品详情页
             for (Long id : ids) {
-                String parentPath = new File("").getCanonicalPath().replace("\\", "/").split("pinyougou_page_service")[0];//读取项目路径并且转义（"\"替换为"/"）,去除多余"\pinyougou_page_service"后缀
+                String parentPath = new File("").getCanonicalPath().replace("\\", "/").split("pinyougou_page_service")[0];//读取项目路径并且转义（"\"替换为"/"）,去除多余"pinyougou_page_service"后缀
                 File beDelete = new File(parentPath + PAGE_SERVICE_DIR + id + ".html");
                 if(beDelete.exists()){
                     //删除文件
