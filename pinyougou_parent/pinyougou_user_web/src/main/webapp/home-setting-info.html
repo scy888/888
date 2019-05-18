@@ -13,6 +13,8 @@
 	<script src="plugins/angularjs/angular.min.js"></script>
 	<script src="js/base.js"></script>
 	<script src="js/service/userService.js"></script>
+	<script type="text/javascript" src="js/service/uploadService.js">  </script>
+	<script src="js/controller/baseController.js"></script>
 	<script src="js/controller/userController.js"></script>
 
 </head>
@@ -161,6 +163,7 @@ $(function(){
                 });
             });
         </script>
+
 </body>
     <!--header-->
     <div id="account">
@@ -215,7 +218,7 @@ $(function(){
                                     <div class="control-group">
                                         <label for="inputName" class="control-label">昵称：</label>
                                         <div class="controls">
-                                            <input type="text" id="inputName" name="email" value="{{entity.username}}" placeholder="{{entity.username}}">
+                                            <input type="text" id="inputName" name="email" value="{{entity.nickName}}"  ng-model="entity.nickName" placeholder="{{entity.nickName}}">
                                         </div>
                                     </div>
                                     <div class="control-group">
@@ -232,9 +235,9 @@ $(function(){
                                     <div class="control-group">
                                         <label for="inputPassword" class="control-label">生日：</label>
                                         <div class="controls">
-                                            <select id="select_year2" rel="1990"></select>年
-                                            <select id="select_month2" rel="4"></select>月
-                                            <select id="select_day2" rel="3"></select>日
+                                            <select id="select_year2" rel="1990"  ng-model="year"></select>年
+                                            <select id="select_month2" rel="4" ng-model="month"></select>月
+                                            <select id="select_day2" rel="3" ng-model="day"></select>日
                                         </div>
                                     </div>
 
@@ -271,7 +274,7 @@ $(function(){
                                     <div class="control-group">
                                         <label for="sanwei" class="control-label"></label>
                                         <div class="controls">
-                                            <button type="submit" class="sui-btn btn-primary">立即注册</button>
+                                            <button type="submit" class="sui-btn btn-primary" ng-click="save()">立即注册</button>
                                         </div>
                                     </div>
                                 </form>
@@ -282,8 +285,14 @@ $(function(){
                                     <p>当前头像：</p>
                                     <div class="upload">
                                         <img id="imgShow_WU_FILE_0" width="100" height="100" src="img/_/photo_icon.png" alt="">
-                                        <input type="file" id="up_img_WU_FILE_0" />
-                                    </div>
+                                        <!--<input type="file" id="up_img_WU_FILE_0" />-->
+										<!--上传的uploadService.js里取得是id为file的数据,需要需要把id改成"file"-->
+										<input type="file" id="file" />
+										<button class="btn btn-primary" type="button" ng-click="uploadFile()">
+											上传
+										</button>
+										<img  src="{{entity.headPic}}" width="200px" height="200px">
+									</div>
 
                                 </div>
                             </div>
@@ -427,7 +436,10 @@ $(function(){
 	</div>
 </div>
 <!--页面底部END-->
-
+<script>
+	// $("#select_year2 option[value='" + 1999 + "']").attr("selected", true);
+	$("#select_year2 option[value='1898']").prop("selected", 'selected')
+</script>
 undefined
 
 </html>
