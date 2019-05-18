@@ -282,23 +282,62 @@ app.controller('goodsController' ,function($scope,$controller,$location,goodsSer
 			}
 		}
         return false;
-    }
+    };
 
+    //商品上下架状态数组
+    $scope.marketableStatus=['已下架', '已上架'];
     /**
      * 商品上下架
-     * @param marketStatus
+     * @param marketStatus 上下架状态
      */
-    //商品上下架状态
-    $scope.marketableStatus=['下架', '上架'];
     $scope.updateMarketStatus=function (marketStatus) {
+        //筛选审核通过的商品
+        for (i=0; i<$scope.selectAuditStatus.length; i++){
+            if ($scope.selectAuditStatus[i] != "1"){
+                alert("您的选择中含有未审核通过的产品，请重新选择");
+                return;
+            }
+        }
+        //筛选是否同时勾选上架和未上架的商品
+        for (i=0; i<$scope.selectIsMarketable.length; i++){
+            if ($scope.selectIsMarketable[i] != $scope.selectIsMarketable[0]){
+                alert("您的选择中同时含有上架和未上架的商品，请重新选择");
+                return;
+            }
+        }
+        //进行商品的上下架
         goodsService.updateMarketStatus($scope.selectIds, marketStatus).success(function (response) {
             alert(response.message);
             if (response.success){
                 $scope.reloadList();
                 //清空审核列表
                 $scope.selectIds = [];
+                $scope.selectAuditStatus = [];
+                $scope.selectIsMarketable = [];
             }
         })
-    }
+    };
+
+    //选中审核状态列表
+    $scope.selectAuditStatus = [];
+    //选中上下架状态列表
+    $scope.selectIsMarketable = [];
+    /**
+     * //搜集商品的审核状态和上下架状态数组
+     * @param $event
+     * @param auditStatus 审核状态
+     * @param isMarketable 上下架状态
+     */
+    $scope.checkSelectStatus=function ($event, auditStatus, isMarketable) {
+        //如果是被选中,则增加到数组
+        if ($event.target.checked) {
+            $scope.selectAuditStatus.push(auditStatus);
+            $scope.selectIsMarketable.push(isMarketable);
+        } else {
+            //如果没被选中则删除数据
+            $scope.selectAuditStatus.splice( $scope.selectAuditStatus.indexOf(auditStatus), 1);
+            $scope.selectIsMarketable.splice( $scope.selectIsMarketable.indexOf(isMarketable), 1);
+        }
+    };
 
 });

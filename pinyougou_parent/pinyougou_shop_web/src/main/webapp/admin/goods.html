@@ -63,10 +63,17 @@
         </div>
         <div class="box-tools pull-right">
             <div class="has-feedback">
-                状态：<select ng-model="searchEntity.isMarketable">
+                上架状态：<select ng-model="searchEntity.isMarketable">
                 <option ng-model="isMarketable" value="">全部</option>
                 <option ng-model="isMarketable" value="0">已下架</option>
                 <option ng-model="isMarketable" value="1">已上架</option>
+            </select>
+                审核状态：<select ng-model="searchEntity.auditStatus">
+                <option ng-model="auditStatus" value="">全部</option>
+                <option ng-model="auditStatus" value="0">未审核</option>
+                <option ng-model="auditStatus" value="1">已审核</option>
+                <option ng-model="auditStatus" value="2">审核未通过</option>
+                <option ng-model="auditStatus" value="3">关闭</option>
             </select>
                 商品名称：<input ng-model="searchEntity.goodsName">
                 <button class="btn btn-default" ng-click="reloadList()">查询</button>
@@ -92,9 +99,12 @@
                 <th class="text-center">操作</th>
             </tr>
             </thead>
+            {{selectIds}}
+            {{selectAuditStatus}}
+            {{selectIsMarketable}}
             <tbody>
             <tr ng-repeat="entity in list">
-                <td><input type="checkbox" ng-click="updateSelection($event,entity.id)"></td>
+                <td><input type="checkbox" ng-click="updateSelection($event,entity.id);checkSelectStatus($event,entity.auditStatus,entity.isMarketable)"></td>
                 <td>{{entity.id}}</td>
                 <td>{{entity.goodsName}}</td>
                 <td>{{entity.price}}</td>

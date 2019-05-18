@@ -11,6 +11,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.solr.core.SolrTemplate;
 import org.springframework.data.solr.core.query.*;
 import org.springframework.data.solr.core.query.result.*;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,7 +24,8 @@ import java.util.Map;
  * @description com.pinyougou.search.service.impl
  * @date 2019-4-20
  */
-@Service
+@Service(timeout = 5000, interfaceClass = ItemSearchService.class)
+@Transactional
 public class ItemSearchServiceImpl implements ItemSearchService {
 
     @Autowired

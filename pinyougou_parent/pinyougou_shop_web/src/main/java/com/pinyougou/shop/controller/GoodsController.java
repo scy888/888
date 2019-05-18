@@ -155,56 +155,51 @@ public class GoodsController {
 	@RequestMapping("updateMarketStatus")
 	public Result updateMarketStatus(Long[] ids, String marketStatus){
 		try {
-			for (Long id : ids) {
-				String auditStatus = goodsService.findOne(id).getGoods().getAuditStatus();
-				if ("1".equals(auditStatus)) {
-					//上下架
-					goodsService.updateMarketStatus(ids, marketStatus);
-					//查询所有启用的商品sku列表
-					List<TbItem> itemList = goodsService.findItemListByGoodsIdsAndStatus(ids, "1");
-					//上架
-					if ("1".equals(marketStatus)){
-						//发送消息导入索引库
-						String jsonItem = JSON.toJSONString(itemList);
-						jmsTemplate.send(queueSolrDestination, new MessageCreator() {
-							@Override
-							public Message createMessage(Session session) throws JMSException {
-								return session.createTextMessage(jsonItem);
-							}
-						});
-						//发送消息生成页面
-						jmsTemplate.send(topicPageDestination, new MessageCreator() {
-							@Override
-							public Message createMessage(Session session) throws JMSException {
-								return session.createObjectMessage(ids);
-							}
-						});
-						return new Result(true, "商品上架成功");
+			//上下架
+			goodsService.updateMarketStatus(ids, marketStatus);
+			//查询所有启用的商品sku列表
+			List<TbItem> itemList = goodsService.findItemListByGoodsIdsAndStatus(ids, "1");
+			//上架
+			if ("1".equals(marketStatus)){
+				//发送消息导入索引库
+				String jsonItem = JSON.toJSONString(itemList);
+				jmsTemplate.send(queueSolrDestination, new MessageCreator() {
+					@Override
+					public Message createMessage(Session session) throws JMSException {
+						return session.createTextMessage(jsonItem);
 					}
-					//下架
-					if ("0".equals(marketStatus)){
-						//发送消息删除页面
-						jmsTemplate.send(topicPageDeleteDestination, new MessageCreator() {
-							@Override
-							public Message createMessage(Session session) throws JMSException {
-								return session.createObjectMessage(ids);
-							}
-						});
-						//发送消息删除索引库
-						jmsTemplate.send(queueSolrDeleteDestination, new MessageCreator() {
-							@Override
-							public Message createMessage(Session session) throws JMSException {
-								return session.createObjectMessage(ids);
-							}
-						});
+				});
+				//发送消息生成页面
+				jmsTemplate.send(topicPageDestination, new MessageCreator() {
+					@Override
+					public Message createMessage(Session session) throws JMSException {
+						return session.createObjectMessage(ids);
 					}
-					return new Result(true, "商品下架成功");
-				}
-				return new Result(false, "商品未审核通过");
+				});
+				return new Result(true, "商品上架成功");
 			}
+			//下架
+			if ("0".equals(marketStatus)){
+				//发送消息删除页面
+				jmsTemplate.send(topicPageDeleteDestination, new MessageCreator() {
+					@Override
+					public Message createMessage(Session session) throws JMSException {
+						return session.createObjectMessage(ids);
+					}
+				});
+				//发送消息删除索引库
+				jmsTemplate.send(queueSolrDeleteDestination, new MessageCreator() {
+					@Override
+					public Message createMessage(Session session) throws JMSException {
+						return session.createObjectMessage(ids);
+					}
+				});
+			}
+			return new Result(true, "商品下架成功");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return new Result(false, "上下架发生错误");
 	}
+
 }

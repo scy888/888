@@ -15,6 +15,7 @@ import freemarker.template.Configuration;
 import freemarker.template.Template;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer;
 
 import java.io.*;
@@ -28,7 +29,8 @@ import java.util.Map;
  * @description com.pinyougou.page.service.impl
  * @date 2019-4-25
  */
-@Service
+@Service(timeout = 5000, interfaceClass = ItemPageService.class)
+@Transactional
 public class ItemPageServiceImpl implements ItemPageService {
     @Autowired
     private TbGoodsMapper goodsMapper;
