@@ -36,6 +36,7 @@ app.controller('brandController' ,function($scope,$controller,brandService){
 	$scope.save=function(){
 		var serviceObject;//服务层对象  				
 		if($scope.entity.id!=null){//如果有ID
+
 			serviceObject=brandService.update( $scope.entity); //修改
 		}else{
             var flag = isExist();
