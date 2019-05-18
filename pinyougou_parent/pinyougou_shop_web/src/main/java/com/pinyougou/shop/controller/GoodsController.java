@@ -162,6 +162,7 @@ public class GoodsController {
 					goodsService.updateMarketStatus(ids, marketStatus);
 					//查询所有启用的商品sku列表
 					List<TbItem> itemList = goodsService.findItemListByGoodsIdsAndStatus(ids, "1");
+					//上架
 					if ("1".equals(marketStatus)){
 						//发送消息导入索引库
 						String jsonItem = JSON.toJSONString(itemList);
@@ -203,7 +204,6 @@ public class GoodsController {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			return new Result(false, "上下架发生错误");
 		}
 		return new Result(false, "上下架发生错误");
 	}
