@@ -115,6 +115,9 @@ app.controller('userController' ,function($scope,$controller,userService){
 	$scope.findUserByUserId=function(){
 		userService.findUserByUserId().success(
 			function(response){
+				$scope.year = new Date(response.birthday).getFullYear();
+				$scope.month = new Date(response.birthday).getMonth()+1;
+				$scope.day = new Date(response.birthday).getDate();
 				$scope.entity= response;
 			}
 		);
