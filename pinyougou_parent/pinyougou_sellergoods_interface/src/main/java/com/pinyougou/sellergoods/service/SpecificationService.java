@@ -2,9 +2,6 @@ package com.pinyougou.sellergoods.service;
 
 import com.pinyougou.pojo.TbSpecification;
 import com.pinyougou.pojogroup.Specification;
-
-import java.util.List;
-
 import entity.PageResult;
 
 import java.util.List;
@@ -63,7 +60,7 @@ public interface SpecificationService {
 	 */
 	public PageResult findPage(TbSpecification specification, int pageNum, int pageSize);
 
-    void updateStatus(Long[] ids, String status);
+    void updateStatus(Long[] ids, Integer status);
 
 	/**
 	 * 商家规格查询：查询+分页（区别在于商家查询只返回自己所申请过的规格）

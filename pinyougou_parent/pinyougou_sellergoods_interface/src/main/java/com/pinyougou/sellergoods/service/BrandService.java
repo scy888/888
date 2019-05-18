@@ -1,8 +1,5 @@
 package com.pinyougou.sellergoods.service;
 import com.pinyougou.pojo.TbBrand;
-
-import java.util.List;
-
 import entity.PageResult;
 
 import java.util.List;
@@ -83,5 +80,5 @@ public interface BrandService {
 	 * @param ids
 	 * @param status
 	 */
-    void updateStatus(Long[] ids, String status);
+    void updateStatus(Long[] ids, Integer status);
 }
