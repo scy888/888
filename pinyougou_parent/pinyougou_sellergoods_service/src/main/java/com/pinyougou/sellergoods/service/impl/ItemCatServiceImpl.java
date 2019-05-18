@@ -7,14 +7,12 @@ import com.github.pagehelper.PageInfo;
 import com.pinyougou.mapper.TbItemCatMapper;
 import com.pinyougou.pojo.TbItemCat;
 import com.pinyougou.sellergoods.service.ItemCatService;
-
+import entity.PageResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import entity.PageResult;
 
 /**
  * 业务逻辑实现
@@ -173,10 +171,10 @@ public class ItemCatServiceImpl implements ItemCatService {
 	 * @param status
 	 */
 	@Override
-	public void updateStatus(Long[] ids, String status) {
+	public void updateStatus(Long[] ids, Integer status) {
 		//修改的结果
 		TbItemCat record = new TbItemCat();
-		record.setAuditStatus(status);
+		record.setStatus(status);
 		//构建修改范围
 		Example example = new Example(TbItemCat.class);
 		Example.Criteria criteria = example.createCriteria();

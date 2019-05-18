@@ -194,10 +194,10 @@ public class TypeTemplateServiceImpl implements TypeTemplateService {
 	 * @param status
 	 */
 	@Override
-	public void updateStatus(Long[] ids, String status) {
+	public void updateStatus(Long[] ids, Integer status) {
 		//修改的结果
 		TbTypeTemplate record = new TbTypeTemplate();
-		record.setAuditStatus(status);
+		record.setStatus(status);
 		//构建修改范围
 		Example example = new Example(TbTypeTemplate.class);
 		Example.Criteria criteria = example.createCriteria();
