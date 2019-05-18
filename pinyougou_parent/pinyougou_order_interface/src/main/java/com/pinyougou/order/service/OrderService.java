@@ -78,9 +78,9 @@ public interface OrderService {
 
 	/**查询订单和订单里的商品详情
 	 * @return
-	 * @param tbOrderIds
+	 * @param border
 	 */
-	public List<TbOrder> findOrderAndOrderItem(Long[] tbOrderIds);
+	public List<TbOrder> findOrderAndOrderItem(Order border);
 
 
 	/**

@@ -1,14 +1,17 @@
 package com.pinyougou.manager.controller;
 
 import com.alibaba.dubbo.config.annotation.Reference;
+import com.alibaba.fastjson.JSON;
 import com.pinyougou.order.service.OrderService;
 import com.pinyougou.pojo.TbOrder;
 import com.pinyougou.pojo.TbOrderItem;
+import com.pinyougou.pojogroup.Order;
 import com.pinyougou.utils.FileUtils;
 import entity.Result;
 import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.xssf.usermodel.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -17,7 +20,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/userOrder")
@@ -30,8 +35,13 @@ public class UserOrderController {
     private HttpServletRequest request;
 
     @RequestMapping("/findOrderAndOrderItem")
-    public Result findOrderAndOrderItem(Long[] tbOrderIds) {
-        List<TbOrder> orderList = orderService.findOrderAndOrderItem(tbOrderIds);
+    public Result findOrderAndOrderItem() {
+        String OrderStr = request.getParameter("Order");
+
+        Order border = JSON.parseObject(OrderStr, Order.class);
+
+
+        List<TbOrder> orderList = orderService.findOrderAndOrderItem(border);
         String sheetName = "订单和订单详情";
         int columnNumber = 35;//列数
         int[] columnWidth = {20, 10, 10, 10, 10, 30, 30, 10, 10, 10,

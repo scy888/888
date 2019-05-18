@@ -30,7 +30,12 @@ app.service('orderService',function($http){
 		return $http.post('../order/search.do?page='+page+"&rows="+rows,searchEntity);
 	}
 	//导出为XLSX
-	this.outPutAsXlsx=function (tbOrderIds) {
-		return $http.get('../userOrder/findOrderAndOrderItem.do?tbOrderIds='+tbOrderIds);
+	this.outPutAsXlsx=function (order) {
+		alert(66)
+		return $http.post({
+            url:'../userOrder/findOrderAndOrderItem.do',
+            data:order,
+            responseType: 'arraybuffer'
+        })
     }
 });

@@ -77,7 +77,6 @@ app.controller('orderController', function ($scope, $controller, orderService, o
     $scope.searchEntity = {};//定义搜索对象
     //搜索
     $scope.search = function (page, rows) {
-
         orderService.search(page, rows, $scope.searchEntity).success(
             function (response) {
                 $scope.list = response.rows;
@@ -86,21 +85,51 @@ app.controller('orderController', function ($scope, $controller, orderService, o
             }
         );
     }
-    $scope.tbOrderIds = [];
     $scope.outPutAsXlsx = function (putAll) {
         if(putAll==1){
-            for (var i = 0; i < $scope.list.length; i++) {
-                $scope.tbOrderIds[i] = $scope.list[i].orderIdStr;
-            }
-        }else {
-            $scope.tbOrderIds=null;
-        }
-        orderService.outPutAsXlsx($scope.tbOrderIds).success(function (response) {
-            if (!response.success){
-                alert(response.message)
-            }
-        });
+            var order = JSON.stringify($scope.searchEntity).replace(/(\")/g,'\'');
 
+        }else {
+            var order = null;
+        }
+        alert(order)
+        var options={
+        url:'../userOrder/findOrderAndOrderItem.do',
+        data:{Order:order},
+        method:'post'
+        };
+
+
+        DownLoadFile(options)
+        // $http({
+        //     url: 'your/webservice',
+        //     method: "POST",
+        //     data: json, //this is your json data string
+        //     headers: {
+        //         'Content-type': 'application/json'
+        //     },
+        //     responseType: 'arraybuffer'
+        // }).success(function (data, status, headers, config) {
+        //     var blob = new Blob([data], {type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"});
+        //     var objectUrl = URL.createObjectURL(blob);
+        //     window.open(objectUrl);
+        // }).error(function (data, status, headers, config) {
+        //     //upload failed
+        // });
+
+    }
+    DownLoadFile = function (options) {
+        var config = $.extend(true, { method: 'post' }, options);
+        var $iframe = $('<iframe id="down-file-iframe" />');
+        var $form = $('<form target="down-file-iframe" method="' + config.method + '" />');
+        $form.attr('action', config.url);
+        for (var key in config.data) {
+            $form.append('<input type="hidden" name="' + key + '" value="' + config.data[key] + '" />');
+        }
+        $iframe.append($form);
+        $(document.body).append($iframe);
+        $form[0].submit();
+        $iframe.remove();
     }
 
 });	

@@ -179,19 +179,21 @@ public class OrderServiceImpl implements OrderService {
 
 	/**查询订单和订单里的商品详情
 	 * @return
-	 * @param tbOrderIds
+	 * @param border
 	 */
 	@Override
-	public List<TbOrder> findOrderAndOrderItem(Long[] tbOrderIds) {
-        List<TbOrder> tbOrderList=null;
-        if (tbOrderIds != null) {
-            Example example=new Example(TbOrder.class);
-            Example.Criteria criteria = example.createCriteria();
-            criteria.andIn("orderId",Arrays.asList(tbOrderIds));
-            tbOrderList = orderMapper.selectByExample(example);
-        }else {
-            tbOrderList = orderMapper.select(null);
-        }
+	public List<TbOrder> findOrderAndOrderItem(Order border) {
+		Example example = createExample(border);
+		List<TbOrder> tbOrderList = orderMapper.selectByExample(example);
+//		List<TbOrder> tbOrderList=null;
+//        if (tbOrderIds != null) {
+//            Example example=new Example(TbOrder.class);
+//            Example.Criteria criteria = example.createCriteria();
+//            criteria.andIn("orderId",Arrays.asList(tbOrderIds));
+//            tbOrderList = orderMapper.selectByExample(example);
+//        }else {
+//            tbOrderList = orderMapper.select(null);
+//        }
 
         for (TbOrder tbOrder : tbOrderList) {
             TbOrderItem where=new TbOrderItem();
@@ -275,18 +277,37 @@ public class OrderServiceImpl implements OrderService {
 		//设置分页条件
 		PageHelper.startPage(pageNum, pageSize);
 
+		//查询数据
+		Example example = createExample(border);
+		List<TbOrder> list = orderMapper.selectByExample(example);
+		//保存数据列表
+		result.setRows(list);
+
+		//获取总记录数
+		PageInfo<TbOrder> info = new PageInfo<TbOrder>(list);
+		result.setTotal(info.getTotal());
+
+		return result;
+	}
+
+	/**
+	 * 构建查询条件
+	 * @param border
+	 * @return
+	 */
+	private Example createExample(Order border) {
 		//构建查询条件
 		Example example = new Example(TbOrder.class);
 		Example.Criteria criteria = example.createCriteria();
-        TbOrder order = border.getTbOrder();
-        Map dateMap = border.getDateMap();
+		TbOrder order = border.getTbOrder();
+		Map dateMap = border.getDateMap();
 
 
-        if (dateMap!=null){
-            for (Object o : dateMap.entrySet()) {
-                Map.Entry<String,Map>  entry = (Map.Entry<String, Map>) o;
-                addTimeCriteria(entry.getValue(),entry.getKey(),criteria);
-            }
+		if (dateMap!=null){
+			for (Object o : dateMap.entrySet()) {
+				Map.Entry<String,Map>  entry = (Map.Entry<String, Map>) o;
+				addTimeCriteria(entry.getValue(),entry.getKey(),criteria);
+			}
 		}
 
 		if (order != null) {
@@ -356,20 +377,10 @@ public class OrderServiceImpl implements OrderService {
 			}
 
 		}
-
-		//查询数据
-		List<TbOrder> list = orderMapper.selectByExample(example);
-		//保存数据列表
-		result.setRows(list);
-
-		//获取总记录数
-		PageInfo<TbOrder> info = new PageInfo<TbOrder>(list);
-		result.setTotal(info.getTotal());
-
-		return result;
+		return example;
 	}
 
-    /**
+	/**
      * 商家商品后台查询id
      */
     @Override
