@@ -31,6 +31,9 @@ public class SpecificationController {
 	 */
 	@RequestMapping("/findAll")
 	public List<TbSpecification> findAll(String loginName) {
+		//前端初始化传值传不过来，在这直接取值覆盖掉
+		LoginController loginController = new LoginController();
+		loginName =(String) loginController.name().get("loginName");
 		return specificationService.sellerFindAll(loginName);
 	}
 

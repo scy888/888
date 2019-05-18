@@ -190,4 +190,65 @@ public class ItemCatServiceImpl implements ItemCatService {
 
 	}
 
+	/**zeke
+	 * 商家的查询另开了两个个方法按sellerId查询，不影响运营管理商的全部查询
+	 * @param loginName 当前商家名
+//	 * @param sellerId 当前商家名
+	 *——原谅下我上面这两个都是商家名，前端页面回显我entity取名用的loginName（登录名），后端数据库字段用的是sellerId（商家名），但其实从前端传参过来这两个就是一样的，就是我service.js传参时起名一下子脑抽混乱了，复制粘贴太多又不想改回来，备注让大家知悉下
+	 * @return
+	 */
+	@Override
+	public List<TbItemCat> sellerFindAll(String loginName) {
+		//根据商家ID查询，区别于运营管理商的查询结果这里只返回该商家的申请规格
+		TbItemCat where = new TbItemCat();
+		where.setSellerId(loginName);
+		return itemCatMapper.select(where);
+	}
+
+	@Override
+	public PageResult sellerFindPage(TbItemCat itemCat, int pageNum, int pageSize, String sellerId) {
+		PageResult<TbItemCat> result = new PageResult<TbItemCat>();
+		//设置分页条件
+		PageHelper.startPage(pageNum, pageSize);
+
+		//构建查询条件
+		Example example = new Example(TbItemCat.class);
+		Example.Criteria criteria = example.createCriteria();
+
+		if(itemCat!=null){
+			//如果字段不为空
+			if (itemCat.getName()!=null && itemCat.getName().length()>0) {
+				criteria.andLike("name", "%" + itemCat.getName() + "%");
+			}
+			//如果用户名不为空
+			if (sellerId !=null && sellerId !="") {
+				criteria.andEqualTo("sellerId", sellerId);
+			}
+		}
+		//查询数据
+		List<TbItemCat> list = itemCatMapper.selectByExample(example);
+		//保存数据列表
+		result.setRows(list);
+		//获取总记录数
+		PageInfo<TbItemCat> info = new PageInfo<TbItemCat>(list);
+		result.setTotal(info.getTotal());
+
+		return result;
+	}
+
+	@Override
+	public List<TbItemCat> sellerFindByParentId(Long patentId, String sellerId) {
+		TbItemCat where = new TbItemCat();
+		where.setParentId(patentId);
+		where.setSellerId(sellerId);
+		List<TbItemCat> itemCats = itemCatMapper.select(where);
+
+		//统一做缓存更新
+		List<TbItemCat> all = this.findAll();
+		for (TbItemCat itemCat : all) {
+			redisTemplate.boundHashOps("itemCats").put(itemCat.getName(), itemCat.getTypeId());
+		}
+		return itemCats;
+	}
+
 }

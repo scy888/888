@@ -31,6 +31,11 @@ public class TbTypeTemplate implements Serializable {
      */
     @Column(name = "custom_attribute_items")
     private String customAttributeItems;
+    /**
+     * 申请的商家名称
+     */
+    @Column(name = "seller_id")
+    private String sellerId;
 
 
     /**
@@ -47,6 +52,14 @@ public class TbTypeTemplate implements Serializable {
     }
 
     private static final long serialVersionUID = 1L;
+
+    public String getSellerId() {
+        return sellerId;
+    }
+
+    public void setSellerId(String sellerId) {
+        this.sellerId = sellerId;
+    }
 
     /**
      * @return id
@@ -142,6 +155,7 @@ public class TbTypeTemplate implements Serializable {
                 ", specIds='" + specIds + '\'' +
                 ", brandIds='" + brandIds + '\'' +
                 ", customAttributeItems='" + customAttributeItems + '\'' +
+                ", sellerId='" + sellerId + '\'' +
                 ", auditStatus='" + status + '\'' +
                 '}';
     }

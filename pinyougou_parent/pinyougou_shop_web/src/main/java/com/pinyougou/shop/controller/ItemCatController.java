@@ -24,12 +24,16 @@ public class ItemCatController {
 	private ItemCatService itemCatService;
 	
 	/**
-	 * 返回全部列表
+	 * 返回该商家全部列表——替换了原返回全部列表的方法，反正这个模块也调不到
 	 * @return
 	 */
 	@RequestMapping("/findAll")
-	public List<TbItemCat> findAll(){			
-		return itemCatService.findAll();
+	public List<TbItemCat> findAll(String loginName){
+		//前端初始化传值传不过来，在这直接取值覆盖掉
+		LoginController loginController = new LoginController();
+		loginName =(String) loginController.name().get("loginName");
+
+		return itemCatService.sellerFindAll(loginName);
 	}
 	
 	
@@ -66,6 +70,8 @@ public class ItemCatController {
 	@RequestMapping("/update")
 	public Result update(@RequestBody TbItemCat itemCat){
 		try {
+			//一旦修改，审核状态变更回未审核
+			itemCat.setStatus(0);
 			itemCatService.update(itemCat);
 			return new Result(true, "修改成功");
 		} catch (Exception e) {
@@ -116,4 +122,39 @@ public class ItemCatController {
 	public List<TbItemCat> findByParentId(Long parentId){
 		return itemCatService.findByParentId(parentId);
 	}
+	/** zeke
+	 *提取登录用户名的方法
+	 */
+	public String getSellerName(){
+		LoginController loginController = new LoginController();
+		return (String) loginController.name().get("loginName");
+	}
+	/**zeke
+	 * 商家品牌查询：查询+分页（区别在于商家查询只返回自己所申请过的品牌）
+	 */
+	@RequestMapping("/sellerFindByParentId")
+	public List<TbItemCat>sellerFindByParentId(Long parentId){
+		//添加加商家及状态信息
+		String sellerId = getSellerName();
+		return itemCatService.sellerFindByParentId(parentId,sellerId);
+	}
+	/**
+	 * 商家品牌增加:（区别在于商家添加需增加商家及状态信息）
+	 */
+	@RequestMapping("/sellerAdd")
+	public Result sellerAdd(@RequestBody TbItemCat itemCat){
+		try {
+			//添加加商家及状态信息
+			String sellerId = getSellerName();
+			itemCat.setSellerId(sellerId);
+			itemCat.setStatus(0);
+			System.out.println("ceshi++"+itemCat);
+			itemCatService.add(itemCat);
+			return new Result(true, "增加成功");
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new Result(false, "增加失败");
+		}
+	}
+
 }

@@ -2,8 +2,8 @@
 app.service('typeTemplateService',function($http){
 	    	
 	//读取列表数据绑定到表单中
-	this.findAll=function(){
-		return $http.get('../typeTemplate/findAll.do');		
+	this.findAll=function(loginName){
+		return $http.get('../typeTemplate/findAll.do?loginName='+loginName);
 	}
 	//分页 
 	this.findPage=function(page,rows){
@@ -14,8 +14,8 @@ app.service('typeTemplateService',function($http){
 		return $http.get('../typeTemplate/findOne.do?id='+id);
 	}
 	//增加 
-	this.add=function(entity){
-		return  $http.post('../typeTemplate/add.do',entity );
+	this.add=function(entity,loginName){
+		return  $http.post('../typeTemplate/sellerAdd.do?loginName='+loginName,entity );
 	}
 	//修改 
 	this.update=function(entity){
@@ -26,12 +26,8 @@ app.service('typeTemplateService',function($http){
 		return $http.get('../typeTemplate/delete.do?ids='+ids);
 	}
 	//搜索
-	this.search=function(page,rows,searchEntity){
-		return $http.post('../typeTemplate/search.do?page='+page+"&rows="+rows, searchEntity);
+	this.search=function(sellerId,page,rows,searchEntity){
+		return $http.post('../typeTemplate/sellerSearch.do?sellerId='+sellerId+'&page='+page+"&rows="+rows, searchEntity);
 	}
-
-    this.findSpecList=function(id){
-        return $http.get('../typeTemplate/findSpecList.do?id='+id);
-    }
 
 });
