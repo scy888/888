@@ -7,7 +7,6 @@ import javax.persistence.Transient;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 
 @Table(name = "tb_order")
@@ -171,7 +170,6 @@ public class TbOrder implements Serializable {
         this.orderItemList = orderItemList;
     }
 
-    private static final long serialVersionUID = 1L;
 
     /**
      * 获取订单id
@@ -654,7 +652,6 @@ public class TbOrder implements Serializable {
         sb.append(", invoiceType=").append(invoiceType);
         sb.append(", sourceType=").append(sourceType);
         sb.append(", sellerId=").append(sellerId);
-        sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();
     }
