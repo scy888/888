@@ -19,7 +19,9 @@ app.controller('orderController',function ($scope,$controller,orderService) {
         );
     }
     /**
-     * 显示状态 已收货 未发货 未收到 的状态
+     * 显示状态 已未付款','已付款','未发货','已发货','交易成功','交易关闭','待评价'的状态
      */
-    $scope.status=['已收货','未发货','关闭'];//商品状态
+    $scope.status=['未付款','已付款','未发货','已发货','交易成功','交易关闭','待评价'];//商品状态
+
+
 })
