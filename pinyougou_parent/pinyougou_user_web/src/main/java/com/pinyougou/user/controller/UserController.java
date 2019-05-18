@@ -2,6 +2,8 @@ package com.pinyougou.user.controller;
 import java.util.List;
 import java.util.regex.PatternSyntaxException;
 
+import com.pinyougou.pojo.TbAddress;
+import com.pinyougou.user.service.AddressService;
 import com.pinyougou.user.service.UserService;
 import com.pinyougou.utils.PhoneFormatCheckUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -24,7 +26,8 @@ public class UserController {
 
 	@Reference(timeout = 5000)
 	private UserService userService;
-	
+	@Reference(timeout = 5000)
+	private AddressService addressService;
 	/**
 	 * 返回全部列表
 	 * @return
@@ -145,5 +148,7 @@ public class UserController {
 		String userName = SecurityContextHolder.getContext().getAuthentication().getName();
 		return userService.findUserByUserId(userName);
 	}
+
+
 
 }
