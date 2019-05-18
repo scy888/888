@@ -1,4 +1,4 @@
-package com.pinyougou.sellergoods.service;
+package com.pinyougou.order.service;
 import java.util.List;
 
 import com.pinyougou.pojo.TbOrder;
@@ -61,4 +61,10 @@ public interface OrderItemService {
 	 */
 	public PageResult findPage(TbOrderItem orderItem, int pageNum, int pageSize);
 
+	/**
+	 * 根据orderId查找orderItem
+	 * @param orderId
+	 * @return
+	 */
+    List<TbOrderItem> findByOrderId(String orderId);
 }

@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.alibaba.dubbo.config.annotation.Reference;
 import com.pinyougou.pojo.TbOrderItem;
-import com.pinyougou.sellergoods.service.OrderItemService;
+import com.pinyougou.order.service.OrderItemService;
 
 import entity.PageResult;
 import entity.Result;
@@ -30,7 +30,10 @@ public class OrderItemController {
 	public List<TbOrderItem> findAll(){			
 		return orderItemService.findAll();
 	}
-	
+	@RequestMapping("/findByOrderId")
+	public List<TbOrderItem> findByOrderId(String orderId){
+		return orderItemService.findByOrderId(orderId);
+	}
 	
 	/**
 	 * 返回全部列表
