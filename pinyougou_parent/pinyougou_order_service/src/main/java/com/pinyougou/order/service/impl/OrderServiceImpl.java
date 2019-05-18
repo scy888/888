@@ -3,6 +3,13 @@ import com.alibaba.dubbo.config.annotation.Service;
 import com.github.abel533.entity.Example;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+
 import com.pinyougou.mapper.TbOrderItemMapper;
 import com.pinyougou.mapper.TbOrderMapper;
 import com.pinyougou.mapper.TbPayLogMapper;
@@ -13,6 +20,14 @@ import com.pinyougou.pojo.TbPayLog;
 import com.pinyougou.pojogroup.Cart;
 import com.pinyougou.pojogroup.Order;
 import com.pinyougou.utils.IdWorker;
+import org.apache.commons.collections.OrderedMap;
+import org.springframework.beans.factory.annotation.Autowired;
+import com.alibaba.dubbo.config.annotation.Service;
+import com.github.abel533.entity.Example;
+import com.github.pagehelper.PageInfo;
+import com.github.pagehelper.PageHelper;
+import com.pinyougou.mapper.TbOrderMapper;
+import com.pinyougou.pojo.TbOrder;
 import entity.PageResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -228,8 +243,8 @@ public class OrderServiceImpl implements OrderService {
 		Example.Criteria criteria = example.createCriteria();
         TbOrder order = border.getTbOrder();
         HashMap dateMap = border.getDateMap();
-        
-        
+
+
         if (dateMap!=null){
                 if (dateMap.get("createTimeStart") != null && !dateMap.get("createTimeStart") .equals("")) {
                     criteria.andGreaterThanOrEqualTo("createTime", parseToDate(dateMap.get("createTimeStart")));
@@ -279,7 +294,7 @@ public class OrderServiceImpl implements OrderService {
                 if (dateMap.get("expireEnd") != null && !dateMap.get("expireEnd") .equals("")) {
                     criteria.andLessThanOrEqualTo("expire", parseToDate( dateMap.get("expireEnd")));
                 }
-            
+
 		}
 
 		if (order != null) {
@@ -362,6 +377,17 @@ public class OrderServiceImpl implements OrderService {
 		return result;
 	}
 
-   
+    /**
+     * 商家商品后台查询id
+     */
+    @Override
+    public List<TbOrder> findOrdersBySellId(String sellerId) {
+        TbOrder where = new TbOrder();
+        where.setSellerId(sellerId);
+        List<TbOrder> orders = orderMapper.select(where);
+        return orders;
+    }
+
+
 
 }

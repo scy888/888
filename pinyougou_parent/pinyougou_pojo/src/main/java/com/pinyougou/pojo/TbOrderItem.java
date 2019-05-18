@@ -55,6 +55,7 @@ public class TbOrderItem implements Serializable {
     @Column(name = "pic_path")
     private String picPath;
 
+
     @Column(name = "seller_id")
     private String sellerId;
 

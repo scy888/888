@@ -31,8 +31,8 @@ public interface OrderService {
 	 * 增加
 	*/
 	public void add(TbOrder order);
-	
-	
+
+
 	/**
 	 * 修改
 	 */
@@ -76,4 +76,9 @@ public interface OrderService {
 	public void updateOrderStatus(String out_trade_no,String transaction_id);
 
 
+	/**
+	 * 商家后台订单查询
+	 *
+	 */
+	public  List<TbOrder>  findOrdersBySellId (String selleId);
 }
