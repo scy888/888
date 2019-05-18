@@ -10,6 +10,12 @@ import com.pinyougou.pojo.TbSpecification;
 import com.pinyougou.pojo.TbSpecificationOption;
 import com.pinyougou.pojogroup.Specification;
 import com.pinyougou.sellergoods.service.SpecificationService;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.Arrays;
+import java.util.List;
+
 import entity.PageResult;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -200,5 +206,25 @@ public class SpecificationServiceImpl implements SpecificationService {
 
 		return result;
 	}
+
+	/**
+	 * 状态审核
+	 * @param ids
+	 * @param status
+	 */
+	@Override
+	public void updateStatus(Long[] ids, String status) {
+		//修改的结果
+		TbSpecification record = new TbSpecification();
+		record.setAuditStatus(status);
+		//构建修改范围
+		Example example = new Example(TbSpecification.class);
+		Example.Criteria criteria = example.createCriteria();
+		List longs = Arrays.asList(ids);
+		criteria.andIn("id", longs);
+		//开始更新
+		specificationMapper.updateByExampleSelective(record,example);
+	}
+
 
 }

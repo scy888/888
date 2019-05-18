@@ -1,6 +1,7 @@
 package com.pinyougou.sellergoods.service;
-import java.util.List;
 import com.pinyougou.pojo.TbItemCat;
+
+import java.util.List;
 
 import entity.PageResult;
 /**
@@ -64,5 +65,6 @@ public interface ItemCatService {
 	 * @return
 	 */
 	public List<TbItemCat> findByParentId(Long patentId);
-	
+
+    void updateStatus(Long[] ids, String status);
 }

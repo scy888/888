@@ -1,8 +1,10 @@
 package com.pinyougou.manager.controller;
-import com.alibaba.dubbo.config.annotation.Reference;
-import com.pinyougou.pojo.TbItemCat;
-import com.pinyougou.sellergoods.service.ItemCatService;
 
+import com.alibaba.dubbo.config.annotation.Reference;
+import com.pinyougou.pojo.TbSeckillOrder;
+import com.pinyougou.seckill.service.SeckillOrderService;
+
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -11,25 +13,26 @@ import java.util.List;
 
 import entity.PageResult;
 import entity.Result;
+
 /**
  * 请求处理器
  * @author Steven
  *
  */
 @RestController
-@RequestMapping("/itemCat")
-public class ItemCatController {
+@RequestMapping("/seckillOrder")
+public class SeckillOrderController {
 
 	@Reference
-	private ItemCatService itemCatService;
+	private SeckillOrderService seckillOrderService;
 	
 	/**
 	 * 返回全部列表
 	 * @return
 	 */
 	@RequestMapping("/findAll")
-	public List<TbItemCat> findAll(){			
-		return itemCatService.findAll();
+	public List<TbSeckillOrder> findAll(){			
+		return seckillOrderService.findAll();
 	}
 	
 	
@@ -39,18 +42,18 @@ public class ItemCatController {
 	 */
 	@RequestMapping("/findPage")
 	public PageResult  findPage(int page,int rows){			
-		return itemCatService.findPage(page, rows);
+		return seckillOrderService.findPage(page, rows);
 	}
 	
 	/**
 	 * 增加
-	 * @param itemCat
+	 * @param seckillOrder
 	 * @return
 	 */
 	@RequestMapping("/add")
-	public Result add(@RequestBody TbItemCat itemCat){
+	public Result add(@RequestBody TbSeckillOrder seckillOrder){
 		try {
-			itemCatService.add(itemCat);
+			seckillOrderService.add(seckillOrder);
 			return new Result(true, "增加成功");
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -60,13 +63,13 @@ public class ItemCatController {
 	
 	/**
 	 * 修改
-	 * @param itemCat
+	 * @param seckillOrder
 	 * @return
 	 */
 	@RequestMapping("/update")
-	public Result update(@RequestBody TbItemCat itemCat){
+	public Result update(@RequestBody TbSeckillOrder seckillOrder){
 		try {
-			itemCatService.update(itemCat);
+			seckillOrderService.update(seckillOrder);
 			return new Result(true, "修改成功");
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -80,8 +83,8 @@ public class ItemCatController {
 	 * @return
 	 */
 	@RequestMapping("/findOne")
-	public TbItemCat findOne(Long id){
-		return itemCatService.findOne(id);		
+	public TbSeckillOrder findOne(Long id){
+		return seckillOrderService.findOne(id);		
 	}
 	
 	/**
@@ -92,7 +95,7 @@ public class ItemCatController {
 	@RequestMapping("/delete")
 	public Result delete(Long [] ids){
 		try {
-			itemCatService.delete(ids);
+			seckillOrderService.delete(ids);
 			return new Result(true, "删除成功"); 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -102,37 +105,34 @@ public class ItemCatController {
 	
 	/**
 	 * 查询+分页
-	 * @param itemCat
+	 * @param seckillOrder
 	 * @param page
 	 * @param rows
 	 * @return
 	 */
 	@RequestMapping("/search")
-	public PageResult search(@RequestBody TbItemCat itemCat, int page, int rows  ){
-		return itemCatService.findPage(itemCat, page, rows);		
+	public PageResult search(@RequestBody TbSeckillOrder seckillOrder, int page, int rows  ){
+		return seckillOrderService.findPage(seckillOrder, page, rows);		
 	}
 
-	@RequestMapping("findByParentId")
-	public List<TbItemCat> findByParentId(Long parentId){
-		return itemCatService.findByParentId(parentId);
-	}
-
-
-	/**
-	 * 分类审核
-	 * @param ids
-	 * @param status
-	 * @return
-	 */
-	@RequestMapping("updateStatus")
-	public Result updateStatus(Long[] ids, String status){
+	@RequestMapping("submitOrder")
+	public Result submitOrder(Long seckillId){
+		String userId = SecurityContextHolder.getContext().getAuthentication().getName();
+		if ("anonymousUser".equals(userId)) {
+			return new Result(false, "请先登录！");
+		}
 		try {
-			//审核
-			itemCatService.updateStatus(ids, status);
-			return new Result(true, "审核操作成功！");
-		} catch (Exception e) {
+			//开始下单
+			seckillOrderService.submitOrder(seckillId, userId);
+
+			return new Result(true, "恭喜抢购成功，请5分钟内完成支付！");
+		}catch (RuntimeException e) {
+			return new Result(false, e.getMessage());
+		}
+		catch (Exception e) {
 			e.printStackTrace();
 		}
-		return new Result(false, "审核操作失败！");
+		return new Result(false, "抢购失败，请稍后再试！");
 	}
+	
 }

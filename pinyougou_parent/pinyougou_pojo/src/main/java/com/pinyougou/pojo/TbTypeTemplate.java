@@ -1,7 +1,12 @@
 package com.pinyougou.pojo;
 
-import javax.persistence.*;
 import java.io.Serializable;
+
+import javax.persistence.Column;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 @Table(name = "tb_type_template")
 public class TbTypeTemplate implements Serializable {
@@ -31,6 +36,21 @@ public class TbTypeTemplate implements Serializable {
      */
     @Column(name = "custom_attribute_items")
     private String customAttributeItems;
+
+
+    /**
+     * 状态
+     */
+    @Column(name = "audit_status")
+    private String auditStatus;
+
+    public String getAuditStatus() {
+        return auditStatus;
+    }
+
+    public void setAuditStatus(String auditStatus) {
+        this.auditStatus = auditStatus;
+    }
 
     private static final long serialVersionUID = 1L;
 
@@ -122,17 +142,13 @@ public class TbTypeTemplate implements Serializable {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(getClass().getSimpleName());
-        sb.append(" [");
-        sb.append("Hash = ").append(hashCode());
-        sb.append(", id=").append(id);
-        sb.append(", name=").append(name);
-        sb.append(", specIds=").append(specIds);
-        sb.append(", brandIds=").append(brandIds);
-        sb.append(", customAttributeItems=").append(customAttributeItems);
-        sb.append(", serialVersionUID=").append(serialVersionUID);
-        sb.append("]");
-        return sb.toString();
+        return "TbTypeTemplate{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", specIds='" + specIds + '\'' +
+                ", brandIds='" + brandIds + '\'' +
+                ", customAttributeItems='" + customAttributeItems + '\'' +
+                ", auditStatus='" + auditStatus + '\'' +
+                '}';
     }
 }
