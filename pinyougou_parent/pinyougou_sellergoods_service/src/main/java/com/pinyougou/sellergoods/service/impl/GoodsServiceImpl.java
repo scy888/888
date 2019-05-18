@@ -77,6 +77,7 @@ public class GoodsServiceImpl implements GoodsService {
 	public void add(Goods goods) {
 		//保存商品基本信息
 		goods.getGoods().setAuditStatus("0");  //未审核状态
+		goods.getGoods().setIsMarketable("0");//未上架状态
 		goodsMapper.insertSelective(goods.getGoods());
 
 		//模拟报错
@@ -304,5 +305,17 @@ public class GoodsServiceImpl implements GoodsService {
 		List<TbItem> itemList = itemMapper.selectByExample(example);
 		return itemList;
     }
+
+	@Override
+	public void updateMarketStatus(Long[] ids, String marketStatus) {
+		TbGoods record = new TbGoods();
+		record.setIsMarketable(marketStatus);
+		Example example = new Example(TbGoods.class);
+		Example.Criteria criteria = example.createCriteria();
+		List longs = Arrays.asList(ids);
+		criteria.andIn("id", longs);
+		//更新状态
+		goodsMapper.updateByExampleSelective(record, example);
+	}
 
 }
