@@ -50,7 +50,7 @@
                     </select>
                     </div>
                     <br>
-                    <div>
+                    <div ng-if="searchEntity.dateMap.timeType=='byYear'">
                         年度统计：<select ng-model="searchEntity.dateMap.byYear">
                         <option value="">---历年---</option>
                         <option value="2016">2016</option>
