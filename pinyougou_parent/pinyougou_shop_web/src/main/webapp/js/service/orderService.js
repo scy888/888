@@ -8,4 +8,8 @@ app.service('orderService',function ($http) {
     this.findByParentId=function () {
         return $http.get("../form/search.do");
     }
+
+    this.findByQueryId=function (orderIdStr) {
+        return $http.get("../from/findByQueryId.do？orderIdStr="+orderIdStr);
+    }
 })

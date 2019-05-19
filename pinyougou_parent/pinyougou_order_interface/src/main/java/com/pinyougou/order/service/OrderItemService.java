@@ -1,6 +1,7 @@
 package com.pinyougou.order.service;
 import java.util.List;
 
+import com.pinyougou.pojo.TbBrand;
 import com.pinyougou.pojo.TbOrder;
 import com.pinyougou.pojo.TbOrderItem;
 
@@ -67,4 +68,7 @@ public interface OrderItemService {
 	 * @return
 	 */
     List<TbOrderItem> findByOrderId(String orderId);
+
+
+
 }

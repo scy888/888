@@ -1,5 +1,6 @@
 package com.pinyougou.user.service.impl;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import com.pinyougou.user.service.AddressService;
@@ -57,7 +58,8 @@ public class AddressServiceImpl implements AddressService {
 	 */
 	@Override
 	public void add(TbAddress address) {
-		addressMapper.insertSelective(address);		
+		address.setCreateDate(new Date());
+		addressMapper.insertSelective(address);
 	}
 
 	
@@ -75,9 +77,7 @@ public class AddressServiceImpl implements AddressService {
 	 * @return
 	 */
 	@Override
-	public TbAddress findOne(Long id){
-		return addressMapper.selectByPrimaryKey(id);
-	}
+	public TbAddress findOne(Long id){ return addressMapper.selectByPrimaryKey(id); }
 
 	/**
 	 * 批量删除
@@ -168,5 +168,11 @@ public class AddressServiceImpl implements AddressService {
 		where.setUserId(userId);
 		return addressMapper.select(where);
     }
+
+	@Override
+	public void deleteOne(Long id) {
+		//跟据查询条件删除数据
+		addressMapper.deleteByPrimaryKey(id);
+	}
 
 }

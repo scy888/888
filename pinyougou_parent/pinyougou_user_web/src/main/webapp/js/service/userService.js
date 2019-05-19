@@ -39,4 +39,5 @@ app.service('userService',function($http){
 	this.findUserByUserId=function(){
 		return $http.get('../user/findUserByUserId.do');
 	}
+
 });

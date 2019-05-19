@@ -3,7 +3,7 @@ app.service('itemCatService',function($http){
 	    	
 	//读取列表数据绑定到表单中
 	this.findAll=function(){
-		return $http.get('../itemCat/findAll.do');		
+		return $http.get('../itemCat/findAll.do');
 	}
 	//分页 
 	this.findPage=function(page,rows){
@@ -15,7 +15,7 @@ app.service('itemCatService',function($http){
 	}
 	//增加 
 	this.add=function(entity){
-		return  $http.post('../itemCat/add.do',entity );
+		return  $http.post('../itemCat/sellerAdd.do',entity);
 	}
 	//修改 
 	this.update=function(entity){
@@ -31,6 +31,7 @@ app.service('itemCatService',function($http){
 	}
 
 	this.findByParentId=function (parentId) {
-        return $http.get("../itemCat/findByParentId.do?parentId=" + parentId);
+        return $http.get("../itemCat/sellerFindByParentId.do?parentId=" + parentId);
     }
+
 });

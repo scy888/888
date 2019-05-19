@@ -66,4 +66,10 @@ public interface AddressService {
 	public List<TbAddress> findListByUserId(String userId);
 
 
+	/**
+	 * 删除单个地址
+	 * @param
+	 */
+	public void deleteOne(Long id);
+
 }

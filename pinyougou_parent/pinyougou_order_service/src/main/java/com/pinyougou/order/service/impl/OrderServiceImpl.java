@@ -3,30 +3,37 @@ import com.alibaba.dubbo.config.annotation.Service;
 import com.github.abel533.entity.Example;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-
 import com.pinyougou.mapper.TbOrderItemMapper;
 import com.pinyougou.mapper.TbOrderMapper;
 import com.pinyougou.mapper.TbPayLogMapper;
 import com.pinyougou.order.service.OrderService;
-import com.pinyougou.pojo.TbOrder;
-import com.pinyougou.pojo.TbOrderItem;
-import com.pinyougou.pojo.TbPayLog;
+import com.pinyougou.pojo.*;
 import com.pinyougou.pojogroup.Cart;
+
 import com.pinyougou.pojogroup.Order;
+
+
 import com.pinyougou.utils.IdWorker;
 import entity.PageResult;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import entity.PageResult;
+import org.springframework.beans.factory.annotation.Autowired;
+import com.alibaba.dubbo.config.annotation.Service;
+import com.github.abel533.entity.Example;
+import com.github.pagehelper.PageInfo;
+import com.github.pagehelper.PageHelper;
+
+import com.pinyougou.pojo.TbOrder;
+
+
 import org.springframework.data.redis.core.RedisTemplate;
 
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+
 
 /**
  * 业务逻辑实现
@@ -391,7 +398,28 @@ public class OrderServiceImpl implements OrderService {
         return orders;
     }
 
+	/**
+	 * 查询
+	 * @param orderId
+	 * @return
+	 */
+	@Override
+	public TbOrder findByQueryId(Long orderId) {
+
+		TbOrder where = new TbOrder();
+		where.setOrderId(orderId);
+		return orderMapper.selectOne(where);
 
 
+	}
+
+
+	/**
+	 * 修改
+	 * @param order
+	 */
+	@Override
+	public void modification(TbOrder order) {
+	}
 
 }

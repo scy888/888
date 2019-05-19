@@ -1,7 +1,9 @@
 package com.pinyougou.order.service;
 
+import com.pinyougou.pojo.TbBrand;
 import com.pinyougou.pojo.TbOrder;
 import com.pinyougou.pojo.TbPayLog;
+import com.pinyougou.pojogroup.Goods;
 import com.pinyougou.pojogroup.Order;
 import entity.PageResult;
 
@@ -88,4 +90,17 @@ public interface OrderService {
 	 *
 	 */
 	public  List<TbOrder>  findOrdersBySellId (String selleId);
+
+
+	/**
+	 * 查询数据id
+	 */
+	public  TbOrder  findByQueryId (Long orderId);
+
+
+	/**
+	 *修改数据
+	 */
+	public  void modification (TbOrder TbOrder);
+
 }

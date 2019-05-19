@@ -90,6 +90,7 @@ public class UserServiceImpl implements UserService {
 	 */
 	@Override
 	public void update(TbUser user){
+
 		userMapper.updateByPrimaryKeySelective(user);
 	}	
 	

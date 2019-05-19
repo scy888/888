@@ -28,7 +28,11 @@ public class TbItemCat implements Serializable {
      */
     @Column(name = "type_id")
     private Long typeId;
-
+    /**
+     * 申请的商家名称
+     */
+    @Column(name = "seller_id")
+    private String sellerId;
 
     /**
      * 状态
@@ -41,6 +45,14 @@ public class TbItemCat implements Serializable {
 
     public void setStatus(Integer status) {
         this.status = status;
+    }
+
+    public String getSellerId() {
+        return sellerId;
+    }
+
+    public void setSellerId(String sellerId) {
+        this.sellerId = sellerId;
     }
 
     private static final long serialVersionUID = 1L;
@@ -124,6 +136,7 @@ public class TbItemCat implements Serializable {
                 ", parentId=" + parentId +
                 ", name='" + name + '\'' +
                 ", typeId=" + typeId +
+                ", sellerId='" + sellerId + '\'' +
                 ", auditStatus='" + status + '\'' +
                 '}';
     }
