@@ -29,5 +29,8 @@ app.service('typeTemplateService',function($http){
 	this.search=function(sellerId,page,rows,searchEntity){
 		return $http.post('../typeTemplate/sellerSearch.do?sellerId='+sellerId+'&page='+page+"&rows="+rows, searchEntity);
 	}
+    this.findSpecList=function(id){
+        return $http.get('../typeTemplate/findSpecList.do?id='+id);
+    }
 
 });
