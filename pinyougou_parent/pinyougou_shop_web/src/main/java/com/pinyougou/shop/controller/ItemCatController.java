@@ -148,7 +148,6 @@ public class ItemCatController {
 			String sellerId = getSellerName();
 			itemCat.setSellerId(sellerId);
 			itemCat.setStatus(0);
-			System.out.println("ceshi++"+itemCat);
 			itemCatService.add(itemCat);
 			return new Result(true, "增加成功");
 		} catch (Exception e) {

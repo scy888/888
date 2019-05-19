@@ -38,21 +38,36 @@ app.controller('itemCatController' ,function($scope,$controller,itemCatService,t
 		if($scope.entity.id!=null){//如果有ID
 			serviceObject=itemCatService.update( $scope.entity ); //修改  
 		}else{
-            $scope.entity.parentId = $scope.parentId;
-            alert(JSON.stringify($scope.entity));
-			serviceObject=itemCatService.add( $scope.entity  );//增加
+            var flag = isExist();
+            if (flag) {
+                alert("抱歉您已申请过该品牌，请勿重复申请！");
+            }else {
+                $scope.entity.parentId = $scope.parentId;
+                serviceObject = itemCatService.add($scope.entity);//增加
+            }
 		}				
 		serviceObject.success(
 			function(response){
 				if(response.success){
-					//重新查询 
-		        	$scope.reloadList();//重新加载
+					//重新查询
+                    $scope.findByParentId($scope.parentId);
 				}else{
 					alert(response.message);
 				}
 			}		
 		);				
 	}
+    //判断是否该商家已经在同个分类申请过这个分类
+    isExist=function(){
+        var isExist = false;
+        for (var i = 0 ; i < $scope.list.length ; i ++ ) {
+        	//相同条件判断：同分类目录下，同名且同模板类型才算重复，同名不同模板类型，同名不同上级分类都算一个新分类？
+            if ( $scope.entity.name ==$scope.list[i].name && $scope.parentId == $scope.list[i].parentId && $scope.entity.typeId == $scope.list[i].typeId ) {
+                isExist = true;
+            }
+        }
+        return isExist;
+    }
 
 	//批量删除 
 	$scope.dele=function(){			
@@ -69,7 +84,7 @@ app.controller('itemCatController' ,function($scope,$controller,itemCatService,t
 	$scope.searchEntity={};//定义搜索对象 
 	
 	//搜索
-	$scope.search=function(page,rows){			
+	$scope.search=function(page,rows){
 		itemCatService.search(page,rows,$scope.searchEntity).success(
 			function(response){
 				$scope.list=response.rows;	
