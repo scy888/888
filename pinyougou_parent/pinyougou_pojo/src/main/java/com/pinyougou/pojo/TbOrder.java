@@ -7,10 +7,11 @@ import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
-import java.util.HashMap;
+import java.util.List;
 
 @Table(name = "tb_order")
 public class TbOrder implements Serializable {
@@ -23,6 +24,7 @@ public class TbOrder implements Serializable {
     @Column(name = "order_id")
 //    @JsonFormat(shape=JsonFormat.Shape.STRING)
     private Long orderId;
+
 
     /**
      * 实付金额。精确到2位小数;单位:元。如:200.07，表示:200元7分
@@ -164,13 +166,27 @@ public class TbOrder implements Serializable {
     @Column(name = "seller_id")
     private String sellerId;
 
-    private static final long serialVersionUID = 1L;
+    @Transient
+    private List<TbOrderItem> orderItemList;
+
+    public List<TbOrderItem> getOrderItemList() {
+        return orderItemList;
+    }
+
+    public void setOrderItemList(List<TbOrderItem> orderItemList) {
+        this.orderItemList = orderItemList;
+    }
+
 
     /**
      * 获取订单id
      *
      * @return order_id - 订单id
      */
+    public String getOrderIdStr() {
+        return orderId+"";
+    }
+
     public Long getOrderId() {
         return orderId;
     }
@@ -647,7 +663,6 @@ public class TbOrder implements Serializable {
         sb.append(", invoiceType=").append(invoiceType);
         sb.append(", sourceType=").append(sourceType);
         sb.append(", sellerId=").append(sellerId);
-        sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();
     }

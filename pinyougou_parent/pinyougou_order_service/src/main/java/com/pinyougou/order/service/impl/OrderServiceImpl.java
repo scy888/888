@@ -7,20 +7,33 @@ import com.pinyougou.mapper.TbOrderItemMapper;
 import com.pinyougou.mapper.TbOrderMapper;
 import com.pinyougou.mapper.TbPayLogMapper;
 import com.pinyougou.order.service.OrderService;
-import com.pinyougou.pojo.TbOrder;
-import com.pinyougou.pojo.TbOrderItem;
-import com.pinyougou.pojo.TbPayLog;
+import com.pinyougou.pojo.*;
 import com.pinyougou.pojogroup.Cart;
+
 import com.pinyougou.pojogroup.Order;
+
+
 import com.pinyougou.utils.IdWorker;
 import entity.PageResult;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import entity.PageResult;
+import org.springframework.beans.factory.annotation.Autowired;
+import com.alibaba.dubbo.config.annotation.Service;
+import com.github.abel533.entity.Example;
+import com.github.pagehelper.PageInfo;
+import com.github.pagehelper.PageHelper;
+
+import com.pinyougou.pojo.TbOrder;
+
+
 import org.springframework.data.redis.core.RedisTemplate;
 
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+
 
 /**
  * 业务逻辑实现
@@ -171,6 +184,33 @@ public class OrderServiceImpl implements OrderService {
 		redisTemplate.boundHashOps("payLogs").delete(payLog.getUserId());
 	}
 
+	/**查询订单和订单里的商品详情
+	 * @return
+	 * @param border
+	 */
+	@Override
+	public List<TbOrder> findOrderAndOrderItem(Order border) {
+		Example example = createExample(border);
+		List<TbOrder> tbOrderList = orderMapper.selectByExample(example);
+//		List<TbOrder> tbOrderList=null;
+//        if (tbOrderIds != null) {
+//            Example example=new Example(TbOrder.class);
+//            Example.Criteria criteria = example.createCriteria();
+//            criteria.andIn("orderId",Arrays.asList(tbOrderIds));
+//            tbOrderList = orderMapper.selectByExample(example);
+//        }else {
+//            tbOrderList = orderMapper.select(null);
+//        }
+
+        for (TbOrder tbOrder : tbOrderList) {
+            TbOrderItem where=new TbOrderItem();
+            where.setOrderId(tbOrder.getOrderId());
+            List<TbOrderItem> tbOrderItemList = orderItemMapper.select(where);
+            tbOrder.setOrderItemList(tbOrderItemList);
+        }
+        return tbOrderList;
+	}
+
 
 	/**
 	 * 修改
@@ -207,79 +247,74 @@ public class OrderServiceImpl implements OrderService {
 		orderMapper.deleteByExample(example);
 	}
 
-    private Date parseToDate(Object timeStr) {
+	/**
+	 * 日期转换方法
+	 * @param timeStr
+	 * @return
+	 */
+    private Date parseToDate(String timeStr) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         Date date = null;
         try {
-            date = sdf.parse((String) timeStr);
+            date = sdf.parse( timeStr);
         } catch (ParseException e) {
             System.out.println("日期格式错误!");
         }
         return date;
     }
+
+	/**
+	 * 添加日期查询条件
+	 * @param timeCriteria
+	 */
+	private void addTimeCriteria(Map timeCriteria,String timeProperty,Example.Criteria criteria) {
+		if (timeCriteria != null && timeCriteria.size()!=0) {
+			if (timeCriteria.get("start")!=null&&!timeCriteria.get("start").equals("")){
+				criteria.andGreaterThanOrEqualTo(timeProperty, parseToDate((String) timeCriteria.get("start")));
+			}
+			if(timeCriteria.get("end")!=null&&!timeCriteria.get("end").equals("")){
+				criteria.andLessThanOrEqualTo(timeProperty, parseToDate((String) timeCriteria.get("end")));
+			}
+		}
+	}
+
 	@Override
 	public PageResult findPage(Order border, int pageNum, int pageSize)  {
 		PageResult<TbOrder> result = new PageResult<TbOrder>();
 		//设置分页条件
 		PageHelper.startPage(pageNum, pageSize);
 
+		//查询数据
+		Example example = createExample(border);
+		List<TbOrder> list = orderMapper.selectByExample(example);
+		//保存数据列表
+		result.setRows(list);
+
+		//获取总记录数
+		PageInfo<TbOrder> info = new PageInfo<TbOrder>(list);
+		result.setTotal(info.getTotal());
+
+		return result;
+	}
+
+	/**
+	 * 构建查询条件
+	 * @param border
+	 * @return
+	 */
+	private Example createExample(Order border) {
 		//构建查询条件
 		Example example = new Example(TbOrder.class);
 		Example.Criteria criteria = example.createCriteria();
-        TbOrder order = border.getTbOrder();
-        HashMap dateMap = border.getDateMap();
-        
-        
-        if (dateMap!=null){
-                if (dateMap.get("createTimeStart") != null && !dateMap.get("createTimeStart") .equals("")) {
-                    criteria.andGreaterThanOrEqualTo("createTime", parseToDate(dateMap.get("createTimeStart")));
-                }
-                if (dateMap.get("createTimeEnd") != null && !dateMap.get("createTimeEnd") .equals("")) {
-                    criteria.andLessThanOrEqualTo("createTime", parseToDate( dateMap.get("createTimeEnd")));
-                }
+		TbOrder order = border.getTbOrder();
+		Map dateMap = border.getDateMap();
 
-                if (dateMap.get("updateTimeStart") != null && !dateMap.get("updateTimeStart") .equals("")) {
-                    criteria.andGreaterThanOrEqualTo("updateTime", parseToDate( dateMap.get("updateTimeStart")));
-                }
-                if (dateMap.get("updateTimeEnd") != null && !dateMap.get("updateTimeEnd").equals("")) {
-                    criteria.andLessThanOrEqualTo("updateTime", parseToDate( dateMap.get("updateTimeEnd")));
-                }
 
-                if (dateMap.get("paymentTimeStart") != null && !dateMap.get("paymentTimeStart") .equals("")) {
-                    criteria.andGreaterThanOrEqualTo("paymentTime", parseToDate( dateMap.get("paymentTimeStart")));
-                }
-                if (dateMap.get("paymentTimeEnd") != null && !dateMap.get("paymentTimeEnd") .equals("")) {
-                    criteria.andLessThanOrEqualTo("paymentTime", parseToDate( dateMap.get("paymentTimeEnd")));
-                }
-
-                if (dateMap.get("consignTimeStart") != null && !dateMap.get("consignTimeStart") .equals("")) {
-                    criteria.andGreaterThanOrEqualTo("consignTime", parseToDate( dateMap.get("consignTimeStart")));
-                }
-                if (dateMap.get("consignTimeEnd") != null && !dateMap.get("consignTimeEnd") .equals("")) {
-                    criteria.andLessThanOrEqualTo("consignTime", parseToDate( dateMap.get("consignTimeEnd")));
-                }
-
-                if (dateMap.get("endTimeStart") != null && !dateMap.get("endTimeStart") .equals("")) {
-                    criteria.andGreaterThanOrEqualTo("endTime", parseToDate( dateMap.get("endTimeStart")));
-                }
-                if (dateMap.get("endTimeEnd") != null && !dateMap.get("endTimeEnd") .equals("")) {
-                    criteria.andLessThanOrEqualTo("endTime", parseToDate( dateMap.get("endTimeEnd")));
-                }
-
-                if (dateMap.get("closeTimeStart") != null && !dateMap.get("closeTimeStart") .equals("")) {
-                    criteria.andGreaterThanOrEqualTo("closeTime", parseToDate( dateMap.get("closeTimeStart")));
-                }
-                if (dateMap.get("closeTimeEnd") != null && !dateMap.get("closeTimeEnd") .equals("")) {
-                    criteria.andLessThanOrEqualTo("closeTime", parseToDate( dateMap.get("closeTimeEnd")));
-                }
-
-                if (dateMap.get("expireStart") != null && !dateMap.get("expireStart") .equals("")) {
-                    criteria.andGreaterThanOrEqualTo("expire", parseToDate( dateMap.get("expireStart")));
-                }
-                if (dateMap.get("expireEnd") != null && !dateMap.get("expireEnd") .equals("")) {
-                    criteria.andLessThanOrEqualTo("expire", parseToDate( dateMap.get("expireEnd")));
-                }
-            
+		if (dateMap!=null){
+			for (Object o : dateMap.entrySet()) {
+				Map.Entry<String,Map>  entry = (Map.Entry<String, Map>) o;
+				addTimeCriteria(entry.getValue(),entry.getKey(),criteria);
+			}
 		}
 
 		if (order != null) {
@@ -349,19 +384,42 @@ public class OrderServiceImpl implements OrderService {
 			}
 
 		}
-
-		//查询数据
-		List<TbOrder> list = orderMapper.selectByExample(example);
-		//保存数据列表
-		result.setRows(list);
-
-		//获取总记录数
-		PageInfo<TbOrder> info = new PageInfo<TbOrder>(list);
-		result.setTotal(info.getTotal());
-
-		return result;
+		return example;
 	}
 
-   
+	/**
+     * 商家商品后台查询id
+     */
+    @Override
+    public List<TbOrder> findOrdersBySellId(String sellerId) {
+        TbOrder where = new TbOrder();
+        where.setSellerId(sellerId);
+        List<TbOrder> orders = orderMapper.select(where);
+        return orders;
+    }
+
+	/**
+	 * 查询
+	 * @param orderId
+	 * @return
+	 */
+	@Override
+	public TbOrder findByQueryId(Long orderId) {
+
+		TbOrder where = new TbOrder();
+		where.setOrderId(orderId);
+		return orderMapper.selectOne(where);
+
+
+	}
+
+
+	/**
+	 * 修改
+	 * @param order
+	 */
+	@Override
+	public void modification(TbOrder order) {
+	}
 
 }

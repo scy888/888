@@ -1,15 +1,16 @@
-package com.pinyougou.sellergoods.service.impl;
+package com.pinyougou.order.service.impl;
 import java.util.Arrays;
 import java.util.List;
+
+import com.pinyougou.order.service.OrderItemService;
+import com.pinyougou.pojo.TbOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.alibaba.dubbo.config.annotation.Service;
 import com.github.abel533.entity.Example;
 import com.github.pagehelper.PageInfo;
-import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.pinyougou.mapper.TbOrderItemMapper;
 import com.pinyougou.pojo.TbOrderItem;
-import com.pinyougou.sellergoods.service.OrderItemService;
 import entity.PageResult;
 
 /**
@@ -133,5 +134,19 @@ public class OrderItemServiceImpl implements OrderItemService {
 		
 		return result;
 	}
-	
+
+	@Override
+	public List<TbOrderItem> findByOrderId(String orderId) {
+		//构建查询条件
+		Example example = new Example(TbOrderItem.class);
+		Example.Criteria criteria = example.createCriteria();
+		criteria.andEqualTo("orderId", orderId);
+
+		//查询数据
+		List<TbOrderItem> list = orderItemMapper.selectByExample(example);
+		return list;
+	}
+
+
+
 }

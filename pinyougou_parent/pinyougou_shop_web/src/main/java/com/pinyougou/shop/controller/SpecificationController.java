@@ -31,6 +31,9 @@ public class SpecificationController {
 	 */
 	@RequestMapping("/findAll")
 	public List<TbSpecification> findAll(String loginName) {
+		//前端初始化传值传不过来，在这直接取值覆盖掉
+		LoginController loginController = new LoginController();
+		loginName =(String) loginController.name().get("loginName");
 		return specificationService.sellerFindAll(loginName);
 	}
 
@@ -71,6 +74,8 @@ public class SpecificationController {
 	@RequestMapping("/update")
 	public Result update(@RequestBody Specification specification) {
 		try {
+			//一旦修改，审核状态变更回未审核
+			specification.getSpecification().setStatus(0);
 			specificationService.update(specification);
 			return new Result(true, "修改成功");
 		} catch (Exception e) {

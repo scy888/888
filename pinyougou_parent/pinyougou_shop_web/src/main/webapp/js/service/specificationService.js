@@ -1,6 +1,9 @@
 //服务层
 app.service('specificationService',function($http){
-	    	
+    // //给模板模块查询所有的规格列表调用
+    // this.getAll=function(){
+    //     return $http.get('../specification/findAll.do');
+    // }
 	//读取列表数据绑定到表单中
 	this.findAll=function(loginName){
 		return $http.get('../specification/findAll.do?loginName='+loginName);

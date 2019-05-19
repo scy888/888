@@ -50,31 +50,38 @@
                     </tr>
                     <tr>
                         <td>订单创建时间：</td>
-                        <td><input ng-model="searchEntity.dateMap.createTimeStart" type="date">至<input ng-model="searchEntity.dateMap.createTimeEnd" type="date"></td>
+                        <td><input ng-model="searchEntity.dateMap.createTime.start" type="date">至<input
+                                ng-model="searchEntity.dateMap.createTime.end" type="date"></td>
                     </tr>
                     <tr>
                         <td>订单更新时间:</td>
-                        <td><input ng-model="searchEntity.dateMap.updateTimeStart" type="date">至<input ng-model="searchEntity.dateMap.updateTimeEnd" type="date"></td>
+                        <td><input ng-model="searchEntity.dateMap.updateTime.start" type="date">至<input
+                                ng-model="searchEntity.dateMap.updateTime.end" type="date"></td>
                     </tr>
                     <tr>
                         <td>付款时间:</td>
-                        <td><input ng-model="searchEntity.dateMap.paymentTimeStart" type="date">至<input ng-model="searchEntity.dateMap.paymentTimeEnd" type="date"></td>
+                        <td><input ng-model="searchEntity.dateMap.paymentTime.start" type="date">至<input
+                                ng-model="searchEntity.dateMap.paymentTime.end" type="date"></td>
                     </tr>
                     <tr>
                         <td>发货时间:</td>
-                        <td><input ng-model="searchEntity.dateMap.consignTimeStart" type="date">至<input ng-model="searchEntity.dateMap.consignTimeEnd" type="date"></td>
+                        <td><input ng-model="searchEntity.dateMap.consignTime.start" type="date">至<input
+                                ng-model="searchEntity.dateMap.consignTime.end" type="date"></td>
                     </tr>
                     <tr>
                         <td>交易完成时间:</td>
-                        <td><input ng-model="searchEntity.dateMap.endTimeStart" type="date">至<input ng-model="searchEntity.dateMap.endTimeEnd" type="date"></td>
+                        <td><input ng-model="searchEntity.dateMap.endTime.start" type="date">至<input
+                                ng-model="searchEntity.dateMap.endTime.end" type="date"></td>
                     </tr>
                     <tr>
                         <td>交易关闭时间:</td>
-                        <td><input ng-model="searchEntity.dateMap.closeTimeStart" type="date">至<input ng-model="searchEntity.dateMap.closeTimeEnd" type="date"></td>
+                        <td><input ng-model="searchEntity.dateMap.closeTime.start" type="date">至<input
+                                ng-model="searchEntity.dateMap.closeTime.end" type="date"></td>
                     </tr>
                     <tr>
                         <td>过期时间:</td>
-                        <td><input ng-model="searchEntity.dateMap.expireStart" type="date">至<input ng-model="searchEntity.dateMap.expireEnd" type="date"></td>
+                        <td><input ng-model="searchEntity.dateMap.expire.start" type="date">至<input
+                                ng-model="searchEntity.dateMap.expire.end" type="date"></td>
                     </tr>
                 </table>
             </div>
@@ -84,10 +91,11 @@
                 <table>
                     <tr>
                         <th>字段查询:</th>
+                        <th><button ng-click="" ng-model="openField"></button></th>
                     </tr>
                     <tr>
                         <td>订单ID：</td>
-                        <td><input ng-model="searchEntity.tbOrder.orderId" type="text"></td>
+                        <td><input ng-model="searchEntity.tbOrder.orderIdStr" type="text"></td>
                     </tr>
                     <tr>
                         <td>物流名称：</td>
@@ -123,6 +131,16 @@
         </div>
         <div class="box-tools pull-right">
             <div class="has-feedback">
+                状态：<select ng-model="searchEntity.tbOrder.status">
+                <option value="">全部</option>
+                <option value="1">未付款</option>
+                <option value="2">已付款</option>
+                <option value="3">未发货</option>
+                <option value="4">已发货</option>
+                <option value="5">交易成功</option>
+                <option value="6">交易关闭</option>
+                <option value="7">待评价</option>
+            </select>
                 订单来源：<select ng-model="searchEntity.tbOrder.sourceType">
                 <!--1:app端，2：pc端，3：M端，4：微信端，5：手机qq端-->
                 <option value="">全部</option>
@@ -142,21 +160,11 @@
                 <option value="是">已评价</option>
                 <option value="否">未评价</option>
             </select>
-               状态：<select ng-model="searchEntity.tbOrder.status">
-                    <option value="">全部</option>
-                    <option value="1">未付款</option>
-                    <option value="2">已付款</option>
-                    <option value="3">未发货</option>
-                    <option value="4">已发货</option>
-                    <option value="5">交易成功</option>
-                    <option value="6">交易关闭</option>
-                    <option value="7">待评价</option>
-                </select>
 
 
-
-                    <button class="btn btn-default" ng-click="reloadList()">查询</button>
-                    <button class="btn btn-default" ng-click="">导出</button>
+                <button class="btn btn-default" ng-click="reloadList()">查询</button>
+                <button class="btn btn-default" ng-click="outPutAsXlsx(1)">导出</button>
+                <button class="btn btn-default" ng-click="outPutAsXlsx(0)">导出全部</button>
             </div>
         </div>
         <!--工具栏/-->
@@ -201,7 +209,7 @@
             <tbody>
             <tr ng-repeat="entity in list">
                 <td><input type="checkbox" ng-click="updateSelection($event,entity.order_id)"></td>
-                <td>{{entity.orderId}}</td>
+                <td>{{entity.orderIdStr}}</td>
                 <td>{{entity.payment|number:2}}</td>
                 <td>{{payType[entity.paymentType]}}</td>
                 <td>{{entity.postFee}}</td>
@@ -229,7 +237,7 @@
 
                 <td class="text-center">
                     <button type="button" class="btn bg-olive btn-xs" data-toggle="modal" data-target="#editModal"
-                            ng-click="findOne(entity.order_id)">修改
+                            ng-click="findOrderItem(entity.orderIdStr)">详情
                     </button>
                 </td>
             </tr>
@@ -243,196 +251,49 @@
 </div>
 <!-- /.box-body -->
 
-<!-- 编辑窗口 -->
-<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+<!-- 详情窗口 -->
+<div class="modal fade modal-class" id="editModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                <h3 id="myModalLabel">编辑</h3>
+                <h3 id="myModalLabel">订单详情</h3>
             </div>
             <div class="modal-body">
-                <table class="table table-bordered table-striped" width="800px">
+                <!--数据列表-->
+                <table id="dataList" class="table table-bordered table-striped table-hover dataTable">
+                    <thead>
                     <tr>
-
-                        <td>实付金额。精确到2位小数;单位:元。如:200.07，表示:200元7分</td>
-
-                        <td><input class="form-control" ng-model="entity.payment"
-                                   placeholder="实付金额。精确到2位小数;单位:元。如:200.07，表示:200元7分"></td>
+                        <th class="sorting">商品id</th>
+                        <th class="sorting">SPU_ID</th>
+                        <th class="sorting">订单id</th>
+                        <th class="sorting">商品标题</th>
+                        <th class="sorting">商品单价</th>
+                        <th class="sorting">商品购买数量</th>
+                        <th class="sorting">商品总金额</th>
+                        <th class="sorting">商品图片地址</th>
+                        <th class="sorting">商家Id</th>
 
                     </tr>
-                    <tr>
-
-                        <td>支付类型，1、在线支付，2、货到付款</td>
-
-                        <td><input class="form-control" ng-model="entity.paymentType" placeholder="支付类型，1、在线支付，2、货到付款">
-                        </td>
-
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="entity in orderItemList">
+                        <td>{{entity.goodsId}}</td>
+                        <td>{{entity.itemId}}</td>
+                        <td>{{entity.orderIdStr}}</td>
+                        <td>{{entity.title}}</td>
+                        <td>{{entity.price|number:2}}</td>
+                        <td>{{entity.num}}</td>
+                        <td>{{entity.totalFee|number:2}}</td>
+                        <td><img src="{{entity.picPath}}"></td>
+                        <td>{{entity.sellerId}}</td>
                     </tr>
-                    <tr>
-
-                        <td>邮费。精确到2位小数;单位:元。如:200.07，表示:200元7分</td>
-
-                        <td><input class="form-control" ng-model="entity.postFee"
-                                   placeholder="邮费。精确到2位小数;单位:元。如:200.07，表示:200元7分"></td>
-
-                    </tr>
-                    <tr>
-
-                        <td>状态：1、未付款，2、已付款，3、未发货，4、已发货，5、交易成功，6、交易关闭,7、待评价</td>
-
-                        <td><input class="form-control" ng-model="entity.status"
-                                   placeholder="状态：1、未付款，2、已付款，3、未发货，4、已发货，5、交易成功，6、交易关闭,7、待评价"></td>
-
-                    </tr>
-                    <tr>
-
-                        <td>订单创建时间</td>
-
-                        <td><input class="form-control" ng-model="entity.createTime" placeholder="订单创建时间"></td>
-
-                    </tr>
-                    <tr>
-
-                        <td>订单更新时间</td>
-
-                        <td><input class="form-control" ng-model="entity.updateTime" placeholder="订单更新时间"></td>
-
-                    </tr>
-                    <tr>
-
-                        <td>付款时间</td>
-
-                        <td><input class="form-control" ng-model="entity.paymentTime" placeholder="付款时间"></td>
-
-                    </tr>
-                    <tr>
-
-                        <td>发货时间</td>
-
-                        <td><input class="form-control" ng-model="entity.consignTime" placeholder="发货时间"></td>
-
-                    </tr>
-                    <tr>
-
-                        <td>交易完成时间</td>
-
-                        <td><input class="form-control" ng-model="entity.endTime" placeholder="交易完成时间"></td>
-
-                    </tr>
-                    <tr>
-
-                        <td>交易关闭时间</td>
-
-                        <td><input class="form-control" ng-model="entity.closeTime" placeholder="交易关闭时间"></td>
-
-                    </tr>
-                    <tr>
-
-                        <td>物流名称</td>
-
-                        <td><input class="form-control" ng-model="entity.shippingName" placeholder="物流名称"></td>
-
-                    </tr>
-                    <tr>
-
-                        <td>物流单号</td>
-
-                        <td><input class="form-control" ng-model="entity.shippingCode" placeholder="物流单号"></td>
-
-                    </tr>
-                    <tr>
-
-                        <td>用户id</td>
-
-                        <td><input class="form-control" ng-model="entity.userId" placeholder="用户id"></td>
-
-                    </tr>
-                    <tr>
-
-                        <td>买家留言</td>
-
-                        <td><input class="form-control" ng-model="entity.buyerMessage" placeholder="买家留言"></td>
-
-                    </tr>
-                    <tr>
-
-                        <td>买家昵称</td>
-
-                        <td><input class="form-control" ng-model="entity.buyerNick" placeholder="买家昵称"></td>
-
-                    </tr>
-                    <tr>
-
-                        <td>买家是否已经评价</td>
-
-                        <td><input class="form-control" ng-model="entity.buyerRate" placeholder="买家是否已经评价"></td>
-
-                    </tr>
-                    <tr>
-
-                        <td>收货人地区名称(省，市，县)街道</td>
-
-                        <td><input class="form-control" ng-model="entity.receiverAreaName"
-                                   placeholder="收货人地区名称(省，市，县)街道"></td>
-
-                    </tr>
-                    <tr>
-
-                        <td>收货人手机</td>
-
-                        <td><input class="form-control" ng-model="entity.receiverMobile" placeholder="收货人手机"></td>
-
-                    </tr>
-                    <tr>
-
-                        <td>收货人邮编</td>
-
-                        <td><input class="form-control" ng-model="entity.receiverZipCode" placeholder="收货人邮编"></td>
-
-                    </tr>
-                    <tr>
-
-                        <td>收货人</td>
-
-                        <td><input class="form-control" ng-model="entity.receiver" placeholder="收货人"></td>
-
-                    </tr>
-                    <tr>
-
-                        <td>过期时间，定期清理</td>
-
-                        <td><input class="form-control" ng-model="entity.expire" placeholder="过期时间，定期清理"></td>
-
-                    </tr>
-                    <tr>
-
-                        <td>发票类型(普通发票，电子发票，增值税发票)</td>
-
-                        <td><input class="form-control" ng-model="entity.invoiceType"
-                                   placeholder="发票类型(普通发票，电子发票，增值税发票)"></td>
-
-                    </tr>
-                    <tr>
-
-                        <td>订单来源：1:app端，2：pc端，3：M端，4：微信端，5：手机qq端</td>
-
-                        <td><input class="form-control" ng-model="entity.sourceType"
-                                   placeholder="订单来源：1:app端，2：pc端，3：M端，4：微信端，5：手机qq端"></td>
-
-                    </tr>
-                    <tr>
-
-                        <td>商家ID</td>
-
-                        <td><input class="form-control" ng-model="entity.sellerId" placeholder="商家ID"></td>
-
-                    </tr>
-
+                    </tbody>
                 </table>
+                <!--数据列表/-->
             </div>
             <div class="modal-footer">
-                <button class="btn btn-success" data-dismiss="modal" aria-hidden="true" ng-click="save()">保存</button>
                 <button class="btn btn-default" data-dismiss="modal" aria-hidden="true">关闭</button>
             </div>
         </div>

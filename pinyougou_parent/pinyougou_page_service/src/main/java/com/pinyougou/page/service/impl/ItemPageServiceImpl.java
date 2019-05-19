@@ -15,11 +15,10 @@ import freemarker.template.Configuration;
 import freemarker.template.Template;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer;
 
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.Writer;
+import java.io.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,7 +29,8 @@ import java.util.Map;
  * @description com.pinyougou.page.service.impl
  * @date 2019-4-25
  */
-@Service
+@Service(timeout = 5000, interfaceClass = ItemPageService.class)
+@Transactional
 public class ItemPageServiceImpl implements ItemPageService {
     @Autowired
     private TbGoodsMapper goodsMapper;
@@ -79,7 +79,8 @@ public class ItemPageServiceImpl implements ItemPageService {
                 List<TbItem> itemList = itemMapper.selectByExample(example);
                 map.put("itemList", itemList);
                 //输出对象
-                Writer out = new FileWriter(PAGE_SERVICE_DIR + goodsId + ".html");
+                String parentPath = new File("").getCanonicalPath().replace("\\", "/").split("pinyougou_page_service")[0];//读取项目路径并且转义（"\"替换为"/"）,去除多余"pinyougou_page_service"后缀
+                Writer out = new OutputStreamWriter(new FileOutputStream(parentPath + PAGE_SERVICE_DIR + goodsId + ".html"), "UTF-8");
                 //保存文档
                 template.process(map,out);
                 out.close();

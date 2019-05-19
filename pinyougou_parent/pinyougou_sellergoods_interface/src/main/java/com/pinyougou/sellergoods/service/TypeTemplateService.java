@@ -1,10 +1,10 @@
 package com.pinyougou.sellergoods.service;
+
 import com.pinyougou.pojo.TbTypeTemplate;
+import entity.PageResult;
 
 import java.util.List;
 import java.util.Map;
-
-import entity.PageResult;
 /**
  * 业务逻辑接口
  * @author Steven
@@ -67,5 +67,20 @@ public interface TypeTemplateService {
 	 */
 	public List<Map> findSpecList(Long id);
 
-    void updateStatus(Long[] ids, String status);
+    void updateStatus(Long[] ids, Integer status);
+
+	/**zeke
+	 * 商家模板查询：查询+分页（区别在于商家查询只返回自己所申请过的模板）
+	 * @param loginName 当前商家名
+	 * @return
+	 */
+	public List<TbTypeTemplate> sellerFindAll(String loginName);
+
+	/**zeke
+	 * 商家模板查询：查询+分页（区别在于商家查询只返回自己所申请过的模板）
+	 * @param pageNum 当前页 码
+	 * @param pageSize 每页记录数
+	 * @return
+	 */
+	public PageResult sellerFindPage(TbTypeTemplate typeTemplate, int pageNum, int pageSize, String sellerId);
 }

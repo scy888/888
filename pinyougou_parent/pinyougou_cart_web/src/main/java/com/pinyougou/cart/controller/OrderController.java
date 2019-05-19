@@ -1,16 +1,17 @@
 package com.pinyougou.cart.controller;
-import java.util.List;
 
+import com.alibaba.dubbo.config.annotation.Reference;
 import com.pinyougou.order.service.OrderService;
+import com.pinyougou.pojo.TbOrder;
+import com.pinyougou.pojogroup.Order;
+import entity.PageResult;
+import entity.Result;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import com.alibaba.dubbo.config.annotation.Reference;
-import com.pinyougou.pojo.TbOrder;
 
-import entity.PageResult;
-import entity.Result;
+import java.util.List;
 /**
  * 请求处理器
  * @author Steven
@@ -113,7 +114,7 @@ public class OrderController {
 	 * @return
 	 */
 	@RequestMapping("/search")
-	public PageResult search(@RequestBody TbOrder order, int page, int rows  ){
+	public PageResult search(@RequestBody Order order, int page, int rows  ){
 		return orderService.findPage(order, page, rows);		
 	}
 	

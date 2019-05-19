@@ -26,7 +26,7 @@ app.service('userService',function($http){
 		return $http.get('../user/delete.do?ids='+ids);
 	}
 	//搜索
-	this.search=function(page,rows,searchEntity){
+	this.search=function(page,rows,){
 		return $http.post('../user/search.do?page='+page+"&rows="+rows, searchEntity);
 	}    	
 });

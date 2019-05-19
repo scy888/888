@@ -115,5 +115,4 @@ public class OrderController {
 	public PageResult search(@RequestBody Order order, int page, int rows  ){
         return orderService.findPage(order, page, rows);
 	}
-	
 }

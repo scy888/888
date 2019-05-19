@@ -1,9 +1,9 @@
 package com.pinyougou.sellergoods.service;
+
 import com.pinyougou.pojo.TbItemCat;
+import entity.PageResult;
 
 import java.util.List;
-
-import entity.PageResult;
 /**
  * 业务逻辑接口
  * @author Steven
@@ -66,5 +66,26 @@ public interface ItemCatService {
 	 */
 	public List<TbItemCat> findByParentId(Long patentId);
 
-    void updateStatus(Long[] ids, String status);
+    void updateStatus(Long[] ids, Integer status);
+
+	/**zeke
+	 * 商家分类查询：查询+分页（区别在于商家查询只返回自己所申请过的分类）
+	 * @param loginName 当前商家名，等同于下面的sellerId
+	 * @return
+	 */
+	public List<TbItemCat> sellerFindAll(String loginName);
+
+	/**zeke
+	 * 商家分类查询：查询+分页（区别在于商家查询只返回自己所申请过的分类）
+	 * @param pageNum 当前页 码
+	 * @param pageSize 每页记录数
+	 * @return
+	 */
+	public PageResult sellerFindPage(TbItemCat itemCat, int pageNum, int pageSize, String sellerId);
+
+	/**zeke
+	 * 商家分类查询：查询+分页（区别在于商家查询只返回自己所申请过的分类）
+	 * @return
+	 */
+	public List<TbItemCat> sellerFindByParentId(Long patentId,String sellerId);
 }

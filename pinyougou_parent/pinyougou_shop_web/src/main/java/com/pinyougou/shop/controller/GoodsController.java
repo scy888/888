@@ -1,16 +1,25 @@
 package com.pinyougou.shop.controller;
 
 import com.alibaba.dubbo.config.annotation.Reference;
+import com.alibaba.fastjson.JSON;
 import com.pinyougou.pojo.TbGoods;
+import com.pinyougou.pojo.TbItem;
 import com.pinyougou.pojogroup.Goods;
 import com.pinyougou.sellergoods.service.GoodsService;
 import entity.PageResult;
 import entity.Result;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jms.core.JmsTemplate;
+import org.springframework.jms.core.MessageCreator;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.jms.Destination;
+import javax.jms.JMSException;
+import javax.jms.Message;
+import javax.jms.Session;
 import java.util.List;
 
 /**
@@ -24,6 +33,16 @@ public class GoodsController {
 
 	@Reference
 	private GoodsService goodsService;
+	@Autowired
+	private JmsTemplate jmsTemplate;
+	@Autowired
+	private Destination queueSolrDestination;  //索引库更新队列
+	@Autowired
+	private Destination queueSolrDeleteDestination;  //索引库删除队列
+	@Autowired
+	private Destination topicPageDestination;  //索引库删除队列
+	@Autowired
+	private Destination topicPageDeleteDestination;  //索引库删除队列
 	
 	/**
 	 * 返回全部列表
@@ -126,5 +145,61 @@ public class GoodsController {
 		goods.setSellerId(sellerId);
 		return goodsService.findPage(goods, page, rows);		
 	}
-	
+
+	/**
+	 * 商品上下架操作
+	 * @param ids
+	 * @param marketStatus 上下架状态
+	 * @return
+	 */
+	@RequestMapping("updateMarketStatus")
+	public Result updateMarketStatus(Long[] ids, String marketStatus){
+		try {
+			//上下架
+			goodsService.updateMarketStatus(ids, marketStatus);
+			//查询所有启用的商品sku列表
+			List<TbItem> itemList = goodsService.findItemListByGoodsIdsAndStatus(ids, "1");
+			//上架
+			if ("1".equals(marketStatus)){
+				//发送消息导入索引库
+				String jsonItem = JSON.toJSONString(itemList);
+				jmsTemplate.send(queueSolrDestination, new MessageCreator() {
+					@Override
+					public Message createMessage(Session session) throws JMSException {
+						return session.createTextMessage(jsonItem);
+					}
+				});
+				//发送消息生成页面
+				jmsTemplate.send(topicPageDestination, new MessageCreator() {
+					@Override
+					public Message createMessage(Session session) throws JMSException {
+						return session.createObjectMessage(ids);
+					}
+				});
+				return new Result(true, "商品上架成功");
+			}
+			//下架
+			if ("0".equals(marketStatus)){
+				//发送消息删除页面
+				jmsTemplate.send(topicPageDeleteDestination, new MessageCreator() {
+					@Override
+					public Message createMessage(Session session) throws JMSException {
+						return session.createObjectMessage(ids);
+					}
+				});
+				//发送消息删除索引库
+				jmsTemplate.send(queueSolrDeleteDestination, new MessageCreator() {
+					@Override
+					public Message createMessage(Session session) throws JMSException {
+						return session.createObjectMessage(ids);
+					}
+				});
+			}
+			return new Result(true, "商品下架成功");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return new Result(false, "上下架发生错误");
+	}
+
 }

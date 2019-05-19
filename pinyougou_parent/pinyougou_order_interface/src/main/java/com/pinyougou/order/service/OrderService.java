@@ -1,11 +1,14 @@
 package com.pinyougou.order.service;
-import java.util.HashMap;
-import java.util.List;
-import com.pinyougou.pojo.TbOrder;
 
+import com.pinyougou.pojo.TbBrand;
+import com.pinyougou.pojo.TbOrder;
 import com.pinyougou.pojo.TbPayLog;
+import com.pinyougou.pojogroup.Goods;
 import com.pinyougou.pojogroup.Order;
 import entity.PageResult;
+
+import java.util.List;
+
 /**
  * 业务逻辑接口
  * @author Steven
@@ -31,8 +34,8 @@ public interface OrderService {
 	 * 增加
 	*/
 	public void add(TbOrder order);
-	
-	
+
+
 	/**
 	 * 修改
 	 */
@@ -75,5 +78,29 @@ public interface OrderService {
 	 */
 	public void updateOrderStatus(String out_trade_no,String transaction_id);
 
+	/**查询订单和订单里的商品详情
+	 * @return
+	 * @param border
+	 */
+	public List<TbOrder> findOrderAndOrderItem(Order border);
+
+
+	/**
+	 * 商家后台订单查询
+	 *
+	 */
+	public  List<TbOrder>  findOrdersBySellId (String selleId);
+
+
+	/**
+	 * 查询数据id
+	 */
+	public  TbOrder  findByQueryId (Long orderId);
+
+
+	/**
+	 *修改数据
+	 */
+	public  void modification (TbOrder TbOrder);
 
 }
