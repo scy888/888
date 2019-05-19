@@ -558,12 +558,12 @@ public class OrderServiceImpl implements OrderService {
         //如果不是历年查询的方法,参照订单查询的方法
         if (timeType != null && !timeType.equals(1) && !timeType.equals(2)) {
             tbOrderList = findOrderAndOrderItem(order);
-        }else {//历年查询
+        } else {//历年查询
             tbOrderList = new ArrayList<>();
-            for (int i = yearsStart; i <=yearsEnd ; i++) {
+            for (int i = yearsStart; i <= yearsEnd; i++) {
                 List<Map> yearsTimeList = (List) dateMap.get("yearsTimeList");
                 for (Map map : yearsTimeList) {
-                    dateMap.put("paymentTime",map);
+                    dateMap.put("paymentTime", map);
                     order.setDateMap(dateMap);
                     List<TbOrder> tbOrderList1 = findOrderAndOrderItem(order);
 //                    for (TbOrder tbOrder : tbOrderList1) {
@@ -574,7 +574,7 @@ public class OrderServiceImpl implements OrderService {
             }
         }
         List<TbItem> tbItemList1 = new ArrayList<>();
-        if (tbOrderList != null&&tbOrderList.size()>0) {
+        if (tbOrderList != null && tbOrderList.size() > 0) {
             for (TbOrder tbOrder : tbOrderList) {
                 for (TbOrderItem orderItem : tbOrder.getOrderItemList()) {
                     TbItem where = new TbItem();
@@ -586,13 +586,15 @@ public class OrderServiceImpl implements OrderService {
                         where1.setId(item.getCategoryid());
                         List<TbItemCat> tbItemCatList = itemCatMapper.select(where1);
                         item.setItemCatList(tbItemCatList);
-//                        where1.set
+                        TbOrderItem where2 = new TbOrderItem();
+                        where2.setItemId(item.getId());
+                        List<TbOrderItem> tbOrderItemList = orderItemMapper.select(where2);
+                        item.setTbOrderItemList(tbOrderItemList);
                     }
                 }
             }
         }
-        TbItem tbItem = new TbItem();
-        tbItem.setTbOrderList(tbOrderList);
+
 
         return null;
     }

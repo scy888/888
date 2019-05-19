@@ -104,16 +104,21 @@ public class TbItem implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Transient
-    private List<TbOrder> tbOrderList;
+    private List<TbOrderItem> tbOrderItemList;
 
-
-    public List<TbOrder> getTbOrderList() {
-        return tbOrderList;
+    public List<TbOrderItem> getTbOrderItemList() {
+        return tbOrderItemList;
     }
 
-    public void setTbOrderList(List<TbOrder> tbOrderList) {
-        this.tbOrderList = tbOrderList;
+    public void setTbOrderItemList(List<TbOrderItem> tbOrderItemList) {
+        this.tbOrderItemList = tbOrderItemList;
     }
+
+    public static long getSerialVersionUID() {
+        return serialVersionUID;
+    }
+
+
 
     @Transient
     private List<TbItemCat> itemCatList;
