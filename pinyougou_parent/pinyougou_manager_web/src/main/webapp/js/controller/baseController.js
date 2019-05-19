@@ -24,7 +24,7 @@ app.controller("baseController", function ($scope) {
             $scope.search($scope.paginationConf.currentPage, $scope.paginationConf.itemsPerPage);
         }
         if ($scope.searchType === 1) {
-            $scope.searchEntity = {dateMap: {timeType: '3', byYear: ''}, propertyMap: {propertyType: '0'}};
+            $scope.searchEntity = {dateMap: {timeType: '3', byYear: '='}, propertyMap: {propertyType: '0'}};
             // searchEntity.dateMap.timeType='3';searchEntity.dateMap.byYear='';searchEntity.propertyMap.propertyType='0';
         }
     }

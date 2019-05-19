@@ -1,5 +1,6 @@
 package com.pinyougou.pojogroup;
 
+import com.pinyougou.pojo.TbBrand;
 import com.pinyougou.pojo.TbGoods;
 import com.pinyougou.pojo.TbGoodsDesc;
 import com.pinyougou.pojo.TbItem;
@@ -14,6 +15,7 @@ public class Goods implements Serializable {
     private TbGoods goods;//商品SPU
     private TbGoodsDesc goodsDesc;//商品扩展
     private List<TbItem> itemList;//商品SKU列表
+
 
     public TbGoods getGoods() {
         return goods;

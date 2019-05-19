@@ -4,6 +4,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 @Table(name = "tb_item")
 public class TbItem implements Serializable {
@@ -101,6 +102,29 @@ public class TbItem implements Serializable {
     private String seller;
 
     private static final long serialVersionUID = 1L;
+
+    @Transient
+    private List<TbOrder> tbOrderList;
+
+
+    public List<TbOrder> getTbOrderList() {
+        return tbOrderList;
+    }
+
+    public void setTbOrderList(List<TbOrder> tbOrderList) {
+        this.tbOrderList = tbOrderList;
+    }
+
+    @Transient
+    private List<TbItemCat> itemCatList;
+
+    public List<TbItemCat> getItemCatList() {
+        return itemCatList;
+    }
+
+    public void setItemCatList(List<TbItemCat> itemCatList) {
+        this.itemCatList = itemCatList;
+    }
 
     /**
      * 获取商品id，同时也是商品编号

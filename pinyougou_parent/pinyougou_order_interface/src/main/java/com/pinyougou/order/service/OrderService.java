@@ -104,9 +104,9 @@ public interface OrderService {
 	/**
 	 * 分页统计
 	 * @param order
-	 * @param page
-	 * @param rows
+	 * @param pageNum
+	 * @param pageSize
 	 * @return
 	 */
-	PageResult findCountPage(Order order, int page, int rows);
+	PageResult findCountPage(Order order, int pageNum, int pageSize);
 }
