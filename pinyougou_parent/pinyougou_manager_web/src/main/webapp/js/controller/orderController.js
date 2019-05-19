@@ -126,4 +126,19 @@ app.controller('orderController', function ($scope, $controller, orderService, o
     //
     $scope.propertyTypeName=['商品名','商品ID','商品类型','品牌','商家ID'];
     $scope.timeTypeName=['年度统计','历年季度','历年月份','自定义区间'];
+
+    $scope.isThree=function (three) {
+        three=parseInt(three);
+
+        if (three===3) {
+            return true;
+        }else {
+            return false;
+        }
+    }
+    $scope.isNotThree=function (three) {
+        alert(three);
+        alert(!($scope.isThree(three)))
+      return !($scope.isThree(three))
+    }
 });

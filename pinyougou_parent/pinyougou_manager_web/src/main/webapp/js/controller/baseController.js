@@ -15,10 +15,16 @@ app.controller("baseController",function ($scope) {
         }
     };
 
+    $scope.searchType=0;
+
     //重新加载数据
     $scope.reloadList = function () {
         //$scope.findPage($scope.paginationConf.currentPage, $scope.paginationConf.itemsPerPage);
-        $scope.search( $scope.paginationConf.currentPage, $scope.paginationConf.itemsPerPage);
+        if ($scope.searchType===0){
+            $scope.search( $scope.paginationConf.currentPage, $scope.paginationConf.itemsPerPage);
+        } else {
+            alert("执行统计方法")
+        }
     }
 
     //选中的id列表
