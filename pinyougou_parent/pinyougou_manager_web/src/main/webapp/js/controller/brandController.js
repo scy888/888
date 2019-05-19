@@ -93,11 +93,7 @@ app.controller('brandController' ,function($scope,$controller,brandService){
 	}
 
 
-    $scope.uploadFile=function () {
-        uploadService.uploadFile().success(function (response) {
-                alert(response.message);
-        })
-    }
+
 
     
 });	

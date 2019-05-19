@@ -1,4 +1,4 @@
-app.controller("baseController",function ($scope) {
+app.controller("baseController",function ($scope,uploadService) {
     //分页控件属性配置
     $scope.paginationConf = {
         //当前页
@@ -52,5 +52,12 @@ app.controller("baseController",function ($scope) {
             result += obj[i][key];
         }
         return result;
+    }
+
+    $scope.uploadFile=function () {
+        document.getElementById("file").click();
+        uploadService.uploadFile().success(function (response) {
+            alert(response.message);
+        })
     }
 })
