@@ -29,13 +29,9 @@ app.service('orderService',function($http){
 	this.search=function(page,rows,searchEntity){
 		return $http.post('../order/search.do?page='+page+"&rows="+rows,searchEntity);
 	}
-	//导出为XLSX
-	this.outPutAsXlsx=function (order) {
-		alert(66)
-		return $http.post({
-            url:'../userOrder/findOrderAndOrderItem.do',
-            data:order,
-            responseType: 'arraybuffer'
-        })
+	//统计
+	this.searchCount=function (page, rows, searchEntity) {
+		return $http.post('../order/searchCount.do?page='+page+"&rows="+rows,searchEntity);
     }
+
 });

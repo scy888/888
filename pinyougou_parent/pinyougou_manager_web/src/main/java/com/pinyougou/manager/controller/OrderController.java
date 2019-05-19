@@ -115,4 +115,9 @@ public class OrderController {
 	public PageResult search(@RequestBody Order order, int page, int rows  ){
         return orderService.findPage(order, page, rows);
 	}
+
+	@RequestMapping("/searchCount")
+	public PageResult searchCount(@RequestBody Order order,int page,int rows){
+		return orderService.findCountPage(order,page,rows);
+	}
 }

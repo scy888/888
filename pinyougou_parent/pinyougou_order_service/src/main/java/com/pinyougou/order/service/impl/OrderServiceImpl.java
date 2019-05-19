@@ -17,13 +17,6 @@ import com.pinyougou.utils.IdWorker;
 import entity.PageResult;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import entity.PageResult;
-import org.springframework.beans.factory.annotation.Autowired;
-import com.alibaba.dubbo.config.annotation.Service;
-import com.github.abel533.entity.Example;
-import com.github.pagehelper.PageInfo;
-import com.github.pagehelper.PageHelper;
-
 import com.pinyougou.pojo.TbOrder;
 
 
@@ -278,24 +271,7 @@ public class OrderServiceImpl implements OrderService {
 		}
 	}
 
-	@Override
-	public PageResult findPage(Order border, int pageNum, int pageSize)  {
-		PageResult<TbOrder> result = new PageResult<TbOrder>();
-		//设置分页条件
-		PageHelper.startPage(pageNum, pageSize);
 
-		//查询数据
-		Example example = createExample(border);
-		List<TbOrder> list = orderMapper.selectByExample(example);
-		//保存数据列表
-		result.setRows(list);
-
-		//获取总记录数
-		PageInfo<TbOrder> info = new PageInfo<TbOrder>(list);
-		result.setTotal(info.getTotal());
-
-		return result;
-	}
 
 	/**
 	 * 构建查询条件
@@ -308,9 +284,18 @@ public class OrderServiceImpl implements OrderService {
 		Example.Criteria criteria = example.createCriteria();
 		TbOrder order = border.getTbOrder();
 		Map dateMap = border.getDateMap();
+		Map propertyMap = border.getPropertyMap();
+
+		if (propertyMap!=null){
+
+		}
 
 
 		if (dateMap!=null){
+			if (dateMap.get("timeType")!=null&&!"".equals())
+
+
+
 			for (Object o : dateMap.entrySet()) {
 				Map.Entry<String,Map>  entry = (Map.Entry<String, Map>) o;
 				addTimeCriteria(entry.getValue(),entry.getKey(),criteria);
@@ -420,6 +405,30 @@ public class OrderServiceImpl implements OrderService {
 	 */
 	@Override
 	public void modification(TbOrder order) {
+	}
+
+	@Override
+	public PageResult findPage(Order border, int pageNum, int pageSize)  {
+		PageResult<TbOrder> result = new PageResult<TbOrder>();
+		//设置分页条件
+		PageHelper.startPage(pageNum, pageSize);
+
+		//查询数据
+		Example example = createExample(border);
+		List<TbOrder> list = orderMapper.selectByExample(example);
+		//保存数据列表
+		result.setRows(list);
+
+		//获取总记录数
+		PageInfo<TbOrder> info = new PageInfo<TbOrder>(list);
+		result.setTotal(info.getTotal());
+
+		return result;
+	}
+
+	@Override
+	public PageResult findCountPage(Order order, int page, int rows) {
+		return null;
 	}
 
 }

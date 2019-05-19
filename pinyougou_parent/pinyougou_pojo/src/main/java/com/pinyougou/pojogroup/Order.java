@@ -10,6 +10,9 @@ public class Order implements Serializable {
     private TbOrder tbOrder;//订单
 
     private List<OrderItem> orderItemList;//订单清单
+
+    private HashMap propertyMap;
+
     private HashMap dateMap;
 
     public HashMap getDateMap() {
@@ -20,6 +23,13 @@ public class Order implements Serializable {
         this.dateMap = dateMap;
     }
 
+    public HashMap getPropertyMap() {
+        return propertyMap;
+    }
+
+    public void setPropertyMap(HashMap propertyMap) {
+        this.propertyMap = propertyMap;
+    }
 
     public TbOrder getTbOrder() {
         return tbOrder;

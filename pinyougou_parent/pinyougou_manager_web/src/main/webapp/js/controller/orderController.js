@@ -85,25 +85,34 @@ app.controller('orderController', function ($scope, $controller, orderService, o
             }
         );
     }
-    $scope.outPutAsXlsx = function (putAll) {
-        if(putAll==1){
-            var order = JSON.stringify($scope.searchEntity).replace(/(\")/g,'\'');
+    //统计
+    $scope.seachCount = function (page, rows) {
+        orderService.searchCount(page, rows, $scope.searchEntity).success(
+            function (response) {
+                $scope.list = response.rows;
+                $scope.paginationConf.totalItems = response.total;//更新总记录数
+            })
+    };
 
-        }else {
+    $scope.outPutAsXlsx = function (putAll) {
+        if (putAll == 1) {
+            var order = JSON.stringify($scope.searchEntity).replace(/(\")/g, '\'');
+
+        } else {
             var order = null;
         }
         alert(order)
-        var options={
-        url:'../userOrder/findOrderAndOrderItem.do',
-        data:{Order:order},
-        method:'post'
+        var options = {
+            url: '../userOrder/findOrderAndOrderItem.do',
+            data: {Order: order},
+            method: 'post'
         };
 
 
         DownLoadFile(options)
     }
     DownLoadFile = function (options) {
-        var config = $.extend(true, { method: 'post' }, options);
+        var config = $.extend(true, {method: 'post'}, options);
         var $iframe = $('<iframe id="down-file-iframe" />');
         var $form = $('<form target="down-file-iframe" method="' + config.method + '" />');
         $form.attr('action', config.url);
@@ -117,28 +126,26 @@ app.controller('orderController', function ($scope, $controller, orderService, o
     }
 
 
-
-
     //条件展开
-    $scope.openTime='展开';
-    $scope.openField='展开';
+    $scope.openTime = '展开';
+    $scope.openField = '展开';
 
     //
-    $scope.propertyTypeName=['商品名','商品ID','商品类型','品牌','商家ID'];
-    $scope.timeTypeName=['年度统计','历年季度','历年月份','自定义区间'];
+    $scope.propertyTypeName = ['商品名', '商品ID', '商品类型', '品牌', '商家ID'];
+    $scope.timeTypeName = ['年度统计', '历年季度', '历年月份', '自定义区间'];
 
-    $scope.isThree=function (three) {
-        three=parseInt(three);
+    $scope.isThree = function (three) {
+        three = parseInt(three);
 
-        if (three===3) {
+        if (three === 3) {
             return true;
-        }else {
+        } else {
             return false;
         }
     }
-    $scope.isNotThree=function (three) {
+    $scope.isNotThree = function (three) {
         alert(three);
         alert(!($scope.isThree(three)))
-      return !($scope.isThree(three))
+        return !($scope.isThree(three))
     }
 });

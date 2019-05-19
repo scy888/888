@@ -27,7 +27,7 @@
 
 </head>
 <body class="hold-transition skin-red sidebar-mini" ng-app="pinyougou" ng-controller="orderController"
-      ng-init="searchType=1;searchEntity.dateMap.timeType='3';searchEntity.propertyMap.propertyType='0';">
+      ng-init="searchType=1">
 <!-- .box-body -->
 <div class="box-header with-border">
     <h3 class="box-title">管理</h3>
@@ -44,28 +44,27 @@
                 <div class="btn-group">
                     <div>
                         时间类型：<select ng-model="searchEntity.dateMap.timeType">
-                        <option value="0">年度统计</option>
+                        <option value="0" >年度统计</option>
                         <option value="1">历年季度</option>
                         <option value="2">历年月份</option>
                         <option value="3">自定义区间</option>
                     </select>
                     </div>
                     <br>
+
                     <div ng-if="searchEntity.dateMap.timeType=='0'">
                         年度统计：
                         <select ng-model="searchEntity.dateMap.byYear">
-                            <option value="">---历年---</option>
+                            <option value=''>---历年---</option>
                             <option value="2016">2016</option>
                             <option value="2017">2017</option>
                             <option value="2018">2018</option>
-                            <option value="2019">2019</option>
+                            <option value="2019" >2019</option>
                         </select>
                     </div>
                     <div ng-if="searchEntity.dateMap.timeType=='1'">
                         季度：<select ng-model="searchEntity.dateMap.bySeason">
-                        <!--1:app端，2：pc端，3：M端，4：微信端，5：手机qq端-->
-                        <option value="">---季度---</option>
-                        <option value="1">1</option>
+                        <option value="1" ng-selected="true">1</option>
                         <option value="2">2</option>
                         <option value="3">3</option>
                         <option value="4">4</option>
@@ -73,9 +72,7 @@
                     </div>
                     <div ng-if="searchEntity.dateMap.timeType=='2'">
                         月份：<select ng-model="searchEntity.dateMap.byMonth">
-                        <!--1:app端，2：pc端，3：M端，4：微信端，5：手机qq端-->
-                        <option value="">---月份---</option>
-                        <option value="1">1月</option>
+                        <option value="1" ng-selected="true">1月</option>
                         <option value="2">2月</option>
                         <option value="3">3月</option>
                         <option value="4">4月</option>
@@ -89,8 +86,27 @@
                         <option value="12">12月</option>
                     </select>
                     </div>
+
+                    <div ng-if="(searchEntity.dateMap.timeType=='0'&&searchEntity.dateMap.byYear=='')||searchEntity.dateMap.timeType=='1'||searchEntity.dateMap.timeType=='2'">
+                        <br>
+                        设置历年：
+                        <select ng-model="searchEntity.dateMap.years.start">
+                            <option value="2016">2016</option>
+                            <option value="2017">2017</option>
+                            <option value="2018">2018</option>
+                            <option value="2019">2019</option>
+                        </select>
+                        至
+                        <select ng-model="searchEntity.dateMap.years.end">
+                            <option value="2016">2016</option>
+                            <option value="2017">2017</option>
+                            <option value="2018">2018</option>
+                            <option value="2019">2019</option>
+                        </select>
+                        年
+                    </div>
                     <div ng-if="searchEntity.dateMap.timeType=='3'">
-                        自定义统计: <input ng-model="searchEntity.dateMap.paymentTime.start" type="date">至<input
+                        自定义区间: <input ng-model="searchEntity.dateMap.paymentTime.start" type="date">至<input
                             ng-model="searchEntity.dateMap.paymentTime.end" type="date">
                     </div>
                 </div>
@@ -104,7 +120,7 @@
                         <option value="">---请选择---</option>
                         <option value="0">商品名</option>
                         <option value="1">商品ID</option>
-                        <option value="2">商品类型</option>
+                        <option value="2">商品分类</option>
                         <option value="3">品牌</option>
                         <option value="4">商家ID</option>
                     </select>
@@ -120,7 +136,7 @@
                         商品ID：<input type="text" ng-model="searchEntity.propertyMap.byGoodsId" placeholder="按商品ID统计">
                     </div>
                     <div ng-if="searchEntity.propertyMap.propertyType=='2'">
-                        商品类型：<input type="text" ng-model="searchEntity.propertyMap.byGoodsType" placeholder="按商品类型统计">
+                        商品分类：<input type="text" ng-model="searchEntity.propertyMap.byGoodsType" placeholder="按商品类型统计">
                     </div>
                     <div ng-if="searchEntity.propertyMap.propertyType=='3'">
                         品牌：<input type="text" ng-model="searchEntity.propertyMap.byBrandName" placeholder="按品牌统计">
@@ -133,7 +149,7 @@
 
                 </div>
                 <button class="btn btn-default" ng-click="reloadList()">统计</button>
-                <font size="2" color="red">*字段可填多项,id用半角逗号,隔开</font>
+                <font size="2" color="red">*查询多项时,字段用半角逗号“,”隔开</font>
                 <!--<button class="btn btn-default" ng-click="outPutAsXlsx(1)">导出</button>-->
                 <!--<button class="btn btn-default" ng-click="outPutAsXlsx(0)">导出全部</button>-->
             </div>
