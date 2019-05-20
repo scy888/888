@@ -1,11 +1,10 @@
 package com.pinyougou.order.service.impl;
+
 import com.alibaba.dubbo.config.annotation.Service;
 import com.github.abel533.entity.Example;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.pinyougou.mapper.TbOrderItemMapper;
-import com.pinyougou.mapper.TbOrderMapper;
-import com.pinyougou.mapper.TbPayLogMapper;
+import com.pinyougou.mapper.*;
 import com.pinyougou.order.service.OrderService;
 import com.pinyougou.pojo.*;
 import com.pinyougou.pojogroup.Cart;
@@ -16,13 +15,6 @@ import com.pinyougou.pojogroup.Order;
 import com.pinyougou.utils.IdWorker;
 import entity.PageResult;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import entity.PageResult;
-import org.springframework.beans.factory.annotation.Autowired;
-import com.alibaba.dubbo.config.annotation.Service;
-import com.github.abel533.entity.Example;
-import com.github.pagehelper.PageInfo;
-import com.github.pagehelper.PageHelper;
 
 import com.pinyougou.pojo.TbOrder;
 
@@ -43,155 +35,161 @@ import java.util.*;
 @Service(timeout = 5000)
 public class OrderServiceImpl implements OrderService {
 
-	@Autowired
-	private TbOrderMapper orderMapper;
+    @Autowired
+    private TbOrderMapper orderMapper;
+    @Autowired
+    private TbItemMapper itemMapper;
+    @Autowired
+    private TbItemCatMapper itemCatMapper;
 
-	/**
-	 * 查询全部
-	 */
-	@Override
-	public List<TbOrder> findAll() {
-		return orderMapper.select(null);
-	}
+    /**
+     * 查询全部
+     */
+    @Override
+    public List<TbOrder> findAll() {
+        return orderMapper.select(null);
+    }
 
-	/**
-	 * 按分页查询
-	 */
-	@Override
-	public PageResult findPage(int pageNum, int pageSize) {
+    /**
+     * 按分页查询
+     */
+    @Override
+    public PageResult findPage(int pageNum, int pageSize) {
 
-		PageResult<TbOrder> result = new PageResult<TbOrder>();
-		//设置分页条件
-		PageHelper.startPage(pageNum, pageSize);
+        PageResult<TbOrder> result = new PageResult<TbOrder>();
+        //设置分页条件
+        PageHelper.startPage(pageNum, pageSize);
 
-		//查询数据
-		List<TbOrder> list = orderMapper.select(null);
-		//保存数据列表
-		result.setRows(list);
+        //查询数据
+        List<TbOrder> list = orderMapper.select(null);
+        //保存数据列表
+        result.setRows(list);
 
-		//获取总记录数
-		PageInfo<TbOrder> info = new PageInfo<TbOrder>(list);
-		result.setTotal(info.getTotal());
-		return result;
-	}
+        //获取总记录数
+        PageInfo<TbOrder> info = new PageInfo<TbOrder>(list);
+        result.setTotal(info.getTotal());
+        return result;
+    }
 
-	@Autowired
-	private RedisTemplate redisTemplate;
-	@Autowired
-	private IdWorker worker;
-	@Autowired
-	private TbOrderItemMapper orderItemMapper;
-	@Autowired
-	private TbPayLogMapper payLogMapper;
+    @Autowired
+    private RedisTemplate redisTemplate;
+    @Autowired
+    private IdWorker worker;
+    @Autowired
+    private TbOrderItemMapper orderItemMapper;
+    @Autowired
+    private TbPayLogMapper payLogMapper;
 
 
-	/**
-	 * 增加
-	 *
-	 * @param order 这个对象在前端，只有支付方式与收件人、用户等信息
-	 */
-	@Override
-	public void add(TbOrder order) {
-		//先查询所有的购物车列表出来
-		List<Cart> cartList = (List<Cart>) redisTemplate.boundHashOps("cartList").get(order.getUserId());
+    /**
+     * 增加
+     *
+     * @param order 这个对象在前端，只有支付方式与收件人、用户等信息
+     */
+    @Override
+    public void add(TbOrder order) {
+        //先查询所有的购物车列表出来
+        List<Cart> cartList = (List<Cart>) redisTemplate.boundHashOps("cartList").get(order.getUserId());
 
-		long totalFee = 0;  //订单支付总金额
-		//记录所有订单号
-		List<Long> orderList = new ArrayList<>();
-		//订单拆单-一个商家一张订单
-		for (Cart cart : cartList) {
-			//1、创建新的订单对象,绑定所需要属性
-			TbOrder beSave = new TbOrder();
-			//生成唯一订单号
-			long orderId = worker.nextId();
-			//记录订单号
-			orderList.add(orderId);
-			beSave.setOrderId(orderId);  //订单id
-			double totalMoney = 0.0;  //实付金额(单个商家总金额)
-			beSave.setPaymentType(order.getPaymentType());  //支付方式
-			beSave.setStatus("1");  //未付款状态
+        long totalFee = 0;  //订单支付总金额
+        //记录所有订单号
+        List<Long> orderList = new ArrayList<>();
+        //订单拆单-一个商家一张订单
+        for (Cart cart : cartList) {
+            //1、创建新的订单对象,绑定所需要属性
+            TbOrder beSave = new TbOrder();
+            //生成唯一订单号
+            long orderId = worker.nextId();
+            //记录订单号
+            orderList.add(orderId);
+            beSave.setOrderId(orderId);  //订单id
+            double totalMoney = 0.0;  //实付金额(单个商家总金额)
+            beSave.setPaymentType(order.getPaymentType());  //支付方式
+            beSave.setStatus("1");  //未付款状态
 
-			beSave.setCreateTime(new Date());
-			beSave.setUpdateTime(beSave.getCreateTime());
-			beSave.setUserId(order.getUserId());  //下单人
-			beSave.setReceiverAreaName(order.getReceiverAreaName());//地址
-			beSave.setReceiverMobile(order.getReceiverMobile());//手机号
-			beSave.setReceiver(order.getReceiver());//收货人
-			beSave.setSourceType(order.getSourceType());  //订单来源
-			beSave.setSellerId(cart.getSellerId());  //商家Id
+            beSave.setCreateTime(new Date());
+            beSave.setUpdateTime(beSave.getCreateTime());
+            beSave.setUserId(order.getUserId());  //下单人
+            beSave.setReceiverAreaName(order.getReceiverAreaName());//地址
+            beSave.setReceiverMobile(order.getReceiverMobile());//手机号
+            beSave.setReceiver(order.getReceiver());//收货人
+            beSave.setSourceType(order.getSourceType());  //订单来源
+            beSave.setSellerId(cart.getSellerId());  //商家Id
 
-			//2、保存订单的商品列表
-			for (TbOrderItem orderItem : cart.getOrderItemList()) {
-				orderItem.setId(worker.nextId());
-				//绑定订单号
-				orderItem.setOrderId(orderId);
-				//计算总金额
-				totalMoney += orderItem.getTotalFee().doubleValue();
-				orderItemMapper.insertSelective(orderItem);
-			}
-			//保存订单
-			beSave.setPayment(new BigDecimal(totalMoney));
-			//计算订单总金额
-			totalFee += (long)(totalMoney * 100);
-			orderMapper.insertSelective(beSave);
-		}
-		//清空购物车
-		redisTemplate.boundHashOps("cartList").delete(order.getUserId());
+            //2、保存订单的商品列表
+            for (TbOrderItem orderItem : cart.getOrderItemList()) {
+                orderItem.setId(worker.nextId());
+                //绑定订单号
+                orderItem.setOrderId(orderId);
+                //计算总金额
+                totalMoney += orderItem.getTotalFee().doubleValue();
+                orderItemMapper.insertSelective(orderItem);
+            }
+            //保存订单
+            beSave.setPayment(new BigDecimal(totalMoney));
+            //计算订单总金额
+            totalFee += (long) (totalMoney * 100);
+            orderMapper.insertSelective(beSave);
+        }
+        //清空购物车
+        redisTemplate.boundHashOps("cartList").delete(order.getUserId());
 
-		//生成日志并保存
-		if("1".equals(order.getPaymentType())){
-			TbPayLog payLog = new TbPayLog();
-			//生成支付日志单号
-			payLog.setOutTradeNo(worker.nextId() + "");
-			payLog.setCreateTime(new Date());
-			payLog.setTotalFee(totalFee);  //订单总金额(分)
-			payLog.setUserId(order.getUserId());
-			payLog.setTradeState("0");  //0未支付 1已支付
-			payLog.setPayType("1");  //微信支付
-			//转换订单列表以","分隔
-			String orderIds = orderList.toString().replace("[", "").replace("]", "").replace(" ", "");
-			payLog.setOrderList(orderIds);
-			//把日志先保存数据库
-			payLogMapper.insertSelective(payLog);
-			//保存订单到redis
-			redisTemplate.boundHashOps("payLogs").put(order.getUserId(), payLog);
-		}
-	}
+        //生成日志并保存
+        if ("1".equals(order.getPaymentType())) {
+            TbPayLog payLog = new TbPayLog();
+            //生成支付日志单号
+            payLog.setOutTradeNo(worker.nextId() + "");
+            payLog.setCreateTime(new Date());
+            payLog.setTotalFee(totalFee);  //订单总金额(分)
+            payLog.setUserId(order.getUserId());
+            payLog.setTradeState("0");  //0未支付 1已支付
+            payLog.setPayType("1");  //微信支付
+            //转换订单列表以","分隔
+            String orderIds = orderList.toString().replace("[", "").replace("]", "").replace(" ", "");
+            payLog.setOrderList(orderIds);
+            //把日志先保存数据库
+            payLogMapper.insertSelective(payLog);
+            //保存订单到redis
+            redisTemplate.boundHashOps("payLogs").put(order.getUserId(), payLog);
+        }
+    }
 
-	@Override
-	public TbPayLog searchPayLogFromRedis(String userId) {
-		TbPayLog payLog = (TbPayLog) redisTemplate.boundHashOps("payLogs").get(userId);
-		return payLog;
-	}
+    @Override
+    public TbPayLog searchPayLogFromRedis(String userId) {
+        TbPayLog payLog = (TbPayLog) redisTemplate.boundHashOps("payLogs").get(userId);
+        return payLog;
+    }
 
-	@Override
-	public void updateOrderStatus(String out_trade_no, String transaction_id) {
-		//1. 修改支付日志状态
-		TbPayLog payLog = payLogMapper.selectByPrimaryKey(out_trade_no);
-		payLog.setTradeState("1");  //已支付
-		payLog.setPayTime(new Date());  //支付时间
-		payLog.setTransactionId(transaction_id);  //微信支付单号
-		payLogMapper.updateByPrimaryKeySelective(payLog);
-		//2. 修改关联的订单的状态
-		String[] orderList = payLog.getOrderList().split(",");
-		for (String orderId : orderList) {
-			TbOrder beUpdate = new TbOrder();
-			beUpdate.setOrderId(new Long(orderId));
-			beUpdate.setStatus("2");  //已支付
-			orderMapper.updateByPrimaryKeySelective(beUpdate);
-		}
-		//3. 清除缓存中的支付日志对象
-		redisTemplate.boundHashOps("payLogs").delete(payLog.getUserId());
-	}
+    @Override
+    public void updateOrderStatus(String out_trade_no, String transaction_id) {
+        //1. 修改支付日志状态
+        TbPayLog payLog = payLogMapper.selectByPrimaryKey(out_trade_no);
+        payLog.setTradeState("1");  //已支付
+        payLog.setPayTime(new Date());  //支付时间
+        payLog.setTransactionId(transaction_id);  //微信支付单号
+        payLogMapper.updateByPrimaryKeySelective(payLog);
+        //2. 修改关联的订单的状态
+        String[] orderList = payLog.getOrderList().split(",");
+        for (String orderId : orderList) {
+            TbOrder beUpdate = new TbOrder();
+            beUpdate.setOrderId(new Long(orderId));
+            beUpdate.setStatus("2");  //已支付
+            orderMapper.updateByPrimaryKeySelective(beUpdate);
+        }
+        //3. 清除缓存中的支付日志对象
+        redisTemplate.boundHashOps("payLogs").delete(payLog.getUserId());
+    }
 
-	/**查询订单和订单里的商品详情
-	 * @return
-	 * @param border
-	 */
-	@Override
-	public List<TbOrder> findOrderAndOrderItem(Order border) {
-		Example example = createExample(border);
-		List<TbOrder> tbOrderList = orderMapper.selectByExample(example);
+    /**
+     * 查询订单和订单里的商品详情
+     *
+     * @param border
+     * @return
+     */
+    @Override
+    public List<TbOrder> findOrderAndOrderItem(Order border) {
+        Example example = createExample(border);
+        List<TbOrder> tbOrderList = orderMapper.selectByExample(example);
 //		List<TbOrder> tbOrderList=null;
 //        if (tbOrderIds != null) {
 //            Example example=new Example(TbOrder.class);
@@ -203,191 +201,285 @@ public class OrderServiceImpl implements OrderService {
 //        }
 
         for (TbOrder tbOrder : tbOrderList) {
-            TbOrderItem where=new TbOrderItem();
+            TbOrderItem where = new TbOrderItem();
             where.setOrderId(tbOrder.getOrderId());
             List<TbOrderItem> tbOrderItemList = orderItemMapper.select(where);
             tbOrder.setOrderItemList(tbOrderItemList);
         }
         return tbOrderList;
-	}
+    }
 
 
-	/**
-	 * 修改
-	 */
-	@Override
-	public void update(TbOrder order) {
-		orderMapper.updateByPrimaryKeySelective(order);
-	}
+    /**
+     * 修改
+     */
+    @Override
+    public void update(TbOrder order) {
+        orderMapper.updateByPrimaryKeySelective(order);
+    }
 
-	/**
-	 * 根据ID获取实体
-	 *
-	 * @param id
-	 * @return
-	 */
-	@Override
-	public TbOrder findOne(Long id) {
-		return orderMapper.selectByPrimaryKey(id);
-	}
+    /**
+     * 根据ID获取实体
+     *
+     * @param id
+     * @return
+     */
+    @Override
+    public TbOrder findOne(Long id) {
+        return orderMapper.selectByPrimaryKey(id);
+    }
 
-	/**
-	 * 批量删除
-	 */
-	@Override
-	public void delete(Long[] ids) {
-		//数组转list
-		List longs = Arrays.asList(ids);
-		//构建查询条件
-		Example example = new Example(TbOrder.class);
-		Example.Criteria criteria = example.createCriteria();
-		criteria.andIn("id", longs);
+    /**
+     * 批量删除
+     */
+    @Override
+    public void delete(Long[] ids) {
+        //数组转list
+        List longs = Arrays.asList(ids);
+        //构建查询条件
+        Example example = new Example(TbOrder.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andIn("id", longs);
 
-		//跟据查询条件删除数据
-		orderMapper.deleteByExample(example);
-	}
+        //跟据查询条件删除数据
+        orderMapper.deleteByExample(example);
+    }
 
-	/**
-	 * 日期转换方法
-	 * @param timeStr
-	 * @return
-	 */
+    /**
+     * 日期转换方法
+     *
+     * @param timeStr
+     * @return
+     */
     private Date parseToDate(String timeStr) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         Date date = null;
         try {
-            date = sdf.parse( timeStr);
+            date = sdf.parse(timeStr);
         } catch (ParseException e) {
             System.out.println("日期格式错误!");
         }
         return date;
     }
 
-	/**
-	 * 添加日期查询条件
-	 * @param timeCriteria
-	 */
-	private void addTimeCriteria(Map timeCriteria,String timeProperty,Example.Criteria criteria) {
-		if (timeCriteria != null && timeCriteria.size()!=0) {
-			if (timeCriteria.get("start")!=null&&!timeCriteria.get("start").equals("")){
-				criteria.andGreaterThanOrEqualTo(timeProperty, parseToDate((String) timeCriteria.get("start")));
-			}
-			if(timeCriteria.get("end")!=null&&!timeCriteria.get("end").equals("")){
-				criteria.andLessThanOrEqualTo(timeProperty, parseToDate((String) timeCriteria.get("end")));
-			}
-		}
-	}
+    /**
+     * 添加日期查询条件
+     *
+     * @param timeCriteria
+     */
+    private void addTimeCriteria(Map timeCriteria, String timeProperty, Example.Criteria criteria) {
+        if (timeCriteria != null && timeCriteria.size() != 0) {
+            if (timeCriteria.get("start") != null && !timeCriteria.get("start").equals("")) {
+                criteria.andGreaterThanOrEqualTo(timeProperty, parseToDate((String) timeCriteria.get("start")));
+            }
+            if (timeCriteria.get("end") != null && !timeCriteria.get("end").equals("")) {
+                criteria.andLessThanOrEqualTo(timeProperty, parseToDate((String) timeCriteria.get("end")));
+            }
+        }/*else {
+            List<Map> yearsTimeList = (List<Map>) timeCriteria.get("yearsTimeList");
+            for (Map map : yearsTimeList) {
+                criteria.andBetween("paymentTime",map.get("start"))
+            }
+        }*/
 
-	@Override
-	public PageResult findPage(Order border, int pageNum, int pageSize)  {
-		PageResult<TbOrder> result = new PageResult<TbOrder>();
-		//设置分页条件
-		PageHelper.startPage(pageNum, pageSize);
-
-		//查询数据
-		Example example = createExample(border);
-		List<TbOrder> list = orderMapper.selectByExample(example);
-		//保存数据列表
-		result.setRows(list);
-
-		//获取总记录数
-		PageInfo<TbOrder> info = new PageInfo<TbOrder>(list);
-		result.setTotal(info.getTotal());
-
-		return result;
-	}
-
-	/**
-	 * 构建查询条件
-	 * @param border
-	 * @return
-	 */
-	private Example createExample(Order border) {
-		//构建查询条件
-		Example example = new Example(TbOrder.class);
-		Example.Criteria criteria = example.createCriteria();
-		TbOrder order = border.getTbOrder();
-		Map dateMap = border.getDateMap();
+    }
 
 
-		if (dateMap!=null){
-			for (Object o : dateMap.entrySet()) {
-				Map.Entry<String,Map>  entry = (Map.Entry<String, Map>) o;
-				addTimeCriteria(entry.getValue(),entry.getKey(),criteria);
-			}
-		}
+    /**
+     * 构建查询条件
+     *
+     * @param border
+     * @return
+     */
+    private Example createExample(Order border) {
+        //构建查询条件
+        Example example = new Example(TbOrder.class);
+        Example.Criteria criteria = example.createCriteria();
+        TbOrder order = border.getTbOrder();
+        Map dateMap = border.getDateMap();
+        Map propertyMap = border.getPropertyMap();
 
-		if (order != null) {
-			//如果字段不为空
-			if (order.getPaymentType() != null && order.getPaymentType().length() > 0) {
-				criteria.andLike("paymentType", "%" + order.getPaymentType() + "%");
-			}
-			//如果字段不为空
-			if (order.getPostFee() != null && order.getPostFee().length() > 0) {
-				criteria.andLike("postFee", "%" + order.getPostFee() + "%");
-			}
-			//如果字段不为空
-			if (order.getStatus() != null && order.getStatus().length() > 0) {
-				criteria.andLike("status", "%" + order.getStatus() + "%");
-			}
-			//如果字段不为空
-			if (order.getShippingName() != null && order.getShippingName().length() > 0) {
-				criteria.andLike("shippingName", "%" + order.getShippingName() + "%");
-			}
-			//如果字段不为空
-			if (order.getShippingCode() != null && order.getShippingCode().length() > 0) {
-				criteria.andLike("shippingCode", "%" + order.getShippingCode() + "%");
-			}
-			//如果字段不为空
-			if (order.getUserId() != null && order.getUserId().length() > 0) {
-				criteria.andLike("userId", "%" + order.getUserId() + "%");
-			}
-			//如果字段不为空
-			if (order.getBuyerMessage() != null && order.getBuyerMessage().length() > 0) {
-				criteria.andLike("buyerMessage", "%" + order.getBuyerMessage() + "%");
-			}
-			//如果字段不为空
-			if (order.getBuyerNick() != null && order.getBuyerNick().length() > 0) {
-				criteria.andLike("buyerNick", "%" + order.getBuyerNick() + "%");
-			}
-			//如果字段不为空
-			if (order.getBuyerRate() != null && order.getBuyerRate().length() > 0) {
-				criteria.andLike("buyerRate", "%" + order.getBuyerRate() + "%");
-			}
-			//如果字段不为空
-			if (order.getReceiverAreaName() != null && order.getReceiverAreaName().length() > 0) {
-				criteria.andLike("receiverAreaName", "%" + order.getReceiverAreaName() + "%");
-			}
-			//如果字段不为空
-			if (order.getReceiverMobile() != null && order.getReceiverMobile().length() > 0) {
-				criteria.andLike("receiverMobile", "%" + order.getReceiverMobile() + "%");
-			}
-			//如果字段不为空
-			if (order.getReceiverZipCode() != null && order.getReceiverZipCode().length() > 0) {
-				criteria.andLike("receiverZipCode", "%" + order.getReceiverZipCode() + "%");
-			}
-			//如果字段不为空
-			if (order.getReceiver() != null && order.getReceiver().length() > 0) {
-				criteria.andLike("receiver", "%" + order.getReceiver() + "%");
-			}
-			//如果字段不为空
-			if (order.getInvoiceType() != null && order.getInvoiceType().length() > 0) {
-				criteria.andLike("invoiceType", "%" + order.getInvoiceType() + "%");
-			}
-			//如果字段不为空
-			if (order.getSourceType() != null && order.getSourceType().length() > 0) {
-				criteria.andLike("sourceType", "%" + order.getSourceType() + "%");
-			}
-			//如果字段不为空
-			if (order.getSellerId() != null && order.getSellerId().length() > 0) {
-				criteria.andLike("sellerId", "%" + order.getSellerId() + "%");
-			}
+        if (propertyMap != null) {
 
-		}
-		return example;
-	}
+        }
 
-	/**
+        //如果时间数据dateMap不为空,调用addTimeCriteria构建查询条件
+        if (dateMap != null) {
+
+            for (Object o : dateMap.entrySet()) {
+                Map.Entry<String, Map> entry = (Map.Entry<String, Map>) o;
+                addTimeCriteria(entry.getValue(), entry.getKey(), criteria);
+            }
+        }
+
+        if (order != null) {
+            //如果字段不为空
+            if (order.getPaymentType() != null && order.getPaymentType().length() > 0) {
+                criteria.andLike("paymentType", "%" + order.getPaymentType() + "%");
+            }
+            //如果字段不为空
+            if (order.getPostFee() != null && order.getPostFee().length() > 0) {
+                criteria.andLike("postFee", "%" + order.getPostFee() + "%");
+            }
+            //如果字段不为空
+            if (order.getStatus() != null && order.getStatus().length() > 0) {
+                criteria.andLike("status", "%" + order.getStatus() + "%");
+            }
+            //如果字段不为空
+            if (order.getShippingName() != null && order.getShippingName().length() > 0) {
+                criteria.andLike("shippingName", "%" + order.getShippingName() + "%");
+            }
+            //如果字段不为空
+            if (order.getShippingCode() != null && order.getShippingCode().length() > 0) {
+                criteria.andLike("shippingCode", "%" + order.getShippingCode() + "%");
+            }
+            //如果字段不为空
+            if (order.getUserId() != null && order.getUserId().length() > 0) {
+                criteria.andLike("userId", "%" + order.getUserId() + "%");
+            }
+            //如果字段不为空
+            if (order.getBuyerMessage() != null && order.getBuyerMessage().length() > 0) {
+                criteria.andLike("buyerMessage", "%" + order.getBuyerMessage() + "%");
+            }
+            //如果字段不为空
+            if (order.getBuyerNick() != null && order.getBuyerNick().length() > 0) {
+                criteria.andLike("buyerNick", "%" + order.getBuyerNick() + "%");
+            }
+            //如果字段不为空
+            if (order.getBuyerRate() != null && order.getBuyerRate().length() > 0) {
+                criteria.andLike("buyerRate", "%" + order.getBuyerRate() + "%");
+            }
+            //如果字段不为空
+            if (order.getReceiverAreaName() != null && order.getReceiverAreaName().length() > 0) {
+                criteria.andLike("receiverAreaName", "%" + order.getReceiverAreaName() + "%");
+            }
+            //如果字段不为空
+            if (order.getReceiverMobile() != null && order.getReceiverMobile().length() > 0) {
+                criteria.andLike("receiverMobile", "%" + order.getReceiverMobile() + "%");
+            }
+            //如果字段不为空
+            if (order.getReceiverZipCode() != null && order.getReceiverZipCode().length() > 0) {
+                criteria.andLike("receiverZipCode", "%" + order.getReceiverZipCode() + "%");
+            }
+            //如果字段不为空
+            if (order.getReceiver() != null && order.getReceiver().length() > 0) {
+                criteria.andLike("receiver", "%" + order.getReceiver() + "%");
+            }
+            //如果字段不为空
+            if (order.getInvoiceType() != null && order.getInvoiceType().length() > 0) {
+                criteria.andLike("invoiceType", "%" + order.getInvoiceType() + "%");
+            }
+            //如果字段不为空
+            if (order.getSourceType() != null && order.getSourceType().length() > 0) {
+                criteria.andLike("sourceType", "%" + order.getSourceType() + "%");
+            }
+            //如果字段不为空
+            if (order.getSellerId() != null && order.getSellerId().length() > 0) {
+                criteria.andLike("sellerId", "%" + order.getSellerId() + "%");
+            }
+
+        }
+        return example;
+    }
+
+    /**
+     * 获得时间类型
+     *
+     * @param timeType
+     * @param dateMap
+     * @param paymentTime
+     */
+    private Map setCountTimeMap(Integer timeType, Map dateMap, Map paymentTime) {
+        Integer yearsStart = (Integer) dateMap.get("yearsStart");
+        Integer yearsEnd = (Integer) dateMap.get("yearsEnd");
+        List<Map> yearsTime = new ArrayList<>();
+        //按年查询+历年
+        if (timeType == 0) {
+            String byYear = (String) dateMap.get("byYear");
+            if (byYear.equals("=")) {
+                byYear = yearsStart + "-01-01=" + yearsEnd + "-12-31";
+            }
+            String[] split = byYear.split("=");
+            paymentTime.put("start", split[0]);
+            paymentTime.put("end", split[1]);
+            dateMap.put("paymentTime", paymentTime);
+        }
+        //历年季度查询
+        if (timeType == 1) {
+            Integer bySeason = (Integer) dateMap.get("bySeason");
+            String start = null;
+            String end = null;
+            if (bySeason == 1) {
+                start = "-01-01";
+                end = "-03-31";
+            }
+            if (bySeason == 2) {
+                start = "-04-01";
+                end = "-06-30";
+            }
+            if (bySeason == 3) {
+                start = "-07-01";
+                end = "-09-31";
+            }
+            if (bySeason == 4) {
+                start = "-10-01";
+                end = "-12-31";
+            }
+
+            for (int i = yearsStart; i <= yearsEnd; i++) {
+                start = i + start;
+                end = i + end;
+                Date startTime = parseToDate(start);
+                Date endTime = parseToDate(end);
+                Map map = new HashMap();
+                map.put("start", startTime);
+                map.put("end", endTime);
+                yearsTime.add(map);
+                dateMap.put("yearsTimeList", yearsTime);
+            }
+
+        }
+        //历年月份查询
+        if (timeType == 2) {
+            String start = "01";
+            String end = "30";
+            //years%4=0
+            String byMonth = (String) dateMap.get("byMonth");
+            String[] bigMoth = {"01", "03", "05", "07", "08", "10", "12"};
+            for (String s : bigMoth) {
+                if (byMonth.equals(s)) {
+                    end = "31";
+                }
+            }
+            for (int i = yearsStart; i <= yearsEnd; i++) {
+                if (byMonth.equals("02")) {
+                    end = "28";
+                    if (i % 4 == 0) {
+                        end = "29";
+                    }
+                }
+                start = i + "-" + byMonth + "-" + start;
+                end = i + "-" + byMonth + "-" + end;
+                Date startTime = parseToDate(start);
+                Date endTime = parseToDate(end);
+                Map map = new HashMap();
+                map.put("start", startTime);
+                map.put("end", endTime);
+                yearsTime.add(map);
+                dateMap.put("yearsTimeList", yearsTime);
+            }
+        }
+        dateMap.remove("yearsStart");
+        dateMap.remove("yearsEnd");
+        dateMap.remove("timeType");
+        dateMap.remove("byMonth");
+        dateMap.remove("bySeason");
+        dateMap.remove("byYear");
+
+        return dateMap;
+    }
+
+    /**
      * 商家商品后台查询id
      */
     @Override
@@ -398,28 +490,113 @@ public class OrderServiceImpl implements OrderService {
         return orders;
     }
 
-	/**
-	 * 查询
-	 * @param orderId
-	 * @return
-	 */
-	@Override
-	public TbOrder findByQueryId(Long orderId) {
+    /**
+     * 查询
+     *
+     * @param orderId
+     * @return
+     */
+    @Override
+    public TbOrder findByQueryId(Long orderId) {
 
-		TbOrder where = new TbOrder();
-		where.setOrderId(orderId);
-		return orderMapper.selectOne(where);
-
-
-	}
+        TbOrder where = new TbOrder();
+        where.setOrderId(orderId);
+        return orderMapper.selectOne(where);
 
 
-	/**
-	 * 修改
-	 * @param order
-	 */
-	@Override
-	public void modification(TbOrder order) {
-	}
+    }
+
+
+    /**
+     * 修改
+     *
+     * @param order
+     */
+    @Override
+    public void modification(TbOrder order) {
+    }
+
+    @Override
+    public PageResult findPage(Order border, int pageNum, int pageSize) {
+        PageResult<TbOrder> result = new PageResult<TbOrder>();
+        //设置分页条件
+        PageHelper.startPage(pageNum, pageSize);
+
+        //查询数据
+
+        Example example = createExample(border);
+        List<TbOrder> list = orderMapper.selectByExample(example);
+        //保存数据列表
+        result.setRows(list);
+
+        //获取总记录数
+        PageInfo<TbOrder> info = new PageInfo<TbOrder>(list);
+        result.setTotal(info.getTotal());
+
+        return result;
+    }
+
+    @Override
+    public PageResult findCountPage(Order order, int pageNum, int pageSize) {
+        PageResult<TbItem> result = new PageResult<TbItem>();
+        //设置分页条件
+        PageHelper.startPage(pageNum, pageSize);
+
+        HashMap dateMap = order.getDateMap();
+        Integer timeType = (Integer) dateMap.get("timeType");
+        Integer yearsStart = (Integer) dateMap.get("yearsStart");
+        Integer yearsEnd = (Integer) dateMap.get("yearsEnd");
+        //如果时间类型不为空,用setCountTimeMap,设置统计时间
+        if (timeType != null && !timeType.equals(3)) {
+            Map paymentTime = (Map) dateMap.get("paymentTime");
+            HashMap map = (HashMap) setCountTimeMap(timeType, dateMap, paymentTime);
+            order.setDateMap(map);
+        }
+
+
+        List<TbOrder> tbOrderList = null;
+        //如果不是历年查询的方法,参照订单查询的方法
+        if (timeType != null && !timeType.equals(1) && !timeType.equals(2)) {
+            tbOrderList = findOrderAndOrderItem(order);
+        } else {//历年查询
+            tbOrderList = new ArrayList<>();
+            for (int i = yearsStart; i <= yearsEnd; i++) {
+                List<Map> yearsTimeList = (List) dateMap.get("yearsTimeList");
+                for (Map map : yearsTimeList) {
+                    dateMap.put("paymentTime", map);
+                    order.setDateMap(dateMap);
+                    List<TbOrder> tbOrderList1 = findOrderAndOrderItem(order);
+//                    for (TbOrder tbOrder : tbOrderList1) {
+//                        tbOrderList.add(tbOrder);
+//                    }
+                    tbOrderList.addAll(tbOrderList1);
+                }
+            }
+        }
+        List<TbItem> tbItemList1 = new ArrayList<>();
+        if (tbOrderList != null && tbOrderList.size() > 0) {
+            for (TbOrder tbOrder : tbOrderList) {
+                for (TbOrderItem orderItem : tbOrder.getOrderItemList()) {
+                    TbItem where = new TbItem();
+                    where.setId(orderItem.getItemId());
+                    List<TbItem> tbItemList = itemMapper.select(where);
+                    orderItem.setItemList(tbItemList);
+                    for (TbItem item : tbItemList) {
+                        TbItemCat where1 = new TbItemCat();
+                        where1.setId(item.getCategoryid());
+                        List<TbItemCat> tbItemCatList = itemCatMapper.select(where1);
+                        item.setItemCatList(tbItemCatList);
+                        TbOrderItem where2 = new TbOrderItem();
+                        where2.setItemId(item.getId());
+                        List<TbOrderItem> tbOrderItemList = orderItemMapper.select(where2);
+                        item.setTbOrderItemList(tbOrderItemList);
+                    }
+                }
+            }
+        }
+
+
+        return null;
+    }
 
 }

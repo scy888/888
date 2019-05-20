@@ -3,6 +3,7 @@ package com.pinyougou.pojo;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.List;
 
 @Table(name = "tb_order_item")
 public class TbOrderItem implements Serializable {
@@ -58,6 +59,18 @@ public class TbOrderItem implements Serializable {
 
     @Column(name = "seller_id")
     private String sellerId;
+
+
+    @Transient
+    private List<TbItem> itemList;
+
+    public List<TbItem> getItemList() {
+        return itemList;
+    }
+
+    public void setItemList(List<TbItem> itemList) {
+        this.itemList = itemList;
+    }
 
 
     /**

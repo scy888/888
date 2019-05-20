@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 ### Maven
 target/
 logs/
@@ -65,8 +64,3 @@ nbdist/
 
 ### VSCode
 .vscode
-=======
-*.iml
-.idea/
-target/
->>>>>>> 67f5170b82b290abbe2e7bb652d51a9a2f997a47

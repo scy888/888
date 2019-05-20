@@ -1,9 +1,7 @@
 package com.pinyougou.order.service;
 
-import com.pinyougou.pojo.TbBrand;
 import com.pinyougou.pojo.TbOrder;
 import com.pinyougou.pojo.TbPayLog;
-import com.pinyougou.pojogroup.Goods;
 import com.pinyougou.pojogroup.Order;
 import entity.PageResult;
 
@@ -103,4 +101,12 @@ public interface OrderService {
 	 */
 	public  void modification (TbOrder TbOrder);
 
+	/**
+	 * 分页统计
+	 * @param order
+	 * @param pageNum
+	 * @param pageSize
+	 * @return
+	 */
+	PageResult findCountPage(Order order, int pageNum, int pageSize);
 }
