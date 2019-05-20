@@ -60,8 +60,13 @@ public class ItemCatServiceImpl implements ItemCatService {
 	 * 增加
 	 */
 	@Override
-	public void add(TbItemCat itemCat) {
-		itemCatMapper.insertSelective(itemCat);		
+	public Long add(TbItemCat itemCat) {
+		itemCatMapper.insertSelective(itemCat);
+        List<TbItemCat> tbItemCats = itemCatMapper.select(itemCat);
+        for (TbItemCat tbItemCat : tbItemCats) {
+            return tbItemCat.getId();
+        }
+        return null;
 	}
 
 	
@@ -250,5 +255,20 @@ public class ItemCatServiceImpl implements ItemCatService {
 		}
 		return itemCats;
 	}
+
+    /**通过分类名称获取对应的Id
+     * @param itemCatname
+     * @return
+     */
+    @Override
+    public Long findItemCatIdByName(String itemCatname) {
+        TbItemCat where=new TbItemCat();
+        where.setName(itemCatname);
+        List<TbItemCat> tbItemCatList = itemCatMapper.select(where);
+        for (TbItemCat tbItemCat : tbItemCatList) {
+            return tbItemCat.getId();
+        }
+        return null;
+    }
 
 }

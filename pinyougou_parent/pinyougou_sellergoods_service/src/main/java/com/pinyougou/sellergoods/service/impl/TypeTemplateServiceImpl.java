@@ -266,4 +266,17 @@ public class TypeTemplateServiceImpl implements TypeTemplateService {
 		return result;
 	}
 
+    @Override
+    public Long findTempIdByTempName(String tempName) {
+		TbTypeTemplate where=new TbTypeTemplate();
+		where.setName(tempName);
+        List<TbTypeTemplate> tbTypeTemplateList = typeTemplateMapper.select(where);
+        if (tbTypeTemplateList.size()==1){
+            for (TbTypeTemplate tbTypeTemplate : tbTypeTemplateList) {
+                return tbTypeTemplate.getId();
+            }
+        }
+        return null;
+    }
+
 }

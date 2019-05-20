@@ -127,5 +127,11 @@ app.controller('itemCatController' ,function($scope,$controller,itemCatService){
 			}
 		})
 	}
+
+    $scope.uploadFile=function () {
+        itemCatService.uploadFile().success(function (response) {
+            alert(response.message);
+        })
+    }
     
 });	
