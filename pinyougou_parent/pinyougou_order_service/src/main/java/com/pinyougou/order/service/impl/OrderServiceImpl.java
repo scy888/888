@@ -571,7 +571,7 @@ public class OrderServiceImpl implements OrderService {
 
         //1.拿到所有的订单
         //构建查询条件
-        Example example = new Example(TbItem.class);
+        Example example = new Example(TbOrder.class);
         Example.Criteria criteria = example.createCriteria();
         criteria.andGreaterThanOrEqualTo("paymentTime", start);//大于等于
         criteria.andLessThanOrEqualTo("paymentTime", end);//小于等于
@@ -598,9 +598,8 @@ public class OrderServiceImpl implements OrderService {
                     orderItems.add(tbOrderItem);
                 }
             }
-            tbItem.setOrderItemList(orderItemList);
-
-            if (tbItem.getOrderItemList().size()>0){
+            if (orderItems.size()>0){
+                tbItem.setOrderItemList(orderItemList);
                 tbItemList.add(tbItem);
             }
         }

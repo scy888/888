@@ -13,7 +13,7 @@ app.service('orderService',function ($http) {
         return $http.get("../from/findByQueryId.do？orderIdStr="+orderIdStr);
     }
 
-
+    //时间段每日销售额折线图展现
     this.searchDaySale=function (startTime,endTime) {
         return $http.get("../form/searchDaySale.do?start="+startTime+"&end="+endTime);
     }
@@ -32,4 +32,8 @@ app.service('orderService',function ($http) {
         return $http.post('../form/searchAndPaging.do?page='+page+"&rows="+rows, searchEntity);
     }
 
+    //各商品销售额时间段统计
+    this.searchDayGoodsSale=function (startTime,endTime) {
+        return $http.get("../form/searchDayGoodsSale.do?start="+startTime+"&end="+endTime);
+    }
 })

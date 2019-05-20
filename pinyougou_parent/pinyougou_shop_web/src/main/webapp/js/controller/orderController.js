@@ -52,35 +52,35 @@ app.controller('orderController', function ($scope, $controller, orderService) {
 
 
     //默认显示
-   /* var arrTime = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-    var arrSale = [10000];
-    var dom = document.getElementById("container");
-    var myChart = echarts.init(dom);
-    option = {
-        xAxis: {
-            type: 'category',
-            data: arrTime//每天的时间
-        },
-        yAxis: {
-            type: 'value'
-        },
-        series: [{
-            data: arrSale,//日销售额数据
-            type: 'line',
-        }]
-    };
-    if (option && typeof option === "object") {
-        myChart.setOption(option, true);
-    }
-*/
+    /* var arrTime = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+     var arrSale = [10000];
+     var dom = document.getElementById("container");
+     var myChart = echarts.init(dom);
+     option = {
+         xAxis: {
+             type: 'category',
+             data: arrTime//每天的时间
+         },
+         yAxis: {
+             type: 'value'
+         },
+         series: [{
+             data: arrSale,//日销售额数据
+             type: 'line',
+         }]
+     };
+     if (option && typeof option === "object") {
+         myChart.setOption(option, true);
+     }
+ */
 
     //折线图查找日销售额
     $scope.searchDaySale = function () {
         orderService.searchDaySale($scope.startTime, $scope.endTime).success(
             function (response) {
                 //清空元素
-                arrTime=[];
-                arrSale=[];
+                arrTime = [];
+                arrSale = [];
                 var dayAndSaleMap = response
                 for (var key in dayAndSaleMap) {
                     arrTime.push(key)
@@ -111,25 +111,24 @@ app.controller('orderController', function ($scope, $controller, orderService) {
     }
 
 
-
     //读取列表数据绑定到表单中
-    $scope.findAll=function(){
+    $scope.findAll = function () {
         orderService.findAll().success(
-            function(response){
-                $scope.list=response;
+            function (response) {
+                $scope.list = response;
             }
         );
     }
 
 
     //订单状态
-    $scope.status=['角标占位','未付款','已付款','未发货','已发货','交易成功','交易关闭','待评价'];
+    $scope.status = ['角标占位', '未付款', '已付款', '未发货', '已发货', '交易成功', '交易关闭', '待评价'];
 
     //订单发货
-    $scope.updateStatus=function (status) {
-        orderService.updateStatus($scope.selectIds,status).success(function (response) {
+    $scope.updateStatus = function (status) {
+        orderService.updateStatus($scope.selectIds, status).success(function (response) {
             alert(response.message);
-            if(response.success){
+            if (response.success) {
                 $scope.reloadList();
                 //清空发货列表
                 $scope.selectIds = [];
@@ -137,16 +136,27 @@ app.controller('orderController', function ($scope, $controller, orderService) {
         })
     }
 
-    $scope.searchEntity={};//定义搜索对象
+    $scope.searchEntity = {};//定义搜索对象
 
     //搜索
-    $scope.search=function(page,rows){
-        orderService.search(page,rows,$scope.searchEntity).success(
-            function(response){
-                $scope.list=response.rows;
-                $scope.paginationConf.totalItems=response.total;//更新总记录数
+    $scope.search = function (page, rows) {
+        orderService.search(page, rows, $scope.searchEntity).success(
+            function (response) {
+                $scope.list = response.rows;
+                $scope.paginationConf.totalItems = response.total;//更新总记录数
             }
         );
+    }
+
+
+    //查找各商品销售额
+    $scope.searchDayGoodsSale = function () {
+        orderService.searchDayGoodsSale($scope.startTime, $scope.endTime).success(
+            function (response) {
+                $scope.list = response;
+
+            }
+        )
     }
 
 
