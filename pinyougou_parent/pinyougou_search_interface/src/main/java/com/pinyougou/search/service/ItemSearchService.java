@@ -32,4 +32,10 @@ public interface ItemSearchService {
     public void deleteByGoodsIds(Long[] goodsIdList);
 
 
+    /**
+     * 点击商品将商品加入到我的足迹
+     * @param
+     */
+    public void addGoodsToFootmark(String userId,Long goodsId);
+
 }

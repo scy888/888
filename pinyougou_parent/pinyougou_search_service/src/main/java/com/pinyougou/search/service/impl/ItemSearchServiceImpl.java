@@ -13,10 +13,7 @@ import org.springframework.data.solr.core.query.*;
 import org.springframework.data.solr.core.query.result.*;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author Steven
@@ -74,6 +71,32 @@ public class ItemSearchServiceImpl implements ItemSearchService {
         //执行删除
         solrTemplate.delete(query);
         solrTemplate.commit();
+    }
+
+    @Override
+    public void addGoodsToFootmark(String userId,Long goodsId) {
+//        Map<String,List<Long>> footMarkMap = (Map<String, List<Long>>) redisTemplate.boundHashOps("footMarkList").get(userId);
+//        if (footMarkMap == null) {
+//            footMarkMap = new HashMap<String, List<Long>>();
+//            List<Long> goodIds = new ArrayList<>();
+//            goodIds.add(goodsId);
+//            footMarkMap.put(userId, goodIds);
+//        } else {
+//            footMarkMap.get(userId).add(goodsId);
+//        }
+//        redisTemplate.boundHashOps("footMarkList").put(userId,footMarkMap);
+
+        //使用二级map加上set
+        Map<String,Set> footMarkMap = (Map<String, Set>) redisTemplate.boundHashOps("footMarkList").get(userId);
+        if (footMarkMap == null) {
+            footMarkMap = new HashMap<String, Set>();
+            HashSet<Long> goodsIdSet = new HashSet<>();
+            goodsIdSet.add(goodsId);
+            footMarkMap.put(userId, goodsIdSet);
+        } else {
+            footMarkMap.get(userId).add(goodsId);
+        }
+        redisTemplate.boundHashOps("footMarkList").put(userId,footMarkMap);
     }
 
     /**

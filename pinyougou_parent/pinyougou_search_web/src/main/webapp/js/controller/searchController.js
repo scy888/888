@@ -155,4 +155,8 @@ app.controller("searchController",function ($scope,$location,searchService) {
             $scope.search();
         }
     }
+
+    $scope.addGoodsToFootmark=function (goodsId) {
+        searchService.addGoodsToFootmark(goodsId);
+    }
 })
