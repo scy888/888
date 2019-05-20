@@ -26,7 +26,6 @@ app.controller('typeTemplateController' ,function($scope,$controller,typeTemplat
 	
 	//查询实体 
 	$scope.findOne=function(id){
-		alert("2222");
 		typeTemplateService.findOne(id).success(
 			function(response){
 				//把品牌字符串转换为json对象
@@ -114,7 +113,6 @@ app.controller('typeTemplateController' ,function($scope,$controller,typeTemplat
                 delete response[i]["sellerId"];
 			}
             $scope.brandList.data = response;
-			alert("1111"+$scope.brandList.data)
         })
     }
 
