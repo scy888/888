@@ -4,10 +4,13 @@ import com.alibaba.dubbo.config.annotation.Service;
 import com.github.abel533.entity.Example;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.pinyougou.mapper.TbGoodsMapper;
+import com.pinyougou.mapper.TbItemMapper;
 import com.pinyougou.mapper.TbOrderItemMapper;
 import com.pinyougou.mapper.TbOrderMapper;
 import com.pinyougou.mapper.TbPayLogMapper;
 import com.pinyougou.order.service.OrderService;
+import com.pinyougou.pojo.TbItem;
 import com.pinyougou.pojo.TbOrder;
 import com.pinyougou.pojo.TbOrderItem;
 import com.pinyougou.pojo.TbPayLog;
@@ -26,9 +29,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import entity.PageResult;
 
@@ -44,12 +49,20 @@ public class OrderServiceImpl implements OrderService {
     @Autowired
     private TbOrderMapper orderMapper;
 
+    @Autowired
+    private TbItemMapper itemMapper;
+
+    @Autowired
+    private TbGoodsMapper goodsMapper;
+
     /**
-     * 查询全部
+     * 查询全部已付款订单
      */
     @Override
     public List<TbOrder> findAll() {
-        return orderMapper.select(null);
+        TbOrder where = new TbOrder();
+        where.setStatus("1");
+        return orderMapper.select(where);
     }
 
     /**
@@ -429,6 +442,7 @@ public class OrderServiceImpl implements OrderService {
 
     /**
      * 搜索每天销售额
+     *
      * @param start
      * @param end
      * @return
@@ -495,5 +509,148 @@ public class OrderServiceImpl implements OrderService {
         return map;
     }
 
+    /**
+     * 订单发货
+     *
+     * @param ids
+     * @param status
+     */
+    @Override
+    public void updateStatus(String[] ids, String status) {
+        //修改的结果
+        TbOrder record = new TbOrder();
+        record.setStatus(status);
+        record.setConsignTime(new Date());
+        //构建修改范围
+        Example example = new Example(TbOrder.class);
+        Example.Criteria criteria = example.createCriteria();
+        List longs = Arrays.asList(ids);
+        criteria.andIn("orderId", longs);
 
+        //开始更新
+        orderMapper.updateByExampleSelective(record, example);
+    }
+
+    /**
+     * 查询已付款订单分页
+     *
+     * @param tbOrder
+     * @param pageNum
+     * @param pageSize
+     * @return
+     */
+    @Override
+    public PageResult findOrderPage(TbOrder tbOrder, int pageNum, int pageSize) {
+        PageResult<TbOrder> result = new PageResult<TbOrder>();
+        //设置分页条件
+        PageHelper.startPage(pageNum, pageSize);
+        //构建查询条件
+        Example example = new Example(TbOrder.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andGreaterThanOrEqualTo("status", "2");
+        List<TbOrder> list = orderMapper.selectByExample(example);
+        //保存数据列表
+        result.setRows(list);
+
+        //获取总记录数
+        PageInfo<TbOrder> info = new PageInfo<TbOrder>(list);
+        result.setTotal(info.getTotal());
+
+        return result;
+    }
+
+    /**
+     * 搜索时间段每个商品的销售额
+     *
+     * @param start
+     * @param end
+     * @return
+     */
+    @Override
+    public List<TbItem> searchDayGoodsSale(Date start, Date end) {
+        //1.拿到所有的订单
+        //构建查询条件
+        Example example = new Example(TbItem.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andGreaterThanOrEqualTo("paymentTime", start);//大于等于
+        criteria.andLessThanOrEqualTo("paymentTime", end);//小于等于
+        List<TbOrder> orderList = orderMapper.selectByExample(example);
+
+        //2.拿到每个订单下的商品
+        TbOrderItem orderItem = null;
+        List<TbOrderItem> orderItemList = new ArrayList<>();//用来放所有的订单下的商品
+        //遍历每一个订单
+        for (TbOrder order : orderList) {
+            orderItem = new TbOrderItem();
+            orderItem.setOrderId(order.getOrderId());
+            List<TbOrderItem> orderItems = orderItemMapper.select(orderItem);
+            orderItemList.addAll(orderItems);
+        }
+
+
+        Map<TbItem, BigDecimal> map = new HashMap();
+                //19对象
+        for (TbOrderItem tbOrderItem : orderItemList) {//19  18  19  18
+            Set<TbItem> tbItems = map.keySet();
+            if (tbItems.size() > 0) {
+                for (TbItem tbItem : tbItems) {
+                    if (!tbItem.getId().equals(tbOrderItem.getItemId())) {
+                        TbItem tbItem = itemMapper.selectByPrimaryKey(tbOrderItem.getItemId());
+                        map.put(tbItem, tbOrderItem.getTotalFee());
+                    } else {
+                        map.put(tbItem, map.get(tbItem).add(tbOrderItem.getTotalFee()));
+                    }
+                }
+            } else {
+                TbItem tbItem = itemMapper.selectByPrimaryKey(tbOrderItem.getItemId());
+                map.put(tbItem, tbOrderItem.getTotalFee());
+            }
+        }
+
+
+
+        Set<Long> longs = map.keySet();
+        TbItem tbItem = null;
+        for (Long aLong : longs) {
+            tbItem = new TbItem();
+            tbItem.setId(aLong);
+            itemMapper.select(tbItem);
+        }
+
+
+        //3.
+        List<TbItem> buyItemList = new ArrayList<>();//这个集合用来放下了订单  买了的TbItem
+
+        List<TbItem> itemList = itemMapper.select(null);//查找出所有的TbItem
+
+
+        //有一个tbOrderItem就搞一个集合   是商品被买的集合
+        List<TbOrderItem> list = new ArrayList<>();
+        for (TbOrderItem tbOrderItem : orderItemList) {
+            for (TbItem tbItem : itemList) {
+                if (tbItem.equals(tbOrderItem.getItemId())) {//关联tbOrderItem和tbItem
+
+                    list.add(tbOrderItem);
+                }
+            }
+        }
+
+
+        buyItemList
+
+
+        for (TbItem tbItem : itemList) {
+            //这个商品被买的集合
+            List<TbOrderItem> list = new ArrayList<>();
+            for (TbOrderItem tbOrderItem : orderItemList) {
+                if (tbItem.getId().equals(tbOrderItem.getItemId())) {
+                    list.add(tbOrderItem);
+
+                }
+            }
+            tbItem.setOrderItemList(list);
+            buyItemList.add(tbItem);
+        }
+        return buyItemList;
+    }
 }

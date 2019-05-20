@@ -1,5 +1,6 @@
 package com.pinyougou.order.service;
 
+import com.pinyougou.pojo.TbItem;
 import com.pinyougou.pojo.TbOrder;
 import com.pinyougou.pojo.TbPayLog;
 import com.pinyougou.pojogroup.Order;
@@ -18,7 +19,7 @@ import entity.PageResult;
 public interface OrderService {
 
 	/**
-	 * 返回全部列表
+	 * 返回全部已付款订单
 	 * @return
 	 */
 	public List<TbOrder> findAll();
@@ -111,4 +112,16 @@ public interface OrderService {
 	 * @return
 	 */
     Map searchDaySale(Date start, Date end);
+
+    void updateStatus(String[] ids, String status);
+
+	PageResult findOrderPage(TbOrder tbOrder, int page, int rows);
+
+	/**
+	 * 时间段的每个商品的销售额
+	 * @param start
+	 * @param end
+	 * @return
+	 */
+	List<TbItem> searchDayGoodsSale(Date start, Date end);
 }

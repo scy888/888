@@ -18,5 +18,18 @@ app.service('orderService',function ($http) {
         return $http.get("../form/searchDaySale.do?start="+startTime+"&end="+endTime);
     }
 
+    //读取列表数据绑定到表单中
+    this.findAll=function(){
+        return $http.get('../form/findAll.do');
+    }
+
+    //更改订单状态
+    this.updateStatus=function(ids,status){
+        return $http.get('../form/updateStatus.do?ids='+ids+"&status="+status);
+    }
+    //搜索分页
+    this.search=function(page,rows,searchEntity){
+        return $http.post('../form/searchAndPaging.do?page='+page+"&rows="+rows, searchEntity);
+    }
 
 })

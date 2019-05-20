@@ -1,9 +1,16 @@
 package com.pinyougou.pojo;
 
-import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
+
+import javax.persistence.Column;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.Transient;
 
 @Table(name = "tb_item")
 public class TbItem implements Serializable {
@@ -101,6 +108,18 @@ public class TbItem implements Serializable {
     private String seller;
 
     private static final long serialVersionUID = 1L;
+
+    //这个商品有没有被买  买了就在这个集合里
+    @Transient
+    private List<TbOrderItem> orderItemList;
+
+    public List<TbOrderItem> getOrderItemList() {
+        return orderItemList;
+    }
+
+    public void setOrderItemList(List<TbOrderItem> orderItemList) {
+        this.orderItemList = orderItemList;
+    }
 
     /**
      * 获取商品id，同时也是商品编号
