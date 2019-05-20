@@ -14,10 +14,11 @@ app.controller("baseController", function ($scope) {
             $scope.reloadList();//重新加载
         }
     };
-
+    //1:指向查询页面 2:指向统计页面 3.指向饼状图页面
     $scope.searchType = 0;
 
     //重新加载数据
+
     $scope.reloadList = function () {
         //$scope.findPage($scope.paginationConf.currentPage, $scope.paginationConf.itemsPerPage);
         if ($scope.searchType === 0) {
@@ -28,6 +29,10 @@ app.controller("baseController", function ($scope) {
             //$scope.searchEntity = {dateMap: {timeType: '3', byYear: '='}, propertyMap: {propertyType: '0'}};
             // searchEntity.dateMap.timeType='3';searchEntity.dateMap.byYear='';searchEntity.propertyMap.propertyType='0';
         }
+        if($scope.searchType===3){
+            // $scope.pieCount();
+        }
+
     }
 
     //选中的id列表

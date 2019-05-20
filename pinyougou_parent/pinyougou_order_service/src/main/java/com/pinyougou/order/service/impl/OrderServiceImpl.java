@@ -609,36 +609,30 @@ public class OrderServiceImpl implements OrderService {
                 tbOrderItemList.addAll(set);
             }
         }
-        //set用于去重
-        LinkedHashSet<TbItem> resultSet = null;
         //list用于返回值
         List<TbItem> resultList =null;
         if (tbOrderItemList != null && tbOrderItemList.size() > 0) {
-            resultSet = new LinkedHashSet<>();
             //先找出有订单的item
             List<TbItem> tbItemList1 = itemMapper.select(null);
-            for (TbItem item : tbItemList1) {
-                for (TbOrderItem orderItem : tbOrderItemList) {
-                    if (orderItem.getItemId().equals(item.getId())) {
-                        resultSet.add(item);//set去重
-                    }
-                }
-            }
-            //构建返回的list
-            resultList = new ArrayList<>();
-            //便利去重item.添加orderItemList
-            for (TbItem item : resultSet) {
-                List<TbOrderItem> orderItemList= new ArrayList<>();
-                for (TbOrderItem orderItem : tbOrderItemList) {
-                    if (orderItem.getItemId().equals(item.getId())){
-                        orderItemList.add(orderItem);
-                    }
-                }
-                item.setTbOrderItemList(orderItemList);
-                //添加一行数据
-                resultList.add(item);
-            }
 
+            if (tbItemList1 != null&&tbItemList1.size()>0) {
+                //构建返回的list
+                resultList = new ArrayList<>();
+                //添加orderItemList
+                for (TbItem item : tbItemList1) {
+                    List<TbOrderItem> orderItemList= new ArrayList<>();
+                    for (TbOrderItem orderItem : tbOrderItemList) {
+                        if (orderItem.getItemId().equals(item.getId())){
+                            orderItemList.add(orderItem);
+                        }
+                    }
+                    if (orderItemList.size()>0){
+                        item.setTbOrderItemList(orderItemList);
+                        //添加一行数据
+                        resultList.add(item);
+                    }
+                }
+            }
         }
 
         return resultList;
