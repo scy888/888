@@ -116,6 +116,6 @@ public class OrderController {
 
 	@RequestMapping("/searchCount")
 	public List<TbItem> searchCount(@RequestBody Order order){
-		return orderService.findCountPage(order);
+		return orderService.findCount(order);
 	}
 }

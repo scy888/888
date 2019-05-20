@@ -107,5 +107,5 @@ public interface OrderService {
 	 * @param order
 	 * @return
 	 */
-	List<TbItem> findCountPage(Order order);
+	List<TbItem> findCount(Order order);
 }

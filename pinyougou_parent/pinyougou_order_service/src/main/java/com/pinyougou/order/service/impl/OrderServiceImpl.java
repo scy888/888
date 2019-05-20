@@ -26,6 +26,9 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+import static java.util.Collections.addAll;
+import static java.util.Collections.newSetFromMap;
+
 
 /**
  * 业务逻辑实现
@@ -543,7 +546,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<TbItem> findCountPage(Order order) {
+    public List<TbItem> findCount(Order order) {
 
 
         HashMap dateMap = order.getDateMap();
@@ -606,24 +609,37 @@ public class OrderServiceImpl implements OrderService {
                 tbOrderItemList.addAll(set);
             }
         }
-        List<TbItem> resultList = null;
+        //set用于去重
+        LinkedHashSet<TbItem> resultSet = null;
+        //list用于返回值
+        List<TbItem> resultList =null;
         if (tbOrderItemList != null && tbOrderItemList.size() > 0) {
-            resultList = new ArrayList<>();
+            resultSet = new LinkedHashSet<>();
+            //先找出有订单的item
             List<TbItem> tbItemList1 = itemMapper.select(null);
-            for (TbOrderItem orderItem : tbOrderItemList) {
-                for (TbItem item : tbItemList1) {
-                    List<TbOrderItem> orderItemList = new ArrayList<>();
-
+            for (TbItem item : tbItemList1) {
+                for (TbOrderItem orderItem : tbOrderItemList) {
                     if (orderItem.getItemId().equals(item.getId())) {
-                        orderItemList.add(orderItem);
-
+                        resultSet.add(item);//set去重
                     }
-                    item.setTbOrderItemList(orderItemList);
-                    resultList.add(item);
                 }
             }
-        }
+            //构建返回的list
+            resultList = new ArrayList<>();
+            //便利去重item.添加orderItemList
+            for (TbItem item : resultSet) {
+                List<TbOrderItem> orderItemList= new ArrayList<>();
+                for (TbOrderItem orderItem : tbOrderItemList) {
+                    if (orderItem.getItemId().equals(item.getId())){
+                        orderItemList.add(orderItem);
+                    }
+                }
+                item.setTbOrderItemList(orderItemList);
+                //添加一行数据
+                resultList.add(item);
+            }
 
+        }
 
         return resultList;
 
