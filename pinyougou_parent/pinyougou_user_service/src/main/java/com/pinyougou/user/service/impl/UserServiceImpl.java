@@ -4,14 +4,8 @@ import com.alibaba.fastjson.JSON;
 import com.github.abel533.entity.Example;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.pinyougou.mapper.TbItemMapper;
-import com.pinyougou.mapper.TbOrderItemMapper;
-import com.pinyougou.mapper.TbOrderMapper;
-import com.pinyougou.mapper.TbUserMapper;
-import com.pinyougou.pojo.TbItem;
-import com.pinyougou.pojo.TbOrder;
-import com.pinyougou.pojo.TbOrderItem;
-import com.pinyougou.pojo.TbUser;
+import com.pinyougou.mapper.*;
+import com.pinyougou.pojo.*;
 import com.pinyougou.pojogroup.Order;
 import com.pinyougou.pojogroup.OrderItem;
 import com.pinyougou.user.service.UserService;
@@ -41,6 +35,8 @@ public class UserServiceImpl implements UserService {
 	private TbOrderItemMapper orderItemMapper;
 	@Autowired
 	private TbItemMapper itemMapper;
+	@Autowired
+	private TbFavoriteMapper favoriteMapper;
 	
 	/**
 	 * 查询全部
@@ -283,6 +279,27 @@ public class UserServiceImpl implements UserService {
 		where.setUsername(userName);
 		TbUser user = userMapper.selectOne(where);
 		return user;
+	}
+
+	@Override
+	public List<TbItem> findUserFavoriteByUserId(String userName) {
+		TbFavorite where = new TbFavorite();
+		where.setUserId(userName);
+		List<TbFavorite> favoriteList = favoriteMapper.select(where);
+		List<TbItem> itemList = new ArrayList<>();
+		for (TbFavorite tbFavorite : favoriteList) {
+			TbItem tbItem = itemMapper.selectByPrimaryKey(tbFavorite.getItemId());
+			itemList.add(tbItem);
+		}
+		return itemList;
+	}
+
+	@Override
+	public void updateOrderStatus(Long orderId,String status) {
+		TbOrder where = new TbOrder();
+		where.setOrderId(orderId);
+		where.setStatus(status);
+		orderMapper.updateByPrimaryKeySelective(where);
 	}
 
 }

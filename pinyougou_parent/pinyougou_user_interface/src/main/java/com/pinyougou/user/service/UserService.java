@@ -2,6 +2,7 @@ package com.pinyougou.user.service;
 import java.util.List;
 import java.util.Map;
 
+import com.pinyougou.pojo.TbItem;
 import com.pinyougou.pojo.TbOrder;
 import com.pinyougou.pojo.TbUser;
 
@@ -87,4 +88,17 @@ public interface UserService {
 	 * @return
 	 */
 	public TbUser findUserByUserId(String userName);
+
+    /**查询用户收藏
+     * @param userName
+     * @return
+     */
+    public List<TbItem> findUserFavoriteByUserId(String userName);
+
+
+    /**
+     * 修改订单状态
+     */
+    public void updateOrderStatus(Long orderId,String status);
+
 }

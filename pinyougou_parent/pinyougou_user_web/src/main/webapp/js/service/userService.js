@@ -39,5 +39,8 @@ app.service('userService',function($http){
 	this.findUserByUserId=function(){
 		return $http.get('../user/findUserByUserId.do');
 	}
-
+	//读取列表数据绑定到表单中
+	this.findUserFavoriteByUserId=function(){
+		return $http.get('../user/findUserFavoriteByUserId.do');
+	}
 });

@@ -3,6 +3,7 @@ import java.util.List;
 import java.util.regex.PatternSyntaxException;
 
 import com.pinyougou.pojo.TbAddress;
+import com.pinyougou.pojo.TbItem;
 import com.pinyougou.user.service.AddressService;
 import com.pinyougou.user.service.UserService;
 import com.pinyougou.utils.PhoneFormatCheckUtils;
@@ -148,7 +149,16 @@ public class UserController {
 		String userName = SecurityContextHolder.getContext().getAuthentication().getName();
 		return userService.findUserByUserId(userName);
 	}
-
+	/**
+	 * 查询用户收藏
+	 * @param
+	 * @return
+	 */
+	@RequestMapping("/findUserFavoriteByUserId")
+	public List<TbItem> findUserFavoriteByUserId(){
+		String userName = SecurityContextHolder.getContext().getAuthentication().getName();
+		return userService.findUserFavoriteByUserId(userName);
+	}
 
 
 }

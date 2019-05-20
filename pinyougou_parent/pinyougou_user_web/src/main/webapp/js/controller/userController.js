@@ -140,4 +140,12 @@ app.controller('userController' ,function($scope,$controller,userService,uploadS
 		});
 	}
 
+	//查询用户收藏
+	$scope.findUserFavoriteByUserId=function(){
+		userService.findUserFavoriteByUserId().success(
+			function(response){
+				$scope.list=response;
+			}
+		);
+	}
 });	

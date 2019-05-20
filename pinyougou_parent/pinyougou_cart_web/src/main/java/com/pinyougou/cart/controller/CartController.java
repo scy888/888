@@ -114,6 +114,7 @@ public class CartController {
                 System.out.println("操作了cookie中的购物车数据...");
             }else{
                 //把数据保存到Redis中
+                cartService.addGoodsToMyFavorite(userName, itemId);
                 cartService.saveCartListToRedis(userName,cartList);
                 System.out.println("操作了Redis中的购物车数据...");
             }

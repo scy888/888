@@ -19,7 +19,7 @@ public class TbOrder implements Serializable {
     /**
      * 订单id
      */
-    @JsonSerialize(using = ToStringSerializer.class)
+//    @JsonSerialize(using = ToStringSerializer.class)
     @Id
     @Column(name = "order_id")
 //    @JsonFormat(shape=JsonFormat.Shape.STRING)

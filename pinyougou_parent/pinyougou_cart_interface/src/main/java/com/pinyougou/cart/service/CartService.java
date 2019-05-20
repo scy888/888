@@ -38,4 +38,9 @@ public interface CartService {
     public List<Cart> mergeCartList(List<Cart> cookieList,List<Cart> redisList);
 
 
+    /**添加到我的收藏
+     * @param userName
+     * @param itemId
+     */
+    public void addGoodsToMyFavorite(String userName, Long itemId);
 }

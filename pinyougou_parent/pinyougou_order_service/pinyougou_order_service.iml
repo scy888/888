@@ -30,10 +30,6 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module" module-name="pinyougou_common" />
-    <orderEntry type="module" module-name="pinyougou_pojo" />
-    <orderEntry type="module" module-name="pinyougou_order_interface" />
-    <orderEntry type="module" module-name="pinyougou_sellergoods_interface" />
     <orderEntry type="library" name="Maven: org.springframework:spring-context:4.2.4.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.springframework:spring-aop:4.2.4.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: aopalliance:aopalliance:1.0" level="project" />
@@ -122,5 +118,6 @@
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-annotations:2.6.0" level="project" />
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-core:2.6.7" level="project" />
     <orderEntry type="module" module-name="pinyougou_order_interface" />
+    <orderEntry type="module" module-name="pinyougou_sellergoods_interface" />
   </component>
 </module>
