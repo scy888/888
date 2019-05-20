@@ -1,5 +1,6 @@
 package com.pinyougou.order.service;
 
+import com.pinyougou.pojo.TbItem;
 import com.pinyougou.pojo.TbOrder;
 import com.pinyougou.pojo.TbPayLog;
 import com.pinyougou.pojogroup.Order;
@@ -104,9 +105,7 @@ public interface OrderService {
 	/**
 	 * 分页统计
 	 * @param order
-	 * @param pageNum
-	 * @param pageSize
 	 * @return
 	 */
-	PageResult findCountPage(Order order, int pageNum, int pageSize);
+	List<TbItem> findCountPage(Order order);
 }

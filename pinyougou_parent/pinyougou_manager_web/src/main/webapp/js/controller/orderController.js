@@ -86,11 +86,22 @@ app.controller('orderController', function ($scope, $controller, orderService, o
         );
     }
     //统计
-    $scope.seachCount = function (page, rows) {
-        orderService.searchCount(page, rows, $scope.searchEntity).success(
+    $scope.searchCount = function () {
+        alert(JSON.stringify($scope.searchEntity))
+        orderService.searchCount($scope.searchEntity).success(
             function (response) {
-                $scope.list = response.rows;
-                $scope.paginationConf.totalItems = response.total;//更新总记录数
+                $scope.list = response;
+                alert("有销量SKU"+response.length+"个");
+                for (var i = 0; i <= $scope.list.length-1; i++) {
+                    $scope.list[i].sumNum=0;
+                    $scope.list[i].sumFee=0;
+                    for (var j = 0; j <= $scope.list[i].tbOrderItemList.length-1; j++) {
+                        $scope.list[i].sumNum+=$scope.list[i].tbOrderItemList[j].num;
+                        $scope.list[i].sumFee+=$scope.list[i].tbOrderItemList[j].totalFee;
+                    }
+
+                }
+
             })
     };
 

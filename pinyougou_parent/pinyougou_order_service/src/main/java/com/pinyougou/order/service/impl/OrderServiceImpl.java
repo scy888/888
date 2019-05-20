@@ -265,10 +265,13 @@ public class OrderServiceImpl implements OrderService {
     /**
      * 添加日期查询条件
      *
-     * @param timeCriteria
+     * @param timeCriteriaOb
      */
-    private void addTimeCriteria(Map timeCriteria, String timeProperty, Example.Criteria criteria) {
+    private void addTimeCriteria(Object timeCriteriaOb, String timeProperty, Example.Criteria criteria) {
+
+        Map timeCriteria = (Map) timeCriteriaOb;
         if (timeCriteria != null && timeCriteria.size() != 0) {
+
             if (timeCriteria.get("start") != null && !timeCriteria.get("start").equals("")) {
                 criteria.andGreaterThanOrEqualTo(timeProperty, parseToDate((String) timeCriteria.get("start")));
             }
@@ -304,11 +307,13 @@ public class OrderServiceImpl implements OrderService {
         }
 
         //如果时间数据dateMap不为空,调用addTimeCriteria构建查询条件
-        if (dateMap != null) {
+        if (dateMap != null && dateMap.size() > 0) {
 
             for (Object o : dateMap.entrySet()) {
-                Map.Entry<String, Map> entry = (Map.Entry<String, Map>) o;
-                addTimeCriteria(entry.getValue(), entry.getKey(), criteria);
+                Map.Entry<String, Object> entry = (Map.Entry<String, Object>) o;
+                if (!"yearsTimeList".equals(entry.getKey())) {
+                    addTimeCriteria(entry.getValue(), entry.getKey(), criteria);
+                }
             }
         }
 
@@ -390,8 +395,14 @@ public class OrderServiceImpl implements OrderService {
      * @param paymentTime
      */
     private Map setCountTimeMap(Integer timeType, Map dateMap, Map paymentTime) {
-        Integer yearsStart = (Integer) dateMap.get("yearsStart");
-        Integer yearsEnd = (Integer) dateMap.get("yearsEnd");
+        String yearsStartStr = (String) dateMap.get("yearsStart");
+        String yearsEndStr = (String) dateMap.get("yearsEnd");
+        Integer yearsStart = null;
+        Integer yearsEnd = null;
+        if (yearsStartStr != null && !"".equals(yearsStartStr) && yearsEndStr != null && !"".equals(yearsEndStr)) {
+            yearsStart = Integer.parseInt(yearsStartStr);
+            yearsEnd = Integer.parseInt(yearsEndStr);
+        }
         List<Map> yearsTime = new ArrayList<>();
         //按年查询+历年
         if (timeType == 0) {
@@ -400,13 +411,14 @@ public class OrderServiceImpl implements OrderService {
                 byYear = yearsStart + "-01-01=" + yearsEnd + "-12-31";
             }
             String[] split = byYear.split("=");
+            paymentTime = new HashMap();
             paymentTime.put("start", split[0]);
             paymentTime.put("end", split[1]);
             dateMap.put("paymentTime", paymentTime);
         }
         //历年季度查询
         if (timeType == 1) {
-            Integer bySeason = (Integer) dateMap.get("bySeason");
+            Integer bySeason = Integer.parseInt((String) dateMap.get("bySeason"));
             String start = null;
             String end = null;
             if (bySeason == 1) {
@@ -427,10 +439,8 @@ public class OrderServiceImpl implements OrderService {
             }
 
             for (int i = yearsStart; i <= yearsEnd; i++) {
-                start = i + start;
-                end = i + end;
-                Date startTime = parseToDate(start);
-                Date endTime = parseToDate(end);
+                String startTime = i + start;
+                String endTime = i + end;
                 Map map = new HashMap();
                 map.put("start", startTime);
                 map.put("end", endTime);
@@ -449,6 +459,7 @@ public class OrderServiceImpl implements OrderService {
             for (String s : bigMoth) {
                 if (byMonth.equals(s)) {
                     end = "31";
+                    break;
                 }
             }
             for (int i = yearsStart; i <= yearsEnd; i++) {
@@ -458,23 +469,18 @@ public class OrderServiceImpl implements OrderService {
                         end = "29";
                     }
                 }
-                start = i + "-" + byMonth + "-" + start;
-                end = i + "-" + byMonth + "-" + end;
-                Date startTime = parseToDate(start);
-                Date endTime = parseToDate(end);
+                String startTime = i + "-" + byMonth + "-" + start;
+                String endTime = i + "-" + byMonth + "-" + end;
                 Map map = new HashMap();
                 map.put("start", startTime);
                 map.put("end", endTime);
                 yearsTime.add(map);
                 dateMap.put("yearsTimeList", yearsTime);
+
             }
+
         }
-        dateMap.remove("yearsStart");
-        dateMap.remove("yearsEnd");
-        dateMap.remove("timeType");
-        dateMap.remove("byMonth");
-        dateMap.remove("bySeason");
-        dateMap.remove("byYear");
+
 
         return dateMap;
     }
@@ -537,66 +543,90 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public PageResult findCountPage(Order order, int pageNum, int pageSize) {
-        PageResult<TbItem> result = new PageResult<TbItem>();
-        //设置分页条件
-        PageHelper.startPage(pageNum, pageSize);
+    public List<TbItem> findCountPage(Order order) {
+
 
         HashMap dateMap = order.getDateMap();
-        Integer timeType = (Integer) dateMap.get("timeType");
-        Integer yearsStart = (Integer) dateMap.get("yearsStart");
-        Integer yearsEnd = (Integer) dateMap.get("yearsEnd");
+        Map paymentTime = (Map) dateMap.get("paymentTime");
+        Integer timeType = Integer.parseInt((String) dateMap.get("timeType"));
+        String yearsStartStr = (String) dateMap.get("yearsStart");
+        String yearsEndStr = (String) dateMap.get("yearsEnd");
+        Integer yearsStart = null;
+        Integer yearsEnd = null;
+        if (yearsStartStr != null && !"".equals(yearsStartStr) && yearsEndStr != null && !"".equals(yearsEndStr)) {
+            yearsStart = Integer.parseInt(yearsStartStr);
+            yearsEnd = Integer.parseInt(yearsEndStr);
+        }
+
+
         //如果时间类型不为空,用setCountTimeMap,设置统计时间
-        if (timeType != null && !timeType.equals(3)) {
-            Map paymentTime = (Map) dateMap.get("paymentTime");
+        if (timeType != null && timeType != 3) {
             HashMap map = (HashMap) setCountTimeMap(timeType, dateMap, paymentTime);
+            paymentTime = (Map) map.get("paymentTime");
             order.setDateMap(map);
         }
 
-
+        dateMap.remove("yearsStart");
+        dateMap.remove("yearsEnd");
+        dateMap.remove("timeType");
+        dateMap.remove("byMonth");
+        dateMap.remove("bySeason");
+        dateMap.remove("byYear");
         List<TbOrder> tbOrderList = null;
         //如果不是历年查询的方法,参照订单查询的方法
-        if (timeType != null && !timeType.equals(1) && !timeType.equals(2)) {
+        if (timeType != 1 && timeType != 2 && paymentTime != null && paymentTime.size() > 0) {
             tbOrderList = findOrderAndOrderItem(order);
-        } else {//历年查询
+        }
+
+        //历年查询
+
+
+        if (timeType == 1 || timeType == 2) {//历年查询
             tbOrderList = new ArrayList<>();
+            List<Map> yearsTimeList = (List) dateMap.get("yearsTimeList");
             for (int i = yearsStart; i <= yearsEnd; i++) {
-                List<Map> yearsTimeList = (List) dateMap.get("yearsTimeList");
-                for (Map map : yearsTimeList) {
-                    dateMap.put("paymentTime", map);
-                    order.setDateMap(dateMap);
-                    List<TbOrder> tbOrderList1 = findOrderAndOrderItem(order);
-//                    for (TbOrder tbOrder : tbOrderList1) {
-//                        tbOrderList.add(tbOrder);
-//                    }
-                    tbOrderList.addAll(tbOrderList1);
-                }
+                Map map = yearsTimeList.get(i - yearsStart);
+                System.out.println(map);
+                dateMap.put("paymentTime", map);
+                order.setDateMap(dateMap);
+                List<TbOrder> tbOrderList1 = findOrderAndOrderItem(order);
+                tbOrderList.addAll(tbOrderList1);
+
             }
         }
-        List<TbItem> tbItemList1 = new ArrayList<>();
+
+
+        List<TbOrderItem> tbOrderItemList = null;
         if (tbOrderList != null && tbOrderList.size() > 0) {
+            tbOrderItemList = new ArrayList<>();
             for (TbOrder tbOrder : tbOrderList) {
-                for (TbOrderItem orderItem : tbOrder.getOrderItemList()) {
-                    TbItem where = new TbItem();
-                    where.setId(orderItem.getItemId());
-                    List<TbItem> tbItemList = itemMapper.select(where);
-                    orderItem.setItemList(tbItemList);
-                    for (TbItem item : tbItemList) {
-                        TbItemCat where1 = new TbItemCat();
-                        where1.setId(item.getCategoryid());
-                        List<TbItemCat> tbItemCatList = itemCatMapper.select(where1);
-                        item.setItemCatList(tbItemCatList);
-                        TbOrderItem where2 = new TbOrderItem();
-                        where2.setItemId(item.getId());
-                        List<TbOrderItem> tbOrderItemList = orderItemMapper.select(where2);
-                        item.setTbOrderItemList(tbOrderItemList);
+                TbOrderItem where = new TbOrderItem();
+                where.setOrderId(tbOrder.getOrderId());
+                List<TbOrderItem> set = orderItemMapper.select(where);
+                tbOrderItemList.addAll(set);
+            }
+        }
+        List<TbItem> resultList = null;
+        if (tbOrderItemList != null && tbOrderItemList.size() > 0) {
+            resultList = new ArrayList<>();
+            List<TbItem> tbItemList1 = itemMapper.select(null);
+            for (TbOrderItem orderItem : tbOrderItemList) {
+                for (TbItem item : tbItemList1) {
+                    List<TbOrderItem> orderItemList = new ArrayList<>();
+
+                    if (orderItem.getItemId().equals(item.getId())) {
+                        orderItemList.add(orderItem);
+
                     }
+                    item.setTbOrderItemList(orderItemList);
+                    resultList.add(item);
                 }
             }
         }
 
 
-        return null;
+        return resultList;
+
     }
 
 }
