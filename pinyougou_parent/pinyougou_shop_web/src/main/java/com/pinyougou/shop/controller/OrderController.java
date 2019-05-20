@@ -72,38 +72,39 @@ public class OrderController {
     }
 
 
-
     /**
      * 根据时间查找时间段每天的销售额
+     *
      * @param start
      * @param end
      * @return
      */
     @RequestMapping("/searchDaySale")
-    public Map searchDaySale(@DateTimeFormat(pattern = "yyyy-MM-dd")Date start,
-                             @DateTimeFormat(pattern = "yyyy-MM-dd")Date end){
+    public Map searchDaySale(@DateTimeFormat(pattern = "yyyy-MM-dd") Date start,
+                             @DateTimeFormat(pattern = "yyyy-MM-dd") Date end) {
         return orderService.searchDaySale(start, end);
     }
 
 
-
     /**
      * 返回全部已付款订单列表
+     *
      * @return
      */
     @RequestMapping("/findAll")
-    public List<TbOrder> findAll(){
+    public List<TbOrder> findAll() {
         return orderService.findAll();
     }
 
     /**
      * 订单发货
+     *
      * @param ids
      * @param status
      * @return
      */
     @RequestMapping("updateStatus")
-    public Result updateStatus(String[] ids, String status){
+    public Result updateStatus(String[] ids, String status) {
         try {
             //审核
             orderService.updateStatus(ids, status);
@@ -116,25 +117,26 @@ public class OrderController {
 
     /**
      * 已付款订单 查询+分页
+     *
      * @param tbOrder
      * @param page
      * @param rows
      * @return
      */
     @RequestMapping("/searchAndPaging")
-    public PageResult search(@RequestBody TbOrder tbOrder, int page, int rows  ){
+    public PageResult search(@RequestBody TbOrder tbOrder, int page, int rows) {
         return orderService.findOrderPage(tbOrder, page, rows);
     }
 
     /**
      * 根据时间查找时间段每个商品的销售额
+     *
      * @param start
      * @param end
      * @return
      */
     @RequestMapping("/searchDayGoodsSale")
-    public List<TbItem> searchDayGoodsSale(@DateTimeFormat(pattern = "yyyy-MM-dd")Date start,
-                                           @DateTimeFormat(pattern = "yyyy-MM-dd")Date end){
+    public List<TbItem> searchDayGoodsSale(@DateTimeFormat(pattern = "yyyy-MM-dd") Date start, @DateTimeFormat(pattern = "yyyy-MM-dd") Date end) {
         return orderService.searchDayGoodsSale(start, end);
     }
 
