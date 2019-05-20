@@ -1,35 +1,21 @@
 package com.pinyougou.order.service.impl;
+
 import com.alibaba.dubbo.config.annotation.Service;
 import com.github.abel533.entity.Example;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.pinyougou.mapper.TbOrderItemMapper;
-import com.pinyougou.mapper.TbOrderMapper;
-import com.pinyougou.mapper.TbPayLogMapper;
+import com.pinyougou.mapper.*;
 import com.pinyougou.order.service.OrderService;
 import com.pinyougou.pojo.*;
 import com.pinyougou.pojogroup.Cart;
-
 import com.pinyougou.pojogroup.Order;
-
-
 import com.pinyougou.utils.IdWorker;
 import entity.PageResult;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import entity.PageResult;
-import org.springframework.beans.factory.annotation.Autowired;
-import com.alibaba.dubbo.config.annotation.Service;
-import com.github.abel533.entity.Example;
-import com.github.pagehelper.PageInfo;
-import com.github.pagehelper.PageHelper;
-
-import com.pinyougou.pojo.TbOrder;
-
-
 import org.springframework.data.redis.core.RedisTemplate;
 
 import java.math.BigDecimal;
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -286,22 +272,6 @@ public class OrderServiceImpl implements OrderService {
                 criteria.andBetween("paymentTime",map.get("start"))
             }
         }*/
-    /**
-     * 添加日期查询条件
-     *
-     * @param timeCriteria
-     */
-    private void addTimeCriteria(Map timeCriteria, String timeProperty, Example.Criteria criteria) {
-        if (timeCriteria != null && timeCriteria.size() != 0) {
-            if (timeCriteria.get("start") != null && !timeCriteria.get("start").equals("")) {
-                criteria.andGreaterThanOrEqualTo(timeProperty, parseToDate((String) timeCriteria.get("start")));
-            }
-            if (timeCriteria.get("end") != null && !timeCriteria.get("end").equals("")) {
-                criteria.andLessThanOrEqualTo(timeProperty, parseToDate((String) timeCriteria.get("end")));
-            }
-        }
-    }
-
     }
     @Override
     public PageResult findPage(Order border, int pageNum, int pageSize) {
@@ -550,26 +520,6 @@ public class OrderServiceImpl implements OrderService {
 	@Override
 	public void modification(TbOrder order) {
 	}
-
-    @Override
-    public PageResult findPage(Order border, int pageNum, int pageSize) {
-        PageResult<TbOrder> result = new PageResult<TbOrder>();
-        //设置分页条件
-        PageHelper.startPage(pageNum, pageSize);
-
-        //查询数据
-
-        Example example = createExample(border);
-        List<TbOrder> list = orderMapper.selectByExample(example);
-        //保存数据列表
-        result.setRows(list);
-
-        //获取总记录数
-        PageInfo<TbOrder> info = new PageInfo<TbOrder>(list);
-        result.setTotal(info.getTotal());
-
-        return result;
-    }
 
     @Override
     public PageResult findCountPage(Order order, int pageNum, int pageSize) {
