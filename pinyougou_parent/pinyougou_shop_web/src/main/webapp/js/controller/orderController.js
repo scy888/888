@@ -154,7 +154,14 @@ app.controller('orderController', function ($scope, $controller, orderService) {
         orderService.searchDayGoodsSale($scope.startTime, $scope.endTime).success(
             function (response) {
                 $scope.list = response;
+                for (var i = 0; i < list.length - 1; i++) {
+                    $scope.fee = 0;
+                    for (var j = 0; j < list[i].orderItemList.length - 1; j++) {
+                        fee += list[i].orderItemList.totalFee
+                    }
 
+
+                }
             }
         )
     }
