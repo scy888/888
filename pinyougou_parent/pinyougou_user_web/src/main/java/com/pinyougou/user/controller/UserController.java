@@ -1,8 +1,9 @@
 package com.pinyougou.user.controller;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.PatternSyntaxException;
 
-import com.pinyougou.pojo.TbAddress;
+import com.pinyougou.pojo.TbGoods;
 import com.pinyougou.pojo.TbItem;
 import com.pinyougou.user.service.AddressService;
 import com.pinyougou.user.service.UserService;
@@ -158,6 +159,16 @@ public class UserController {
 	public List<TbItem> findUserFavoriteByUserId(){
 		String userName = SecurityContextHolder.getContext().getAuthentication().getName();
 		return userService.findUserFavoriteByUserId(userName);
+	}
+	/**
+	 * 查询用户足迹
+	 * @param
+	 * @return
+	 */
+	@RequestMapping("/findPersonFootmark")
+	public List<TbGoods> findPersonFootmark(){
+		String userName = SecurityContextHolder.getContext().getAuthentication().getName();
+		return userService.findPersonFootmark(userName);
 	}
 
 

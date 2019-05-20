@@ -5,7 +5,7 @@
     <!-- 页面meta -->
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>商品编辑</title>
+    <title>秒杀商品编辑</title>
     <!-- Tell the browser to be responsive to screen width -->
     <meta content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" name="viewport">
 
@@ -34,10 +34,10 @@
 </head>
 
 <body ng-app="pinyougou" ng-controller="goodsController"
-      ng-init="selectItemCat1List();findOne()"
+      ng-init="selectItemCat1List()"
       class="hold-transition skin-red sidebar-mini">
-
-<!-- 正文区域 -->
+<!-- ;findOne() 初始化方法里的这个fingOne是给修改/审核用的，因为审核时不用富文本编辑器打开的话，我提交的富文本编辑器内容就没意义了-->
+<!-- 正文区域-->
 <section class="content">
 
     <div class="box-body">
@@ -53,12 +53,12 @@
                 <li>
                     <a href="#pic_upload" data-toggle="tab">商品图片</a>
                 </li>
-                <li>
-                    <a href="#customAttribute" data-toggle="tab">扩展属性</a>
-                </li>
-                <li>
-                    <a href="#spec" data-toggle="tab">规格</a>
-                </li>
+                <!--<li>-->
+                    <!--<a href="#customAttribute" data-toggle="tab">扩展属性</a>-->
+                <!--</li>-->
+                <!--<li>-->
+                    <!--<a href="#spec" data-toggle="tab">规格</a>-->
+                <!--</li>-->
             </ul>
             <!--tab头/-->
 
@@ -173,43 +173,6 @@
                 </div>
 
 
-                <!--扩展属性-->
-                <div class="tab-pane" id="customAttribute">
-                    <div class="row data-type">
-                        <div ng-repeat="attr in entity.goodsDesc.customAttributeItems">
-                            <div class="col-md-2 title">{{attr.text}}</div>
-                            <div class="col-md-10 data">
-                                <input class="form-control" ng-model="attr.value" placeholder="{{attr.text}}">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!--规格-->
-                <div class="tab-pane" id="spec">
-                    <div class="row data-type">
-                        <div class="col-md-2 title">是否启用规格</div>
-                        <div class="col-md-10 data">
-                            <input type="checkbox" ng-model="entity.goods.isEnableSpec" ng-true-value="1" ng-false-value="0">
-                        </div>
-                    </div>
-                    <p>
-
-                    <div ng-if="entity.goods.isEnableSpec == 1">
-
-                        <div class="row data-type">
-
-                            <div ng-repeat="spec in specList">
-                                <div class="col-md-2 title">{{spec.text}}</div>
-                                <div class="col-md-10 data">
-                                    <span ng-repeat="option in spec.options">
-                                        <input ng-checked="checkAttributeValue(spec.text,option.optionName)" type="checkbox" ng-click="updateSpecAttribute($event,spec.text,option.optionName)">{{option.optionName}}
-                                    </span>
-                                </div>
-                            </div>
-
-                        </div>
-                        sku列表：{{entity.itemList}}<br>
 
                         <div class="row data-type">
                             <table class="table table-bordered table-striped table-hover dataTable">

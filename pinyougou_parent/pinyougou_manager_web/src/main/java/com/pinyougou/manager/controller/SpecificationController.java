@@ -1,15 +1,22 @@
 package com.pinyougou.manager.controller;
+
 import com.alibaba.dubbo.config.annotation.Reference;
 import com.pinyougou.pojo.TbSpecification;
+import com.pinyougou.pojo.TbSpecificationOption;
 import com.pinyougou.pojogroup.Specification;
 import com.pinyougou.sellergoods.service.SpecificationService;
 import entity.PageResult;
 import entity.Result;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
+import java.util.*;
+
 /**
  * 请求处理器
  * @author Steven
@@ -127,6 +134,64 @@ public class SpecificationController {
 			e.printStackTrace();
 		}
 		return new Result(false, "审核操作失败！");
+	}
+
+	@RequestMapping("upload")
+	public Result upload(MultipartFile file){
+		try {
+			//解析.xlsx文件
+			//1.加载Excel文件对象,xlsx对应XSSFWorkbook,xls对应HSSFWorkbook
+			//如果是File类
+//          HSSFWorkbook hssfWorkbook = new HSSFWorkbook(new FileInputStream(brandFile));
+			XSSFWorkbook xssfWorkbook = new XSSFWorkbook(file.getInputStream());
+			//2.读取第一个sheet
+			XSSFSheet sheet = xssfWorkbook.getSheetAt(0);
+			//3.读取每一行,对应一个Brand对象
+            Map<String,List<TbSpecificationOption>> map=new HashMap<>();
+            //遍历excel每行
+			for (Row row : sheet) {
+			    //跳过第一行
+                if (row.getRowNum() == 0) continue;
+                Specification specification = new Specification();
+
+                TbSpecification tbSpecification=null;
+
+
+
+                List<TbSpecificationOption> tbSpecificationOptions = map.get(row.getCell(0).getStringCellValue());
+                //如果从map中取出的集合为不为空,或者长度大于0
+                if (tbSpecificationOptions == null) {
+                    tbSpecificationOptions=new ArrayList<>();
+                    map.put(row.getCell(0).getStringCellValue(),tbSpecificationOptions);
+                }
+                TbSpecificationOption tbSpecificationOption=new TbSpecificationOption();
+                tbSpecificationOption.setOptionName(row.getCell(1).getStringCellValue());
+                double cellValue = row.getCell(2).getNumericCellValue();
+                int orderValue=(int) cellValue;
+                tbSpecificationOption.setOrders(orderValue);
+
+                tbSpecificationOptions.add(tbSpecificationOption);
+                /*tbSpecification = new TbSpecification();
+                tbSpecification.setSpecName(row.getCell(0).getStringCellValue());//name*/
+                map.put(row.getCell(0).getStringCellValue(),tbSpecificationOptions);
+            }
+            //所有行遍历完,之后取出map的key
+            Set<String> specSet = map.keySet();
+            for (String specName : specSet) {
+                TbSpecification tbSpecification = new TbSpecification();
+                tbSpecification.setSpecName(specName);
+                Specification specification = new Specification();
+                specification.setSpecification(tbSpecification);
+                List<TbSpecificationOption> tbSpecificationOptions = map.get(specName);
+                specification.setSpecificationOptionList(tbSpecificationOptions);
+                specificationService.add(specification);
+            }
+            xssfWorkbook.close();
+			return new Result(true, "导入成功");
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new Result(false, "导入失败");
+		}
 	}
 	
 }

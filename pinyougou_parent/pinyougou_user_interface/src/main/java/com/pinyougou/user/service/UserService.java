@@ -3,6 +3,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.pinyougou.pojo.TbGoods;
 import com.pinyougou.pojo.TbItem;
 import com.pinyougou.pojo.TbOrder;
 import com.pinyougou.pojo.TbUser;
@@ -81,7 +82,7 @@ public interface UserService {
 	 * 查询用户订单
 	 * @return
 	 */
-	public List<Order> findOrderByUserId(String userId);
+	public List<Order> findOrderByUserId(String userId,String Status);
 
 
 	/**
@@ -105,6 +106,6 @@ public interface UserService {
 	/**
 	 * 查询用户id
 	 */
-	public Set<Long> findPersonFootmark(String userId);
+	public List<TbGoods> findPersonFootmark(String userId);
 
 }

@@ -92,5 +92,12 @@ app.controller('brandController' ,function($scope,$controller,brandService){
 		})
 	}
 
+
+    $scope.uploadFile=function () {
+        brandService.uploadFile().success(function (response) {
+            alert(response.message);
+        })
+    }
+
     
 });	

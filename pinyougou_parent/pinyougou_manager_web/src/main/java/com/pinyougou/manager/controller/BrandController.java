@@ -5,9 +5,13 @@ import com.pinyougou.pojo.TbBrand;
 import com.pinyougou.sellergoods.service.BrandService;
 import entity.PageResult;
 import entity.Result;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 /**
@@ -127,6 +131,33 @@ public class BrandController {
 			e.printStackTrace();
 		}
 		return new Result(false, "审核操作失败！");
+	}
+
+	@RequestMapping("upload")
+	public Result upload(MultipartFile file){
+		try {
+			//解析.xlsx文件
+			//1.加载Excel文件对象,xlsx对应XSSFWorkbook,xls对应HSSFWorkbook
+			//如果是File类
+//          HSSFWorkbook hssfWorkbook = new HSSFWorkbook(new FileInputStream(brandFile));
+			XSSFWorkbook xssfWorkbook = new XSSFWorkbook(file.getInputStream());
+			//2.读取第一个sheet
+			XSSFSheet sheet = xssfWorkbook.getSheetAt(0);
+			//3.读取每一行,对应一个Brand对象
+			for (Row row : sheet) {
+				//跳过第一行的表头
+			    if (row.getRowNum() == 0) continue;
+                TbBrand tbBrand = new TbBrand();
+                tbBrand.setName(row.getCell(0).getStringCellValue());//name
+                tbBrand.setFirstChar(row.getCell(1).getStringCellValue());//firstChar
+                brandService.add(tbBrand);
+			}
+			xssfWorkbook.close();
+			return new Result(true, "导入成功");
+		} catch (Exception e) {
+			e.printStackTrace();
+            return new Result(false, "导入失败");
+		}
 	}
 	
 }

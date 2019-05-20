@@ -43,12 +43,24 @@
                     <button type="button" ng-click="entity={}" class="btn btn-default" title="新建" data-toggle="modal"
                             data-target="#editModal"><i class="fa fa-file-o"></i> 新建
                     </button>
+<<<<<<< HEAD
+
+=======
+                    <input type="file" id="file" style="display:none">
+                    <button type="button" ng-click="uploadFile()" class="btn btn-default" title="导入"><i class="fa fa-file-o"></i> 导入</button>
+>>>>>>> 67f5170b82b290abbe2e7bb652d51a9a2f997a47
                     <button type="button" ng-click="updateStatus('1')" class="btn btn-default" title="审核通过"><i class="fa fa-check"></i> 审核通过</button>
                     <button type="button" ng-click="updateStatus('2')" class="btn btn-default" title="驳回"><i class="fa fa-ban"></i> 驳回</button>
                     <button type="button" ng-click="dele()" class="btn btn-default" title="删除"><i class="fa fa-trash-o"></i> 删除</button>
                     <button type="button" class="btn btn-default" title="刷新" onclick="window.location.reload();"><i
                             class="fa fa-refresh"></i> 刷新
                     </button>
+<<<<<<< HEAD
+                    <button type="button" class="btn btn-default" title="导入" data-target="#uploadModal"
+                            data-toggle="modal"><i class="fa fa-file-o"></i> 导入</button>
+
+=======
+>>>>>>> 67f5170b82b290abbe2e7bb652d51a9a2f997a47
                 </div>
             </div>
         </div>
@@ -130,5 +142,43 @@
     </div>
 </div>
 
+<<<<<<< HEAD
+<!-- 上传窗口 -->
+<div class="modal fade" id="uploadModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h3 id="myModalLabel">上传excel</h3>
+            </div>
+            <div class="modal-body">
+
+                <table class="table table-bordered table-striped">
+                    <tr>
+                        <td>商品图片</td>
+                        <td>
+                            <table>
+                                <tr>
+                                    <td>
+                                        <input type="file" id="file"/>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-success" ng-click="uploadFile()" data-dismiss="modal" aria-hidden="true">导入到数据库</button>
+                <button class="btn btn-default" data-dismiss="modal" aria-hidden="true">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+=======
+>>>>>>> 67f5170b82b290abbe2e7bb652d51a9a2f997a47
 </body>
 </html>

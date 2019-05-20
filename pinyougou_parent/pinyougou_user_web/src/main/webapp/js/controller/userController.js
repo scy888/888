@@ -33,9 +33,16 @@ app.controller('userController' ,function($scope,$controller,userService,uploadS
 	
 	//保存 
 	$scope.save=function(){				
-		var serviceObject;//服务层对象  				
+		var serviceObject;//服务层对象
+		$scope.year = $('#select_year2').val();
+		$scope.month = $('#select_month2').val();
+		$scope.day = $('#select_day2').val();
+		var time = new Date();
+		time.setFullYear($scope.year);
+		time.setMonth($scope.month);
+		time.setDate($scope.day);
+		$scope.entity.birthday = time;
 		if($scope.entity.id!=null){//如果有ID
-			// $scope.entity.birthday.setFullYear($scope.year, $scope.month, $scope.day);
 			serviceObject=userService.update( $scope.entity ); //修改  
 		}else{
 			serviceObject=userService.add( $scope.entity  );//增加 
@@ -123,6 +130,7 @@ app.controller('userController' ,function($scope,$controller,userService,uploadS
 				$scope.year = new Date(response.birthday).getFullYear();
 				$scope.month = new Date(response.birthday).getMonth()+1;
 				$scope.day = new Date(response.birthday).getDate();
+				fun1($scope.year,$scope.month,$scope.day)
 			}
 		);
 	}
@@ -148,4 +156,13 @@ app.controller('userController' ,function($scope,$controller,userService,uploadS
 			}
 		);
 	}
-});	
+	//查询用户足迹
+	$scope.findPersonFootmark=function(){
+		userService.findPersonFootmark().success(
+			function(response){
+				$scope.list=response;
+			}
+		);
+	}
+
+});

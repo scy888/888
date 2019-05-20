@@ -1,35 +1,21 @@
 package com.pinyougou.order.service.impl;
+
 import com.alibaba.dubbo.config.annotation.Service;
 import com.github.abel533.entity.Example;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.pinyougou.mapper.TbOrderItemMapper;
-import com.pinyougou.mapper.TbOrderMapper;
-import com.pinyougou.mapper.TbPayLogMapper;
+import com.pinyougou.mapper.*;
 import com.pinyougou.order.service.OrderService;
 import com.pinyougou.pojo.*;
 import com.pinyougou.pojogroup.Cart;
-
 import com.pinyougou.pojogroup.Order;
-
-
 import com.pinyougou.utils.IdWorker;
 import entity.PageResult;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import entity.PageResult;
-import org.springframework.beans.factory.annotation.Autowired;
-import com.alibaba.dubbo.config.annotation.Service;
-import com.github.abel533.entity.Example;
-import com.github.pagehelper.PageInfo;
-import com.github.pagehelper.PageHelper;
-
-import com.pinyougou.pojo.TbOrder;
-
-
 import org.springframework.data.redis.core.RedisTemplate;
 
 import java.math.BigDecimal;
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -43,8 +29,12 @@ import java.util.*;
 @Service(timeout = 5000)
 public class OrderServiceImpl implements OrderService {
 
-	@Autowired
-	private TbOrderMapper orderMapper;
+    @Autowired
+    private TbOrderMapper orderMapper;
+    @Autowired
+    private TbItemMapper itemMapper;
+    @Autowired
+    private TbItemCatMapper itemCatMapper;
 
 	/**
 	 * 查询全部
@@ -263,59 +253,71 @@ public class OrderServiceImpl implements OrderService {
         return date;
     }
 
-	/**
-	 * 添加日期查询条件
-	 * @param timeCriteria
-	 */
-	private void addTimeCriteria(Map timeCriteria,String timeProperty,Example.Criteria criteria) {
-		if (timeCriteria != null && timeCriteria.size()!=0) {
-			if (timeCriteria.get("start")!=null&&!timeCriteria.get("start").equals("")){
-				criteria.andGreaterThanOrEqualTo(timeProperty, parseToDate((String) timeCriteria.get("start")));
-			}
-			if(timeCriteria.get("end")!=null&&!timeCriteria.get("end").equals("")){
-				criteria.andLessThanOrEqualTo(timeProperty, parseToDate((String) timeCriteria.get("end")));
-			}
-		}
-	}
+    /**
+     * 添加日期查询条件
+     *
+     * @param timeCriteria
+     */
+    private void addTimeCriteria(Map timeCriteria, String timeProperty, Example.Criteria criteria) {
+        if (timeCriteria != null && timeCriteria.size() != 0) {
+            if (timeCriteria.get("start") != null && !timeCriteria.get("start").equals("")) {
+                criteria.andGreaterThanOrEqualTo(timeProperty, parseToDate((String) timeCriteria.get("start")));
+            }
+            if (timeCriteria.get("end") != null && !timeCriteria.get("end").equals("")) {
+                criteria.andLessThanOrEqualTo(timeProperty, parseToDate((String) timeCriteria.get("end")));
+            }
+        }/*else {
+            List<Map> yearsTimeList = (List<Map>) timeCriteria.get("yearsTimeList");
+            for (Map map : yearsTimeList) {
+                criteria.andBetween("paymentTime",map.get("start"))
+            }
+        }*/
+    }
+    @Override
+    public PageResult findPage(Order border, int pageNum, int pageSize) {
+        PageResult<TbOrder> result = new PageResult<TbOrder>();
+        //设置分页条件
+        PageHelper.startPage(pageNum, pageSize);
 
-	@Override
-	public PageResult findPage(Order border, int pageNum, int pageSize)  {
-		PageResult<TbOrder> result = new PageResult<TbOrder>();
-		//设置分页条件
-		PageHelper.startPage(pageNum, pageSize);
+        //查询数据
+        Example example = createExample(border);
+        List<TbOrder> list = orderMapper.selectByExample(example);
+        //保存数据列表
+        result.setRows(list);
 
-		//查询数据
-		Example example = createExample(border);
-		List<TbOrder> list = orderMapper.selectByExample(example);
-		//保存数据列表
-		result.setRows(list);
+        //获取总记录数
+        PageInfo<TbOrder> info = new PageInfo<TbOrder>(list);
+        result.setTotal(info.getTotal());
 
-		//获取总记录数
-		PageInfo<TbOrder> info = new PageInfo<TbOrder>(list);
-		result.setTotal(info.getTotal());
+        return result;
+    }
 
-		return result;
-	}
+    /**
+     * 构建查询条件
+     *
+     * @param border
+     * @return
+     */
+    private Example createExample(Order border) {
+        //构建查询条件
+        Example example = new Example(TbOrder.class);
+        Example.Criteria criteria = example.createCriteria();
+        TbOrder order = border.getTbOrder();
+        Map dateMap = border.getDateMap();
+        Map propertyMap = border.getPropertyMap();
 
-	/**
-	 * 构建查询条件
-	 * @param border
-	 * @return
-	 */
-	private Example createExample(Order border) {
-		//构建查询条件
-		Example example = new Example(TbOrder.class);
-		Example.Criteria criteria = example.createCriteria();
-		TbOrder order = border.getTbOrder();
-		Map dateMap = border.getDateMap();
+        if (propertyMap != null) {
 
+        }
 
-		if (dateMap!=null){
-			for (Object o : dateMap.entrySet()) {
-				Map.Entry<String,Map>  entry = (Map.Entry<String, Map>) o;
-				addTimeCriteria(entry.getValue(),entry.getKey(),criteria);
-			}
-		}
+        //如果时间数据dateMap不为空,调用addTimeCriteria构建查询条件
+        if (dateMap != null) {
+
+            for (Object o : dateMap.entrySet()) {
+                Map.Entry<String, Map> entry = (Map.Entry<String, Map>) o;
+                addTimeCriteria(entry.getValue(), entry.getKey(), criteria);
+            }
+        }
 
 		if (order != null) {
 			//如果字段不为空
@@ -387,7 +389,104 @@ public class OrderServiceImpl implements OrderService {
 		return example;
 	}
 
-	/**
+    /**
+     * 获得时间类型
+     *
+     * @param timeType
+     * @param dateMap
+     * @param paymentTime
+     */
+    private Map setCountTimeMap(Integer timeType, Map dateMap, Map paymentTime) {
+        Integer yearsStart = (Integer) dateMap.get("yearsStart");
+        Integer yearsEnd = (Integer) dateMap.get("yearsEnd");
+        List<Map> yearsTime = new ArrayList<>();
+        //按年查询+历年
+        if (timeType == 0) {
+            String byYear = (String) dateMap.get("byYear");
+            if (byYear.equals("=")) {
+                byYear = yearsStart + "-01-01=" + yearsEnd + "-12-31";
+            }
+            String[] split = byYear.split("=");
+            paymentTime.put("start", split[0]);
+            paymentTime.put("end", split[1]);
+            dateMap.put("paymentTime", paymentTime);
+        }
+        //历年季度查询
+        if (timeType == 1) {
+            Integer bySeason = (Integer) dateMap.get("bySeason");
+            String start = null;
+            String end = null;
+            if (bySeason == 1) {
+                start = "-01-01";
+                end = "-03-31";
+            }
+            if (bySeason == 2) {
+                start = "-04-01";
+                end = "-06-30";
+            }
+            if (bySeason == 3) {
+                start = "-07-01";
+                end = "-09-31";
+            }
+            if (bySeason == 4) {
+                start = "-10-01";
+                end = "-12-31";
+            }
+
+            for (int i = yearsStart; i <= yearsEnd; i++) {
+                start = i + start;
+                end = i + end;
+                Date startTime = parseToDate(start);
+                Date endTime = parseToDate(end);
+                Map map = new HashMap();
+                map.put("start", startTime);
+                map.put("end", endTime);
+                yearsTime.add(map);
+                dateMap.put("yearsTimeList", yearsTime);
+            }
+
+        }
+        //历年月份查询
+        if (timeType == 2) {
+            String start = "01";
+            String end = "30";
+            //years%4=0
+            String byMonth = (String) dateMap.get("byMonth");
+            String[] bigMoth = {"01", "03", "05", "07", "08", "10", "12"};
+            for (String s : bigMoth) {
+                if (byMonth.equals(s)) {
+                    end = "31";
+                }
+            }
+            for (int i = yearsStart; i <= yearsEnd; i++) {
+                if (byMonth.equals("02")) {
+                    end = "28";
+                    if (i % 4 == 0) {
+                        end = "29";
+                    }
+                }
+                start = i + "-" + byMonth + "-" + start;
+                end = i + "-" + byMonth + "-" + end;
+                Date startTime = parseToDate(start);
+                Date endTime = parseToDate(end);
+                Map map = new HashMap();
+                map.put("start", startTime);
+                map.put("end", endTime);
+                yearsTime.add(map);
+                dateMap.put("yearsTimeList", yearsTime);
+            }
+        }
+        dateMap.remove("yearsStart");
+        dateMap.remove("yearsEnd");
+        dateMap.remove("timeType");
+        dateMap.remove("byMonth");
+        dateMap.remove("bySeason");
+        dateMap.remove("byYear");
+
+        return dateMap;
+    }
+
+    /**
      * 商家商品后台查询id
      */
     @Override
@@ -421,5 +520,137 @@ public class OrderServiceImpl implements OrderService {
 	@Override
 	public void modification(TbOrder order) {
 	}
+
+    @Override
+    public PageResult findCountPage(Order order, int pageNum, int pageSize) {
+        PageResult<TbItem> result = new PageResult<TbItem>();
+        //设置分页条件
+        PageHelper.startPage(pageNum, pageSize);
+
+        HashMap dateMap = order.getDateMap();
+        Integer timeType = (Integer) dateMap.get("timeType");
+        Integer yearsStart = (Integer) dateMap.get("yearsStart");
+        Integer yearsEnd = (Integer) dateMap.get("yearsEnd");
+        //如果时间类型不为空,用setCountTimeMap,设置统计时间
+        if (timeType != null && !timeType.equals(3)) {
+            Map paymentTime = (Map) dateMap.get("paymentTime");
+            HashMap map = (HashMap) setCountTimeMap(timeType, dateMap, paymentTime);
+            order.setDateMap(map);
+        }
+
+
+        List<TbOrder> tbOrderList = null;
+        //如果不是历年查询的方法,参照订单查询的方法
+        if (timeType != null && !timeType.equals(1) && !timeType.equals(2)) {
+            tbOrderList = findOrderAndOrderItem(order);
+        } else {//历年查询
+            tbOrderList = new ArrayList<>();
+            for (int i = yearsStart; i <= yearsEnd; i++) {
+                List<Map> yearsTimeList = (List) dateMap.get("yearsTimeList");
+                for (Map map : yearsTimeList) {
+                    dateMap.put("paymentTime", map);
+                    order.setDateMap(dateMap);
+                    List<TbOrder> tbOrderList1 = findOrderAndOrderItem(order);
+//                    for (TbOrder tbOrder : tbOrderList1) {
+//                        tbOrderList.add(tbOrder);
+//                    }
+                    tbOrderList.addAll(tbOrderList1);
+                }
+            }
+        }
+        List<TbItem> tbItemList1 = new ArrayList<>();
+        if (tbOrderList != null && tbOrderList.size() > 0) {
+            for (TbOrder tbOrder : tbOrderList) {
+                for (TbOrderItem orderItem : tbOrder.getOrderItemList()) {
+                    TbItem where = new TbItem();
+                    where.setId(orderItem.getItemId());
+                    List<TbItem> tbItemList = itemMapper.select(where);
+                    orderItem.setItemList(tbItemList);
+                    for (TbItem item : tbItemList) {
+                        TbItemCat where1 = new TbItemCat();
+                        where1.setId(item.getCategoryid());
+                        List<TbItemCat> tbItemCatList = itemCatMapper.select(where1);
+                        item.setItemCatList(tbItemCatList);
+                        TbOrderItem where2 = new TbOrderItem();
+                        where2.setItemId(item.getId());
+                        List<TbOrderItem> tbOrderItemList = orderItemMapper.select(where2);
+                        item.setTbOrderItemList(tbOrderItemList);
+                    }
+                }
+            }
+        }
+
+
+        return null;
+    }
+
+    /**
+     * 搜索每天销售额
+     * @param start
+     * @param end
+     * @return
+     */
+    @Override
+    public Map searchDaySale(Date start, Date end) {
+        Map map = null;
+        try {
+            map = new LinkedHashMap();
+            Calendar calendar = Calendar.getInstance();
+            this.findOneDaySale(map, start);
+            while (!start.equals(end)) {
+                calendar.setTime(start);
+                calendar.add(Calendar.DATE, 1); // 日期加1天
+                start = calendar.getTime();
+                this.findOneDaySale(map, start);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return map;
+    }
+
+
+    /**
+     * 根据时间日期查找当天销售量 储存到map集合
+     *
+     * @param map
+     * @param date
+     * @return
+     */
+    public Map findOneDaySale(Map map, Date date) {
+        BigDecimal saleNumber = BigDecimal.valueOf(0);//当日销售额
+        //构建查询条件
+        Example example = new Example(TbOrder.class);
+        Example.Criteria criteria = example.createCriteria();
+        //操作时间类
+        Calendar calendar = Calendar.getInstance();
+        //一天24小时  24点---23:59:59点
+        calendar.setTime(date);
+        calendar.add(Calendar.SECOND, 24 * 60 * 60 - 1);
+        Date dayEndTime = calendar.getTime();
+        criteria.andGreaterThanOrEqualTo("paymentTime", date);//大于等于
+        criteria.andLessThanOrEqualTo("paymentTime", dayEndTime);//小于等于
+        List<TbOrder> orderList = orderMapper.selectByExample(example);
+
+        //遍历每一个订单
+        TbOrderItem orderItem = null;
+        for (TbOrder order : orderList) {
+            orderItem = new TbOrderItem();
+            orderItem.setOrderId(order.getOrderId());
+            List<TbOrderItem> orderItemList = orderItemMapper.select(orderItem);
+            //遍历订单所买的商品
+            for (TbOrderItem tbOrderItem : orderItemList) {
+                BigDecimal totalSale = tbOrderItem.getTotalFee();
+                saleNumber = saleNumber.add(totalSale);
+            }
+
+        }
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String formatDate = dateFormat.format(date);
+        System.out.println(formatDate);
+        map.put(formatDate, saleNumber);
+        return map;
+    }
+
 
 }

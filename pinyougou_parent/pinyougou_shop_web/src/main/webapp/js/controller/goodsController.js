@@ -133,60 +133,128 @@ app.controller('goodsController' ,function($scope,$controller,$location,goodsSer
         $scope.entity.goodsDesc.itemImages.splice(index,1);
     }
 
-    //加载商品分类一级目录
+    // //加载商品分类一级目录
+    // $scope.selectItemCat1List=function () {
+	// 	itemCatService.findByParentId(0).success(function (response) {
+    //         $scope.itemCat1List = response;
+    //
+    //     })
+    // }
+    //
+    // //二级分类加载
+	// //$watch(监听的变量名，函数(新的值,原来的值))
+    // $scope.$watch("entity.goods.category1Id",function (newValue,oldValue) {
+    //     itemCatService.findByParentId(newValue).success(function (response) {
+    //         $scope.itemCat2List = response;
+    //         //$scope.entity.goods.category2Id = -1;
+    //
+    //         $scope.itemCat3List = [];
+    //     })
+    // });
+    //
+    // //三级分类加载
+    // //$watch(监听的变量名，函数(新的值,原来的值))
+    // $scope.$watch("entity.goods.category2Id",function (newValue,oldValue) {
+    //     itemCatService.findByParentId(newValue).success(function (response) {
+    //         $scope.itemCat3List = response;
+    //     })
+    // });
+    //
+    // //模板id加载
+    // //$watch(监听的变量名，函数(新的值,原来的值))
+    // $scope.$watch("entity.goods.category3Id",function (newValue,oldValue) {
+	// 	itemCatService.findOne(newValue).success(function (response) {
+	// 		$scope.entity.goods.typeTemplateId = response.typeId;
+    //     })
+    // });
+    //
+    // //品牌列表、扩展属性加载
+    // //$watch(监听的变量名，函数(新的值,原来的值))
+    // $scope.$watch("entity.goods.typeTemplateId",function (newValue,oldValue) {
+    //     typeTemplateService.findOne(newValue).success(function (response) {
+    //    //把品牌json串转换为品牌列表
+    //         response.brandIds = JSON.parse(response.brandIds);
+    //         //把扩展属性json串转换为列表
+    //         var id = $location.search()["id"];
+    //         if(id == null){
+    //             $scope.entity.goodsDesc.customAttributeItems = JSON.parse(response.customAttributeItems);
+	// 		}
+    //         //读取规格与选项列表
+	// 		typeTemplateService.findSpecList(newValue).success(function (response) {
+	// 			//alert(JSON.stringify(response));
+    //             $scope.specList = response;
+    //         });
+    //         $scope.typeTemplate = response;
+    //     })
+    // });
+    //查询一级分类
     $scope.selectItemCat1List=function () {
-		itemCatService.findByParentId(0).success(function (response) {
-            $scope.itemCat1List = response;
+        itemCatService.findByParentId(0).success(function (response) {
+            $scope.itemCat1List=response;
 
         })
     }
 
-    //二级分类加载
-	//$watch(监听的变量名，函数(新的值,原来的值))
+    //跟据一级类目，更新二级类目
+    //$watch方法用于监控某个变量的值，当被监控的值发生变化，就自动执行相应的函数
     $scope.$watch("entity.goods.category1Id",function (newValue,oldValue) {
         itemCatService.findByParentId(newValue).success(function (response) {
-            $scope.itemCat2List = response;
-            //$scope.entity.goods.category2Id = -1;
-
-            $scope.itemCat3List = [];
+            $scope.itemCat2List=response;
+            //点选1级列表请空第3级列表和模板ID
+            if($location.search()['id']==null) {
+                $scope.itemCat3List={};
+                $scope.entity.goods.typeTemplateId="";
+                //点选1级列表请空扩展属性列表
+                $scope.entity.goodsDesc.customAttributeItems = {};
+                //点选1级列表请空规格选项和品牌
+                $scope.specList={};
+                $scope.typeTemplate.brandIds=[];
+            }
         })
-    });
+    })
 
-    //三级分类加载
-    //$watch(监听的变量名，函数(新的值,原来的值))
+    //跟据二级类目，更新三级类目
+    //$watch方法用于监控某个变量的值，当被监控的值发生变化，就自动执行相应的函数
     $scope.$watch("entity.goods.category2Id",function (newValue,oldValue) {
         itemCatService.findByParentId(newValue).success(function (response) {
-            $scope.itemCat3List = response;
+            $scope.itemCat3List=response;
+            //点选1级列表请空第3级列表和模板ID
+            if($location.search()['id']==null) {
+                $scope.entity.goods.typeTemplateId="";
+                //点选1级列表请空扩展属性列表
+                $scope.entity.goodsDesc.customAttributeItems = {};
+                //点选1级列表请空规格选项和品牌
+                $scope.specList={};
+                $scope.typeTemplate.brandIds=[];
+            }
         })
-    });
+    })
 
-    //模板id加载
-    //$watch(监听的变量名，函数(新的值,原来的值))
-    $scope.$watch("entity.goods.category3Id",function (newValue,oldValue) {
-		itemCatService.findOne(newValue).success(function (response) {
-			$scope.entity.goods.typeTemplateId = response.typeId;
+    //选择三级类目后，更新模板id
+    $scope.$watch("entity.goods.category3Id",function (newValue, oldValue) {
+        itemCatService.findOne(newValue).success(function (response) {
+
+            $scope.entity.goods.typeTemplateId =response.typeId;
         })
-    });
+    })
 
-    //品牌列表、扩展属性加载
-    //$watch(监听的变量名，函数(新的值,原来的值))
-    $scope.$watch("entity.goods.typeTemplateId",function (newValue,oldValue) {
+    //加载品牌列表
+    $scope.$watch("entity.goods.typeTemplateId",function (newValue, oldValue) {
         typeTemplateService.findOne(newValue).success(function (response) {
-       //把品牌json串转换为品牌列表
-            response.brandIds = JSON.parse(response.brandIds);
-            //把扩展属性json串转换为列表
-            var id = $location.search()["id"];
-            if(id == null){
+            $scope.typeTemplate =response;
+            //品牌
+            $scope.typeTemplate.brandIds = JSON.parse(response.brandIds);
+            //拓展属性列表
+            //如果没有ID，则加载模板中的扩展数据
+            if($location.search()['id']==null) {
                 $scope.entity.goodsDesc.customAttributeItems = JSON.parse(response.customAttributeItems);
-			}
-            //读取规格与选项列表
-			typeTemplateService.findSpecList(newValue).success(function (response) {
-				//alert(JSON.stringify(response));
-                $scope.specList = response;
-            });
-            $scope.typeTemplate = response;
+            }
+        });
+        //加载规格选项列表
+        typeTemplateService.findSpecList(newValue).success(function (response) {
+            $scope.specList=response;
         })
-    });
+    })
 
     /**
 	 * 页面规格checkbox的点击事件

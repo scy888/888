@@ -87,16 +87,26 @@ public class ItemSearchServiceImpl implements ItemSearchService {
 //        redisTemplate.boundHashOps("footMarkList").put(userId,footMarkMap);
 
         //使用二级map加上set
-        Map<String,Set> footMarkMap = (Map<String, Set>) redisTemplate.boundHashOps("footMarkList").get(userId);
-        if (footMarkMap == null) {
-            footMarkMap = new HashMap<String, Set>();
-            HashSet<Long> goodsIdSet = new HashSet<>();
-            goodsIdSet.add(goodsId);
-            footMarkMap.put(userId, goodsIdSet);
+//        Map<String,Set> footMarkMap = (Map<String, Set>) redisTemplate.boundHashOps("footMarkList").get(userId);
+//        if (footMarkMap == null) {
+//            footMarkMap = new HashMap<String, Set>();
+//            HashSet<Long> goodsIdSet = new HashSet<>();
+//            goodsIdSet.add(goodsId);
+//            footMarkMap.put(userId, goodsIdSet);
+//        } else {
+//            footMarkMap.get(userId).add(goodsId);
+//        }
+//        redisTemplate.boundHashOps("footMarkList").put(userId,footMarkMap);
+
+        //map里加set集合
+        Set<Long> footMarkSet = (Set<Long>) redisTemplate.boundHashOps("footMarkList").get(userId);
+        if (footMarkSet == null) {
+            footMarkSet = new HashSet<Long>();
+            footMarkSet.add(goodsId);
         } else {
-            footMarkMap.get(userId).add(goodsId);
+            footMarkSet.add(goodsId);
         }
-        redisTemplate.boundHashOps("footMarkList").put(userId,footMarkMap);
+        redisTemplate.boundHashOps("footMarkList").put(userId,footMarkSet);
     }
 
     /**

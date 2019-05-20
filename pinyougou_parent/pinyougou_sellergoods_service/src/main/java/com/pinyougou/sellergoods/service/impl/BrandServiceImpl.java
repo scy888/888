@@ -196,5 +196,20 @@ public class BrandServiceImpl implements BrandService {
 		brandMapper.updateByExampleSelective(record,example);
 	}
 
+    @Override
+    public Long findBrandIdByName(String name) {
+		TbBrand where=new TbBrand();
+		where.setName(name);
+        List<TbBrand> tbBrands = brandMapper.select(where);
+        if (tbBrands.size()==1){
+            for (TbBrand tbBrand : tbBrands) {
+                return tbBrand.getId();
+            }
+        }else {
+            throw new RuntimeException("您Excel输入的品牌名:"+name+"有误");
+        }
+        return null;
+    }
+
 
 }

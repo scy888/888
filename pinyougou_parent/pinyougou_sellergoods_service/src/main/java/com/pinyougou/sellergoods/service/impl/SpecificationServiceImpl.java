@@ -71,6 +71,13 @@ public class SpecificationServiceImpl implements SpecificationService {
 			option.setSpecId(specification.getSpecification().getId());
 			optionMapper.insertSelective(option);
 		}
+	}/**
+	 * 增加
+	 */
+	@Override
+	public void add(TbSpecification specification) {
+		//保存规格名称信息
+		specificationMapper.insertSelective(specification);
 	}
 
 	
@@ -199,6 +206,25 @@ public class SpecificationServiceImpl implements SpecificationService {
 		result.setTotal(info.getTotal());
 
 		return result;
+	}
+
+	/**通过规格名称查找规格ID
+	 * @param specName
+	 * @return
+	 */
+	@Override
+	public Long findOneByName(String specName) {
+		TbSpecification where=new TbSpecification();
+		where.setSpecName(specName);
+        List<TbSpecification> tbSpecifications = specificationMapper.select(where);
+        if (tbSpecifications.size()==1){
+            for (TbSpecification tbSpecification : tbSpecifications) {
+                return tbSpecification.getId();
+            }
+        }else {
+            throw new RuntimeException("您输入的规格名:"+specName+"有误");
+        }
+        return null;
 	}
 
 	/**

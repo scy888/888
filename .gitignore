@@ -1,4 +1,4 @@
-﻿﻿### Maven
+### Maven
 target/
 logs/
 !.mvn/wrapper/maven-wrapper.jar

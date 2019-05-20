@@ -12,6 +12,7 @@ import com.pinyougou.user.service.UserService;
 import entity.PageResult;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.BoundHashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.core.MessageCreator;
@@ -35,6 +36,8 @@ public class UserServiceImpl implements UserService {
 	private TbOrderItemMapper orderItemMapper;
 	@Autowired
 	private TbItemMapper itemMapper;
+    @Autowired
+    private TbGoodsMapper goodsMapper;
 	@Autowired
 	private TbFavoriteMapper favoriteMapper;
 	
@@ -237,10 +240,13 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public List<Order> findOrderByUserId(String userId) {
+	public List<Order> findOrderByUserId(String userId,String status) {
 	     List<Order> orderList = new ArrayList<>();
 		TbOrder where = new TbOrder();
 		where.setUserId(userId);
+		if (status!=null&&!status.equals("")) {
+			where.setStatus(status);
+		}
 		List<TbOrder> orders = orderMapper.select(where);
 		for (TbOrder tbOrder : orders) {
 			Order order = new Order();
@@ -301,5 +307,16 @@ public class UserServiceImpl implements UserService {
 		where.setStatus(status);
 		orderMapper.updateByPrimaryKeySelective(where);
 	}
+
+    @Override
+    public List<TbGoods> findPersonFootmark(String userId) {
+		Set<Long> goodsIds = (Set<Long>) redisTemplate.boundHashOps("footMarkList").get(userId);
+        List<Object> goodIdList = new ArrayList<>(goodsIds);
+        Example example = new Example(TbGoods.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andIn("id",goodIdList);
+        List<TbGoods> tbGoodsList = goodsMapper.selectByExample(example);
+        return tbGoodsList;
+    }
 
 }

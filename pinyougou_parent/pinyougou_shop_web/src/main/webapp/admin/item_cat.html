@@ -31,12 +31,12 @@
 </head>
 
 <body ng-app="pinyougou" ng-controller="itemCatController"
-      ng-init="findByParentId(0);findTypeTemplateList()"
+      ng-init="findByParentId(0);findTypeTemplateList();getUserInfo()"
       class="hold-transition skin-red sidebar-mini">
 <!-- .box-body -->
 
 <div class="box-header with-border">
-    <h3 class="box-title">商品分类管理{{entity}}
+    <h3 class="box-title">商品分类管理
     </h3>
 </div>
 
@@ -60,8 +60,7 @@
         <div class="pull-left">
             <div class="form-group form-inline">
                 <div class="btn-group">
-                    <button type="button" class="btn btn-default" title="新建" data-toggle="modal"
-                            data-target="#editModal"><i class="fa fa-file-o"></i> 添加我的分类
+                    <button type="button" class="btn btn-default" title="新建" data-toggle="modal" ng-click="entity={}" data-target="#editModal"><i class="fa fa-file-o"></i> 添加我的分类
                     </button>
                     <!--<button type="button" class="btn btn-default" title="删除"><i class="fa fa-trash-o"></i> 删除</button>-->
                     <button type="button" class="btn btn-default" title="刷新"><i class="fa fa-check"></i> 刷新</button>
@@ -95,7 +94,7 @@
                 <td>{{catStatus[entity.status]}}</td>
                 <td class="text-center">
                     <button ng-if="grade < 3" type="button" ng-click="setGrade(grade+1);selectList(entity)" class="btn bg-olive btn-xs">查询下级</button>
-                    <button type="button" class="btn bg-olive btn-xs" data-toggle="modal" data-target="#editModal">修改
+                    <button type="button" ng-click="findOne(entity.id)" class="btn bg-olive btn-xs" data-toggle="modal" data-target="#editModal">修改
                     </button>
                 </td>
             </tr>

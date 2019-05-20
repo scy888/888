@@ -43,4 +43,9 @@ app.service('userService',function($http){
 	this.findUserFavoriteByUserId=function(){
 		return $http.get('../user/findUserFavoriteByUserId.do');
 	}
+	//查询用户足迹
+	this.findPersonFootmark=function(){
+		return $http.get('../user/findPersonFootmark.do');
+	}
+
 });

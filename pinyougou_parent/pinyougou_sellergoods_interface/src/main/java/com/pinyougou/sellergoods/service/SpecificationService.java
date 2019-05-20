@@ -30,6 +30,10 @@ public interface SpecificationService {
 	 * 增加
 	*/
 	public void add(Specification specification);
+	/**
+	 * 增加
+	*/
+	public void add(TbSpecification specification);
 	
 	
 	/**
@@ -75,5 +79,7 @@ public interface SpecificationService {
 	 * @return
 	 */
 	public PageResult sellerFindPage(TbSpecification specification, int pageNum, int pageSize, String sellerId);
+
+	Long findOneByName(String specName);
 
 }

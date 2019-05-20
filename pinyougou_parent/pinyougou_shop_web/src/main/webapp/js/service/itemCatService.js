@@ -34,4 +34,5 @@ app.service('itemCatService',function($http){
         return $http.get("../itemCat/sellerFindByParentId.do?parentId=" + parentId);
     }
 
+
 });

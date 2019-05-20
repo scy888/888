@@ -81,4 +81,10 @@ public interface BrandService {
 	 * @param status
 	 */
     void updateStatus(Long[] ids, Integer status);
+
+	/**通过name找品牌的id
+	 * @param name
+	 * @return
+	 */
+    Long findBrandIdByName(String name);
 }

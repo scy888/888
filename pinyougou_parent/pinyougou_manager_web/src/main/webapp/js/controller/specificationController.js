@@ -104,7 +104,11 @@ app.controller('specificationController' ,function($scope,$controller,specificat
 			}
 		})
 	}
-
+    $scope.uploadFile=function () {
+        specificationService.uploadFile().success(function (response) {
+            alert(response.message);
+        })
+    }
 
 
 });	

@@ -162,7 +162,7 @@ $(function(){
                     DaySelector: "#select_day2"
                 });
             });
-        </script>
+</script>
 
 </body>
     <!--header-->
@@ -218,26 +218,26 @@ $(function(){
                                     <div class="control-group">
                                         <label for="inputName" class="control-label">昵称：</label>
                                         <div class="controls">
-                                            <input type="text" id="inputName" name="email" value="{{entity.nickName}}"  ng-model="entity.nickName" placeholder="{{entity.nickName}}">
+                                            <input type="text" id="inputName" name="email" value="{{entity.nickName}}"  ng-model="entity.nickName" placeholder="{{entity.nickName}}"/>
                                         </div>
                                     </div>
                                     <div class="control-group">
                                         <label  class="control-label">性别：</label>
                                         <div class="controls">
                                             <label data-toggle="radio" class="radio-pretty inline {{entity.sex=='1'?'checked':''}}" >
-                                            <input type="radio" name="gender" value="1"  ><span >男</span>
+                                            <input type="radio" name="gender" value="1"  ng-model="entity.sex" ><span >男</span>
                                         </label>
                                             <label data-toggle="radio" class="radio-pretty inline {{entity.sex=='2'?'checked':''}}">
-                                            <input type="radio" name="gender" value="2"><span>女</span>
+                                            <input type="radio" name="gender" value="2" ng-model="entity.sex"><span>女</span>
                                         </label>
                                         </div>
                                     </div>
                                     <div class="control-group">
                                         <label for="inputPassword" class="control-label">生日：</label>
                                         <div class="controls">
-                                            <select id="select_year2" rel="1990"  ng-model="year"></select>年
-                                            <select id="select_month2" rel="4" ng-model="month"></select>月
-                                            <select id="select_day2" rel="3" ng-model="day"></select>日
+                                            <select id="select_year2" rel="1994" ></select>年
+                                            <select id="select_month2" rel="4" ></select>月
+                                            <select id="select_day2" rel="3" ></select>日
                                         </div>
                                     </div>
 
@@ -438,8 +438,23 @@ $(function(){
 <!--页面底部END-->
 <script>
 	// $("#select_year2 option[value='" + 1999 + "']").attr("selected", true);
-	$("#select_year2 option[value='1898']").prop("selected", 'selected')
+	// $("#select_year2 option[value='1898']").prop("selected", 'selected')
+
+
+	function fun1(year, month, day) {
+		// alert(year+"" + month +""+ day);
+		// alert(pro + city + town)
+		$("#select_year2").val(year);
+		$("#provinceId").trigger("change");
+		$("#select_month2").val(month);
+		$("#select_month2").trigger("change");
+		$("#select_day2").val(day);
+
+	}
+
+
+</script>
 </script>
 undefined
-
 </html>
+

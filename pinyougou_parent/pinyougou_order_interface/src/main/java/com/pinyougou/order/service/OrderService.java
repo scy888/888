@@ -1,13 +1,13 @@
 package com.pinyougou.order.service;
 
-import com.pinyougou.pojo.TbBrand;
 import com.pinyougou.pojo.TbOrder;
 import com.pinyougou.pojo.TbPayLog;
-import com.pinyougou.pojogroup.Goods;
 import com.pinyougou.pojogroup.Order;
 import entity.PageResult;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 业务逻辑接口
@@ -103,4 +103,19 @@ public interface OrderService {
 	 */
 	public  void modification (TbOrder TbOrder);
 
+	/**
+	 * 分页统计
+	 * @param order
+	 * @param pageNum
+	 * @param pageSize
+	 * @return
+	 */
+	PageResult findCountPage(Order order, int pageNum, int pageSize);
+	/**
+	 * 每天的销售量
+	 * @param start
+	 * @param end
+	 * @return
+	 */
+    Map searchDaySale(Date start, Date end);
 }

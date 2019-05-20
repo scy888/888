@@ -1,4 +1,4 @@
-app.controller("baseController",function ($scope) {
+app.controller("baseController", function ($scope) {
     //分页控件属性配置
     $scope.paginationConf = {
         //当前页
@@ -15,10 +15,18 @@ app.controller("baseController",function ($scope) {
         }
     };
 
+    $scope.searchType = 0;
+
     //重新加载数据
     $scope.reloadList = function () {
         //$scope.findPage($scope.paginationConf.currentPage, $scope.paginationConf.itemsPerPage);
-        $scope.search( $scope.paginationConf.currentPage, $scope.paginationConf.itemsPerPage);
+        if ($scope.searchType === 0) {
+            $scope.search($scope.paginationConf.currentPage, $scope.paginationConf.itemsPerPage);
+        }
+        if ($scope.searchType === 1) {
+            $scope.searchEntity = {dateMap: {timeType: '3', byYear: '='}, propertyMap: {propertyType: '0'}};
+            // searchEntity.dateMap.timeType='3';searchEntity.dateMap.byYear='';searchEntity.propertyMap.propertyType='0';
+        }
     }
 
     //选中的id列表
@@ -42,15 +50,17 @@ app.controller("baseController",function ($scope) {
      * @param jsonString 要提取的json字符
      * @param key 提取的属性
      */
-    $scope.jsonToString=function (jsonString,key) {
+    $scope.jsonToString = function (jsonString, key) {
         var obj = JSON.parse(jsonString);
         var result = "";
-        for(var i = 0; i < obj.length; i++){
-            if(i > 0){
+        for (var i = 0; i < obj.length; i++) {
+            if (i > 0) {
                 result += ",";
             }
             result += obj[i][key];
         }
         return result;
     }
+
+
 })

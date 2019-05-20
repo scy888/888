@@ -5,8 +5,8 @@ app.controller('brandController' ,function($scope,$controller,brandService){
 
     //读取列表数据绑定到表单中  
 	$scope.findAll=function(){
+		//ajax执行顺序的缘故，并不先执行登录名初始化，所以废的，后端对接方法已添加后端获取登录用户名功能，这里保留这些无用代码纯粹是因为懒得改，前端传不传用户名过来后端都会覆盖掉
         $scope.getUserInfo();
-       alert("111--"+$scope.loginName);
 		brandService.findAll($scope.loginName).success(
 			function(response){
 				$scope.list=response;
@@ -86,7 +86,6 @@ app.controller('brandController' ,function($scope,$controller,brandService){
 
     //商家自家的品牌搜索
     $scope.search=function(page,rows){
-        alert("222--"+$scope.loginName);
         brandService.search($scope.loginName,page,rows,$scope.searchEntity).success(
             function(response){
                 $scope.list=response.rows;

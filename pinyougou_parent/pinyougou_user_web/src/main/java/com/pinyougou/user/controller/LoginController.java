@@ -32,11 +32,15 @@ public class LoginController {
         return map;
     }
 
+
+    /**查询用户订单
+     * @return
+     */
     @RequestMapping("findOrderByUserId")
-    public List<Order> findOrderByUserId(){
+    public List<Order> findOrderByUserId(String status){
         //用户登录名
         String userId = SecurityContextHolder.getContext().getAuthentication().getName();
-        return userService.findOrderByUserId(userId);
+        return userService.findOrderByUserId(userId,status);
     }
 
 }

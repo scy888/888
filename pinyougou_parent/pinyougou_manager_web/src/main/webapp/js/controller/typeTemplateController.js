@@ -139,6 +139,12 @@ app.controller('typeTemplateController' ,function($scope,$controller,typeTemplat
 		})
 	}
 
+    $scope.uploadFile=function () {
+        typeTemplateService.uploadFile().success(function (response) {
+            alert(response.message);
+        })
+    }
+
 
 
 

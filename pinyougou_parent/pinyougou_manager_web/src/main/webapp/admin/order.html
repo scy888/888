@@ -42,12 +42,46 @@
     <div class="table-box">
 
         <!--工具栏-->
-        <div class="box-tools pull-left">
-            <div style="float: left">
+        <div class="box-tools pull-right">
+            <div style="float: left;margin-right: 15px">
+
                 <table>
                     <tr>
-                        <th>日期查询:</th>
+                        <td>订单ID：</td>
+                        <td><input ng-model="searchEntity.tbOrder.orderIdStr" type="text"></td>
                     </tr>
+                    <tr>
+                        <td>物流名称：</td>
+                        <td><input ng-model="searchEntity.tbOrder.shippingName" type="text"></td>
+                    </tr>
+                    <tr>
+                        <td>物流单号：</td>
+                        <td><input ng-model="searchEntity.tbOrder.shippingCode" type="text"></td>
+                    </tr>
+                    <tr>
+                        <td>用户ID：</td>
+                        <td><input ng-model="searchEntity.tbOrder.userId" type="text"></td>
+                    </tr>
+                    <tr>
+                        <td>买家昵称：</td>
+                        <td><input ng-model="searchEntity.tbOrder.buyerNick" type="text"></td>
+                    </tr>
+                    <tr>
+                        <td>收货人地区名称：</td>
+                        <td><input ng-model="searchEntity.tbOrder.receiverAreaName" type="text"></td>
+                    </tr>
+                    <tr>
+                        <td>发票类型：</td>
+                        <td><input ng-model="searchEntity.tbOrder.invoiceType" type="text"></td>
+                    </tr>
+                    <tr>
+                        <td>商家ID：</td>
+                        <td><input ng-model="searchEntity.tbOrder.sellerId" type="text"></td>
+                    </tr>
+                </table>
+            </div>
+            <div style="float: left">
+                <table>
                     <tr>
                         <td>订单创建时间：</td>
                         <td><input ng-model="searchEntity.dateMap.createTime.start" type="date">至<input
@@ -86,50 +120,10 @@
                 </table>
             </div>
 
-            <div style="float: left">
 
-                <table>
-                    <tr>
-                        <th>字段查询:</th>
-                        <th><button ng-click="" ng-model="openField"></button></th>
-                    </tr>
-                    <tr>
-                        <td>订单ID：</td>
-                        <td><input ng-model="searchEntity.tbOrder.orderIdStr" type="text"></td>
-                    </tr>
-                    <tr>
-                        <td>物流名称：</td>
-                        <td><input ng-model="searchEntity.tbOrder.shippingName" type="text"></td>
-                    </tr>
-                    <tr>
-                        <td>物流单号：</td>
-                        <td><input ng-model="searchEntity.tbOrder.shippingCode" type="text"></td>
-                    </tr>
-                    <tr>
-                        <td>用户ID：</td>
-                        <td><input ng-model="searchEntity.tbOrder.userId" type="text"></td>
-                    </tr>
-                    <tr>
-                        <td>买家昵称：</td>
-                        <td><input ng-model="searchEntity.tbOrder.buyerNick" type="text"></td>
-                    </tr>
-                    <tr>
-                        <td>收货人地区名称：</td>
-                        <td><input ng-model="searchEntity.tbOrder.receiverAreaName" type="text"></td>
-                    </tr>
-                    <tr>
-                        <td>发票类型：</td>
-                        <td><input ng-model="searchEntity.tbOrder.invoiceType" type="text"></td>
-                    </tr>
-                    <tr>
-                        <td>商家ID：</td>
-                        <td><input ng-model="searchEntity.tbOrder.sellerId" type="text"></td>
-                    </tr>
-                </table>
-            </div>
 
         </div>
-        <div class="box-tools pull-right">
+        <div class="box-tools pull-left">
             <div class="has-feedback">
                 状态：<select ng-model="searchEntity.tbOrder.status">
                 <option value="">全部</option>
@@ -160,13 +154,13 @@
                 <option value="是">已评价</option>
                 <option value="否">未评价</option>
             </select>
-
-
                 <button class="btn btn-default" ng-click="reloadList()">查询</button>
                 <button class="btn btn-default" ng-click="outPutAsXlsx(1)">导出</button>
                 <button class="btn btn-default" ng-click="outPutAsXlsx(0)">导出全部</button>
             </div>
         </div>
+
+
         <!--工具栏/-->
 
         <!--数据列表-->
