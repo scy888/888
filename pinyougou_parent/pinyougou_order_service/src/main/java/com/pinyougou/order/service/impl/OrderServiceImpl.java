@@ -29,11 +29,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import entity.PageResult;
 
@@ -568,6 +566,9 @@ public class OrderServiceImpl implements OrderService {
      */
     @Override
     public List<TbItem> searchDayGoodsSale(Date start, Date end) {
+
+        List<TbItem> tbItemList = new ArrayList<>();
+
         //1.拿到所有的订单
         //构建查询条件
         Example example = new Example(TbItem.class);
@@ -586,71 +587,23 @@ public class OrderServiceImpl implements OrderService {
             List<TbOrderItem> orderItems = orderItemMapper.select(orderItem);
             orderItemList.addAll(orderItems);
         }
-
-
-        Map<TbItem, BigDecimal> map = new HashMap();
-                //19对象
-        for (TbOrderItem tbOrderItem : orderItemList) {//19  18  19  18
-            Set<TbItem> tbItems = map.keySet();
-            if (tbItems.size() > 0) {
-                for (TbItem tbItem : tbItems) {
-                    if (!tbItem.getId().equals(tbOrderItem.getItemId())) {
-                        TbItem tbItem = itemMapper.selectByPrimaryKey(tbOrderItem.getItemId());
-                        map.put(tbItem, tbOrderItem.getTotalFee());
-                    } else {
-                        map.put(tbItem, map.get(tbItem).add(tbOrderItem.getTotalFee()));
-                    }
-                }
-            } else {
-                TbItem tbItem = itemMapper.selectByPrimaryKey(tbOrderItem.getItemId());
-                map.put(tbItem, tbOrderItem.getTotalFee());
-            }
-        }
-
-
-
-        Set<Long> longs = map.keySet();
-        TbItem tbItem = null;
-        for (Long aLong : longs) {
-            tbItem = new TbItem();
-            tbItem.setId(aLong);
-            itemMapper.select(tbItem);
-        }
-
-
-        //3.
-        List<TbItem> buyItemList = new ArrayList<>();//这个集合用来放下了订单  买了的TbItem
-
-        List<TbItem> itemList = itemMapper.select(null);//查找出所有的TbItem
-
-
-        //有一个tbOrderItem就搞一个集合   是商品被买的集合
-        List<TbOrderItem> list = new ArrayList<>();
-        for (TbOrderItem tbOrderItem : orderItemList) {
-            for (TbItem tbItem : itemList) {
-                if (tbItem.equals(tbOrderItem.getItemId())) {//关联tbOrderItem和tbItem
-
-                    list.add(tbOrderItem);
-                }
-            }
-        }
-
-
-        buyItemList
-
-
+        //3.拿到所有的TbItem
+        List<TbItem> itemList = itemMapper.select(null);
+        //4.清除不在订单上的tbItem，并把在订单上的item放到item的List<TbOrderItem> orderItemList集合里
+        List<TbOrderItem> orderItems = null;
         for (TbItem tbItem : itemList) {
-            //这个商品被买的集合
-            List<TbOrderItem> list = new ArrayList<>();
+            orderItems = new ArrayList<>();
             for (TbOrderItem tbOrderItem : orderItemList) {
                 if (tbItem.getId().equals(tbOrderItem.getItemId())) {
-                    list.add(tbOrderItem);
-
+                    orderItems.add(tbOrderItem);
                 }
             }
-            tbItem.setOrderItemList(list);
-            buyItemList.add(tbItem);
+            tbItem.setOrderItemList(orderItemList);
+
+            if (tbItem.getOrderItemList().size()>0){
+                tbItemList.add(tbItem);
+            }
         }
-        return buyItemList;
+        return tbItemList;
     }
 }
