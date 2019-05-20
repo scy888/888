@@ -1,7 +1,9 @@
 package com.pinyougou.order.service;
 
+import com.pinyougou.pojo.TbBrand;
 import com.pinyougou.pojo.TbOrder;
 import com.pinyougou.pojo.TbPayLog;
+import com.pinyougou.pojogroup.Goods;
 import com.pinyougou.pojogroup.Order;
 import entity.PageResult;
 
@@ -109,4 +111,11 @@ public interface OrderService {
 	 * @return
 	 */
 	PageResult findCountPage(Order order, int pageNum, int pageSize);
+	/**
+	 * 每天的销售量
+	 * @param start
+	 * @param end
+	 * @return
+	 */
+    Map searchDaySale(Date start, Date end);
 }

@@ -12,4 +12,11 @@ app.service('orderService',function ($http) {
     this.findByQueryId=function (orderIdStr) {
         return $http.get("../from/findByQueryId.do？orderIdStr="+orderIdStr);
     }
+
+
+    this.searchDaySale=function (startTime,endTime) {
+        return $http.get("../form/searchDaySale.do?start="+startTime+"&end="+endTime);
+    }
+
+
 })
