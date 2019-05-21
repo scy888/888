@@ -602,14 +602,12 @@ public class OrderServiceImpl implements OrderService {
             BigDecimal totalMoney = BigDecimal.valueOf(0);
             for (TbOrderItem tbOrderItem : orderItemList) {
                 if (tbItem.getId().equals(tbOrderItem.getItemId())) {
+                    totalMoney = totalMoney.add(tbOrderItem.getTotalFee());
                     orderItems.add(tbOrderItem);
                 }
             }
             if (orderItems.size() > 0) {
                 tbItem.setOrderItemList(orderItemList);
-                for (TbOrderItem tbOrderItem : orderItemList) {
-                    totalMoney = totalMoney.add(tbOrderItem.getTotalFee());
-                }
                 tbItem.setItemTotalFee(totalMoney);
                 tbItemList.add(tbItem);
             }
