@@ -10,9 +10,4 @@ app.service("loginService",function ($http) {
     this.submitOrder=function(order){
         return $http.post('pay/submitOrder.do?',order);
     }
-
-    //提交订单
-    this.submitOrder=function(order){
-        return $http.post('pay/submitOrder.do?',order);
-    }
 })

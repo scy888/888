@@ -29,7 +29,7 @@ import java.util.*;
  *
  * @author Steven
  */
-@Service(timeout = 5000)
+@Service(timeout = 10000)
 public class OrderServiceImpl implements OrderService {
 
     @Autowired
