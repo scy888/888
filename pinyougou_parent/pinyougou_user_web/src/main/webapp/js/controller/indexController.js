@@ -7,8 +7,8 @@ app.controller("indexController",function ($scope,$location,loginService,payServ
         })
     }
     //查询用户订单
-    $scope.findOrderByUserId=function () {
-        loginService.findOrderByUserId().success(
+    $scope.findOrderByUserId=function (page,rows) {
+        loginService.findOrderByUserId(status).success(
             function (response) {
                 $scope.orderList=response;
             }
@@ -23,9 +23,19 @@ app.controller("indexController",function ($scope,$location,loginService,payServ
                 alert(response.success);
                 if(response.success){
                     // var orderResult = JSON.stringify(response);
-                   var orderResult1 = JSON.parse(JSON.stringify(response));
-                    var orderResult = JSON.stringify(orderResult1);
-                    window.location.href="pay.html#?orderResult="+orderResult;
+                   // var orderResult1 = JSON.parse(JSON.stringify(response));
+                    //var orderResult = response;
+                    var out_trade_no=response.out_trade_no;
+                    // var code_urlStr=response.code_url;
+                    // code_url.("/","|")
+                // .replace(/\//g, '[')
+                //     $scope.code_urlStr = response.code_url;
+                //     var code_urlStr1 = response.code_url.substring(0, 15);
+                //     var code_urlStr2 = response.code_url.substring(15);
+                    var code_url = response.code_url.replace(/=/g, '[');
+                    // var code_url = JSON.stringify(response.code_url);
+                    var total_fee=response.total_fee;
+                    window.location.href="pay.html#?out_trade_no="+out_trade_no+"&code_url="+code_url+"&total_fee="+total_fee;
                 }
             }
         );
@@ -36,25 +46,18 @@ app.controller("indexController",function ($scope,$location,loginService,payServ
     //生成二维码
     $scope.createNative=function () {
         //生成二维码前先获取微信接口返回的数据
-       var orderResult = JSON.parse($location.search()["orderResult"]);
-        // var orderResult = JSON.parse(JSON.stringify($location.search()["orderResult"]));
-        $scope.money = (orderResult.total_fee / 100).toFixed(2);
-        $scope.out_trade_no = $scope.orderResult.out_trade_no;  //订单号
+       // var orderResult = JSON.parse($location.search()["orderResult"]);
+        $scope.out_trade_no = $location.search()["out_trade_no"];
+        $scope.code_url = $location.search()["code_url"].replace(/\[/g, '=');
+        // alert($scope.code_url);
+        $scope.total_fee =($location.search()["total_fee"]/100).toFixed(2);
 
-
-        //生成二维码
-        /*var qr = new QRious({
-            element: document.getElementById('qrious'),
-            size: 260,
-            value: response.code_url,
-            level: 'L'
-        });*/
         var qrcode = new QRCode(document.getElementById("qrious"), {
             width : 250,
             height : 250,
             correctLevel : QRCode.CorrectLevel.Q,
         });
-        qrcode.makeCode($scope.orderResult.code_url);
+        qrcode.makeCode($scope.code_url);
 
         //二维码生成成功后，马上开始查询订单支付状态
         queryPayStatus($scope.out_trade_no);
@@ -65,7 +68,7 @@ app.controller("indexController",function ($scope,$location,loginService,payServ
     queryPayStatus=function (out_trade_no) {
         payService.queryPayStatus(out_trade_no).success(function (response) {
             if(response.success){
-                window.location.href = "paysuccess.html#?money=" + $scope.money;
+                window.location.href = "paysuccess.html#?money=" + $scope.total_fee;
             }else{
                 if("支付已超时" == response.message){
                     window.location.href = "paytimeout.html";

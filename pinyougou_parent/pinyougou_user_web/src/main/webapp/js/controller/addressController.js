@@ -26,14 +26,23 @@ app.controller('addressController' ,function($scope,$controller,addressService){
 	$scope.findOne=function(id){				
 		addressService.findOne(id).success(
 			function(response){
-				$scope.entity= response;					
+				$scope.entity= response;
+				fun1(response.provinceId,response.cityId,response.townId)
+				/*$('#distpicker1').distpicker({
+					province: response.provinceId,
+					city: response.cityId,
+					district:response.townId,
+				});*/
 			}
 		);				
 	}
 	
 	//保存 
-	$scope.save=function(){				
-		var serviceObject;//服务层对象  				
+	$scope.save=function(){
+		$scope.entity.provinceId = $('#provinceId').val();
+		$scope.entity.cityId = $('#cityId').val();
+		$scope.entity.townId = $('#townId').val();
+		var serviceObject;//服务层对象
 		if($scope.entity.id!=null){//如果有ID
 			serviceObject=addressService.update( $scope.entity ); //修改  
 		}else{

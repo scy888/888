@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -43,8 +44,7 @@ public class PayController {
         }
         try {
             //开始下单
-
-            Map<String,Object> weixinMap = weixinPayService.createNative(order.getOrderIdStr()+"123454", order.getPayment().toString());
+            Map<String,Object> weixinMap = weixinPayService.createNative(order.getOrderIdStr(),"1");
             weixinMap.put("success", true);
             return weixinMap;
         }

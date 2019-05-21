@@ -12,6 +12,7 @@ import com.pinyougou.user.service.UserService;
 import entity.PageResult;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.BoundHashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.core.MessageCreator;
@@ -35,6 +36,8 @@ public class UserServiceImpl implements UserService {
 	private TbOrderItemMapper orderItemMapper;
 	@Autowired
 	private TbItemMapper itemMapper;
+    @Autowired
+    private TbGoodsMapper goodsMapper;
 	@Autowired
 	private TbFavoriteMapper favoriteMapper;
 	
@@ -237,10 +240,17 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public List<Order> findOrderByUserId(String userId) {
+	public PageResult findOrderByUserId(TbOrder tbOrderInc, int pageNum, int pageSize) {
 	     List<Order> orderList = new ArrayList<>();
 		TbOrder where = new TbOrder();
-		where.setUserId(userId);
+		where.setUserId(tbOrderInc.getUserId());
+		if (tbOrderInc.getStatus()!=null&&!tbOrderInc.getStatus().equals("")) {
+			where.setStatus(tbOrderInc.getStatus());
+		}
+		PageResult<Order> result = new PageResult<Order>();
+		//设置分页条件
+		PageHelper.startPage(pageNum, pageSize);
+
 		List<TbOrder> orders = orderMapper.select(where);
 		for (TbOrder tbOrder : orders) {
 			Order order = new Order();
@@ -270,7 +280,15 @@ public class UserServiceImpl implements UserService {
 
 			orderList.add(order);
 		}
-		return orderList;
+
+
+		//保存数据列表
+		result.setRows(orderList);
+
+		//获取总记录数
+		PageInfo<Order> info = new PageInfo<Order>(orderList);
+		result.setTotal(info.getTotal());
+		return result;
 	}
 
 	@Override
@@ -301,5 +319,16 @@ public class UserServiceImpl implements UserService {
 		where.setStatus(status);
 		orderMapper.updateByPrimaryKeySelective(where);
 	}
+
+    @Override
+    public List<TbGoods> findPersonFootmark(String userId) {
+		Set<Long> goodsIds = (Set<Long>) redisTemplate.boundHashOps("footMarkList").get(userId);
+        List<Object> goodIdList = new ArrayList<>(goodsIds);
+        Example example = new Example(TbGoods.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andIn("id",goodIdList);
+        List<TbGoods> tbGoodsList = goodsMapper.selectByExample(example);
+        return tbGoodsList;
+    }
 
 }

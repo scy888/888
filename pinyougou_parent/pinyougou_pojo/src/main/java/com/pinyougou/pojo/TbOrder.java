@@ -27,6 +27,13 @@ public class TbOrder implements Serializable {
 
 
     /**
+     * 订单id的字符类型值
+     */
+    @Transient
+    private String orderIdStr;
+
+
+    /**
      * 实付金额。精确到2位小数;单位:元。如:200.07，表示:200元7分
      */
     private BigDecimal payment;
@@ -185,6 +192,15 @@ public class TbOrder implements Serializable {
      */
     public String getOrderIdStr() {
         return orderId+"";
+    }
+
+    /**
+     * 设置orderIdString类型
+     *
+     * @param
+     */
+    public void setOrderIdStr(String orderIdStr) {
+        this.orderIdStr = orderId+"";
     }
 
     public Long getOrderId() {

@@ -1,7 +1,9 @@
 package com.pinyougou.user.service;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import com.pinyougou.pojo.TbGoods;
 import com.pinyougou.pojo.TbItem;
 import com.pinyougou.pojo.TbOrder;
 import com.pinyougou.pojo.TbUser;
@@ -80,7 +82,7 @@ public interface UserService {
 	 * 查询用户订单
 	 * @return
 	 */
-	public List<Order> findOrderByUserId(String userId);
+	public PageResult findOrderByUserId(TbOrder tbOrder, int pageNum, int pageSize);
 
 
 	/**
@@ -100,5 +102,10 @@ public interface UserService {
      * 修改订单状态
      */
     public void updateOrderStatus(Long orderId,String status);
+
+	/**
+	 * 查询用户id
+	 */
+	public List<TbGoods> findPersonFootmark(String userId);
 
 }
