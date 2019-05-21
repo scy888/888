@@ -23,6 +23,7 @@
     <!-- 分页组件结束 -->
 
     <script src="../js/base_pagination.js"></script>
+<<<<<<< HEAD
     <script src="../js/service/goodsService.js"></script>
     <script src="../js/service/uploadService.js"></script>
     <script src="../js/service/orderService.js"></script>
@@ -32,12 +33,22 @@
     <script src="../js/controller/orderController.js"></script>
     <!--<script src="../js/controller/goodsController.js"></script>-->
 
+=======
+    <script src="../js/service/seckillOrderService.js"></script>
+    <script src="../js/controller/baseController.js"></script>
+    <script src="../js/controller/seckillOrderController.js"></script>
+>>>>>>> origin/zeke
 
 
 </head>
 
+<<<<<<< HEAD
 <body ng-app="pinyougou" ng-controller="orderController" class="hold-transition skin-red sidebar-mini"
       ng-init="findByParentId()">
+=======
+<body ng-app="pinyougou" ng-controller="seckillOrderController" class="hold-transition skin-red sidebar-mini"
+      ng-init="findAll()">
+>>>>>>> origin/zeke
 <!-- .box-body -->
 
 <div class="box-header with-border">
@@ -54,7 +65,11 @@
             <div class="form-group form-inline">
                 <div class="btn-group">
                     <!--<button type="button" class="btn btn-default" title="确认"><i class="fa fa-file-o"></i> 确认</button>-->
+<<<<<<< HEAD
                     <button type="button" class="btn btn-default" title="删除"><i class="fa fa-trash-o"></i> 删除</button>
+=======
+                    <button type="button" ng-click="pretendDeleting()" class="btn btn-default" title="删除"><i class="fa fa-trash-o"></i> 删除</button>
+>>>>>>> origin/zeke
                     <button type="button" class="btn btn-default" title="刷新" onclick="window.location.reload();"><i
                             class="fa fa-refresh"></i> 刷新
                     </button>
@@ -63,14 +78,22 @@
         </div>
         <div class="box-tools pull-right">
             <div class="has-feedback">
+<<<<<<< HEAD
                 状态：<select ng-model="searchEntity.auditStatus">
+=======
+                状态：<select ng-model="searchEntity.status">
+>>>>>>> origin/zeke
                     <option value="">全部</option>
                     <option value="0">未发货</option>
                     <option value="1">已发货</option>
                     <option value="2">审核未通过</option>
                     <option value="3">关闭</option>
                 </select>
+<<<<<<< HEAD
                 商品名称：<input ng-model="searchEntity.goodsName">
+=======
+                商品名称：<input >
+>>>>>>> origin/zeke
                 <button class="btn btn-default" ng-click="reloadList()">查询</button>
             </div>
         </div>
@@ -84,11 +107,21 @@
                     <input id="selall" type="checkbox" class="icheckbox_square-blue">
                 </th>
                 <th class="sorting_asc">商品订单号</th>
+<<<<<<< HEAD
                 <th class="sorting">商品金额</th>
+=======
+                <th class="sorting">商品名</th>
+                <th class="sorting">实付金额</th>
+>>>>>>> origin/zeke
                 <th class="sorting">买家名称</th>
                 <th class="sorting">收货人</th>
                 <th class="sorting">收货人地址</th>
                 <th class="sorting">订单状态</th>
+<<<<<<< HEAD
+=======
+                <th class="sorting">运单号</th>
+                <th class="text-center">售后</th>
+>>>>>>> origin/zeke
                 <th class="text-center">操作</th>
             </tr>
             </thead>
@@ -96,13 +129,22 @@
             <tr ng-repeat="entity in list">
                 <td><input type="checkbox"></td>
                 <!--商品订单号-->
+<<<<<<< HEAD
                 <td>{{entity.orderId}}</td>
                 <!--商品金额-->
                 <td>{{entity.payment}}</td>
+=======
+                <td>{{entity.id}}</td>
+                <!--商品名-->
+                <td>红泥小火炉</td>
+                <!--商品金额-->
+                <td>{{entity.money}}</td>
+>>>>>>> origin/zeke
                 <!--  买家名称 buyer_nick-->
                 <td>{{entity.userId}}</td>
                 <!-- 收货人 receiver-->
                 <td>{{entity.receiver}}</td>
+<<<<<<< HEAD
                 <!--receiver_area_name 收货人地址-->
                 <td>{{entity.receiverAreaName}}</td>
                 <!--商品状态-->
@@ -110,12 +152,30 @@
                 <!--<td>{{status[entity.auditStatus]}}</td>-->
                 <td class="text-center">
                     <a type="button" href="goods_edit.html#?id={{entity.id}}" class="btn bg-olive btn-xs">修改</a>
+=======
+                <!--receiverAddress 收货人地址-->
+                <td>{{entity.receiverAddress}}</td>
+                <!--商品状态-->
+                <td>{{orderStatus[entity.status]}}</td>
+                <!--商品状态-->
+                <td>{{entity.transactionId}}</td>
+                <!--<td>{{status[entity.auditStatus]}}</td>-->
+                <td class="text-center">
+                    <a type="button" href="javascript:;" onclick="alert('售后相关页面加载异常，请联系管理员处理！')" class="btn bg-olive btn-xs">售后相关</a>
+                </td>
+                <td class="text-center">
+                    <a type="button" href="javascript:;" onclick="alert('订单发货状态更新及信息填写页加载异常，请联系管理员处理！')" class="btn bg-olive btn-xs">更新发货状态</a>
+>>>>>>> origin/zeke
                 </td>
             </tr>
             </tbody>
         </table>
         <!--数据列表/-->
+<<<<<<< HEAD
 {{entity}}--------------------
+=======
+
+>>>>>>> origin/zeke
 
     </div>
     <!-- 数据表格 /-->

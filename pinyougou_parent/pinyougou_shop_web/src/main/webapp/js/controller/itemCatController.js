@@ -57,11 +57,19 @@ app.controller('itemCatController' ,function($scope,$controller,itemCatService,t
 			}		
 		);				
 	}
+<<<<<<< HEAD
     //判断是否该商家已经在同个分类申请过这个分类
     isExist=function(){
         var isExist = false;
         for (var i = 0 ; i < $scope.list.length ; i ++ ) {
         	//相同条件判断：同分类目录下，同名且同模板类型才算重复，同名不同模板类型，同名不同上级分类都算一个新分类？
+=======
+    //判断是否该商家已经在同个分类目录下申请过这个分类
+    isExist=function(){
+        var isExist = false;
+        for (var i = 0 ; i < $scope.list.length ; i ++ ) {
+        	//相同的条件判断：同分类目录下，同名且同模板类型才算重复，同名不同模板类型，同名不同上级分类都算一个新分类？
+>>>>>>> origin/zeke
             if ( $scope.entity.name ==$scope.list[i].name && $scope.parentId == $scope.list[i].parentId && $scope.entity.typeId == $scope.list[i].typeId ) {
                 isExist = true;
             }

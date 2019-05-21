@@ -26,7 +26,10 @@ app.controller('typeTemplateController' ,function($scope,$controller,typeTemplat
 	
 	//查询实体 
 	$scope.findOne=function(id){
+<<<<<<< HEAD
 		alert("2222");
+=======
+>>>>>>> origin/zeke
 		typeTemplateService.findOne(id).success(
 			function(response){
 				//把品牌字符串转换为json对象
