@@ -4,7 +4,6 @@ import com.alibaba.dubbo.config.annotation.Reference;
 import com.pinyougou.pojo.TbOrder;
 import com.pinyougou.pojogroup.Order;
 import com.pinyougou.user.service.UserService;
-import entity.PageResult;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -38,13 +37,10 @@ public class LoginController {
      * @return
      */
     @RequestMapping("findOrderByUserId")
-    public PageResult findOrderByUserId(String status, int page, int rows ){
+    public List<Order> findOrderByUserId(String status){
         //用户登录名
         String userId = SecurityContextHolder.getContext().getAuthentication().getName();
-        TbOrder tbOrder = new TbOrder();
-        tbOrder.setStatus(status);
-        tbOrder.setUserId(userId);
-        return userService.findOrderByUserId(tbOrder,page,rows);
+        return userService.findOrderByUserId(userId,status);
     }
 
 }
