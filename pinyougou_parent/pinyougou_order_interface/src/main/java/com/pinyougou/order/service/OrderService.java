@@ -107,10 +107,17 @@ public interface OrderService {
 	/**
 	 * 分页统计
 	 * @param order
-	 * @param pageNum
-	 * @param pageSize
 	 * @return
 	 */
+	List<TbItem> findCount(Order order);
+
+    /**
+     * 分页统计
+     * @param order
+     * @param pageNum
+     * @param pageSize
+     * @return
+     */
 	PageResult findCountPage(Order order, int pageNum, int pageSize);
 	/**
 	 * 每天的销售量
@@ -132,5 +139,10 @@ public interface OrderService {
 	 */
 	List<TbItem> searchDayGoodsSale(Date start, Date end);
 
-
+    /**
+     * 生成饼图
+     * @param order
+     * @return
+     */
+	public List<TbItem> createPie(Order order);
 }

@@ -13,21 +13,21 @@
     <script src="../plugins/bootstrap/js/bootstrap.min.js"></script>
 
     <script type="text/javascript" src="../plugins/angularjs/angular.min.js"></script>
-    <!-- 分页组件开始 -->
-    <script src="../plugins/angularjs/pagination.js"></script>
-    <link rel="stylesheet" href="../plugins/angularjs/pagination.css">
-    <!-- 分页组件结束 -->
-    <script type="text/javascript" src="../js/base_pagination.js"></script>
+    <!--&lt;!&ndash; 分页组件开始 &ndash;&gt;-->
+    <!--<script src="../plugins/angularjs/pagination.js"></script>-->
+    <!--<link rel="stylesheet" href="../plugins/angularjs/pagination.css">-->
+    <!--&lt;!&ndash; 分页组件结束 &ndash;&gt;-->
+    <script type="text/javascript" src="../js/base.js"></script>
 
     <script src="../js/service/orderItemService.js"></script>
+    <script src="../js/service/itemCatService.js"></script>
     <script src="../js/service/orderService.js"></script>
     <script src="../js/controller/baseController.js"></script>
-    <script src="../js/controller/orderItemController.js"></script>
     <script src="../js/controller/orderController.js"></script>
 
 </head>
 <body class="hold-transition skin-red sidebar-mini" ng-app="pinyougou" ng-controller="orderController"
-      ng-init="searchType=1">
+      ng-init="searchType=1;searchEntity = {dateMap: {timeType: '3', byYear: '=',bySeason:'1',byMonth:'01','yearsStart':'2014','yearsEnd':'2019'}, propertyMap: {propertyType: '0'}};">
 <!-- .box-body -->
 <div class="box-header with-border">
     <h3 class="box-title">管理</h3>
@@ -44,10 +44,10 @@
                 <div class="btn-group">
                     <div>
                         时间类型：<select ng-model="searchEntity.dateMap.timeType">
-                        <option value="0" >年度统计</option>
-                        <option value="1">历年季度</option>
-                        <option value="2">历年月份</option>
-                        <option value="3">自定义区间</option>
+                        <option value=0 >年度统计</option>
+                        <option value=1>历年季度</option>
+                        <option value=2>历年月份</option>
+                        <option value=3>自定义区间</option>
                     </select>
                     </div>
                     <br>
@@ -93,21 +93,21 @@
                         <br>
                         设置历年：
                         <select ng-model="searchEntity.dateMap.yearsStart">
-                            <option value="2014-01-01">2014</option>
-                            <option value="2015-01-01">2015</option>
-                            <option value="2016-01-01">2016</option>
-                            <option value="2017-01-01">2017</option>
-                            <option value="2018-01-01">2018</option>
-                            <option value="2019-01-01" ng-selected="true">2019</option>
+                            <option value="2014" ng-selected="true">2014</option>
+                            <option value="2015">2015</option>
+                            <option value="2016">2016</option>
+                            <option value="2017">2017</option>
+                            <option value="2018">2018</option>
+                            <option value="2019" >2019</option>
                         </select>
                         至
                         <select ng-model="searchEntity.dateMap.yearsEnd">
-                            <option value="2014-12-31">2014</option>
-                            <option value="2015-12-31">2015</option>
-                            <option value="2016-12-31">2016</option>
-                            <option value="2017-12-31">2017</option>
-                            <option value="2018-12-31">2018</option>
-                            <option value="2019-12-31" ng-selected="true">2019</option>
+                            <option value="2014">2014</option>
+                            <option value="2015">2015</option>
+                            <option value="2016">2016</option>
+                            <option value="2017">2017</option>
+                            <option value="2018">2018</option>
+                            <option value="2019" ng-selected="true">2019</option>
                         </select>
                         年
                     </div>
@@ -171,30 +171,26 @@
                 <th class="" style="padding-right:0px">
                     <input id="selall" type="checkbox" class="icheckbox_square-blue">
                 </th>
-                <th class="sorting">统计类型</th>
+                <th class="sorting">统计类型:{{propertyTypeName[searchEntity.propertyMap.propertyType]}}</th>
                 <th class="sorting">{{propertyTypeName[searchEntity.propertyMap.propertyType]}}</th>
                 <th class="sorting">商品SKU</th>
-                <th class="sorting">{{timeTypeName[searchEntity.dateMap.timeType]}}</th>
-                <th class="sorting">开始时间</th>
-                <th class="sorting">截至时间</th>
+                <th class="sorting">商品名</th>
                 <th class="sorting">销售数量</th>
                 <th class="sorting">销售额</th>
+                <th class="sorting">出售商家</th>
                 <!--<th class="text-center">操作</th>-->
             </tr>
             </thead>
             <tbody>
             <tr ng-repeat="entity in list">
                 <td><input type="checkbox" ng-click="updateSelection($event,entity.id)"></td>
-                <td>按{{propertyTypeName[searchEntity.propertyMap.propertyType]}}统计</td>
+                <td></td>
+                <td>{{entity.title}}</td><!--时间紧以后优化-->
                 <td>{{entity.id}}</td>
-                <td>{{entity.goodsId}}</td>
-                <td>{{entity.orderId}}</td>
                 <td>{{entity.title}}</td>
-                <td>{{entity.price}}</td>
-                <td>{{entity.num}}</td>
-                <td>{{entity.totalFee}}</td>
-                <td>{{entity.picPath}}</td>
-                <td>{{entity.sellerId}}</td>
+                <td>{{entity.sumNum}}</td>
+                <td>{{entity.sumFee|number:2}}</td>
+                <td>{{entity.seller}}</td>
 
                 <td class="text-center">
                     <button type="button" class="btn bg-olive btn-xs" data-toggle="modal" data-target="#editModal"
@@ -209,7 +205,7 @@
     </div>
     <!-- 数据表格 /-->
     <!-- 分页 -->
-    <tm-pagination conf="paginationConf"></tm-pagination>
+    <!--<tm-pagination conf="paginationConf"></tm-pagination>-->
 </div>
 <!-- /.box-body -->
 

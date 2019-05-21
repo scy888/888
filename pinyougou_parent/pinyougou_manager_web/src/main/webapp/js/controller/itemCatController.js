@@ -133,5 +133,5 @@ app.controller('itemCatController' ,function($scope,$controller,itemCatService){
             alert(response.message);
         })
     }
-    
+
 });	

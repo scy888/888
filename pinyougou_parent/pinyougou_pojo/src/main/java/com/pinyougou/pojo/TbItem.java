@@ -4,6 +4,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.List;
 
@@ -147,19 +148,6 @@ public class TbItem implements Serializable {
 
     public static long getSerialVersionUID() {
         return serialVersionUID;
-    }
-
-
-
-    @Transient
-    private List<TbItemCat> itemCatList;
-
-    public List<TbItemCat> getItemCatList() {
-        return itemCatList;
-    }
-
-    public void setItemCatList(List<TbItemCat> itemCatList) {
-        this.itemCatList = itemCatList;
     }
 
     /**

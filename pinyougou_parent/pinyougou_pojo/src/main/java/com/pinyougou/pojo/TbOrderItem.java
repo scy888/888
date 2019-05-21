@@ -72,6 +72,16 @@ public class TbOrderItem implements Serializable {
         this.itemList = itemList;
     }
 
+    @Transient
+    private List<TbOrder> tbOrderList;
+
+    public List<TbOrder> getTbOrderList() {
+        return tbOrderList;
+    }
+
+    public void setTbOrderList(List<TbOrder> tbOrderList) {
+        this.tbOrderList = tbOrderList;
+    }
 
     /**
      * @return id

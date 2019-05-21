@@ -30,8 +30,12 @@ app.service('orderService',function($http){
 		return $http.post('../order/search.do?page='+page+"&rows="+rows,searchEntity);
 	}
 	//统计
-	this.searchCount=function (page, rows, searchEntity) {
-		return $http.post('../order/searchCount.do?page='+page+"&rows="+rows,searchEntity);
+	this.searchCount=function (searchEntity) {
+		return $http.post('../order/searchCount.do',searchEntity);
+    }
+    //饼图
+	this.createPie=function (searchEntity) {
+		return $http.post('../order/createPie.do',searchEntity)
     }
 
 });

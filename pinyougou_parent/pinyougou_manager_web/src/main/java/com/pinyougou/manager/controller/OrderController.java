@@ -1,13 +1,11 @@
 package com.pinyougou.manager.controller;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 
 import com.pinyougou.order.service.OrderService;
+import com.pinyougou.pojo.TbItem;
 import com.pinyougou.pojogroup.Order;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.alibaba.dubbo.config.annotation.Reference;
 import com.pinyougou.pojo.TbOrder;
@@ -117,7 +115,12 @@ public class OrderController {
 	}
 
 	@RequestMapping("/searchCount")
-	public PageResult searchCount(@RequestBody Order order,int page,int rows){
-		return orderService.findCountPage(order,page,rows);
+	public List<TbItem> searchCount(@RequestBody Order order){
+		return orderService.findCount(order);
+	}
+
+	@RequestMapping("/createPie")
+	public List<TbItem> createPie(@RequestBody Order order){
+		return orderService.createPie(order);
 	}
 }
