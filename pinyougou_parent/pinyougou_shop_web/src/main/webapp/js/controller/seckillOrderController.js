@@ -7,7 +7,7 @@ app.controller('seckillOrderController' ,function($scope,$controller,seckillOrde
 	$scope.findAll=function(){
 		seckillOrderService.findAll().success(
 			function(response){
-				$scope.list=response;
+				$scope.list1=response;
 			}			
 		);
 	}    
