@@ -5,13 +5,7 @@ import com.github.abel533.entity.Example;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.pinyougou.mapper.*;
-import com.pinyougou.mapper.TbGoodsMapper;
-import com.pinyougou.mapper.TbItemMapper;
-import com.pinyougou.mapper.TbOrderItemMapper;
-import com.pinyougou.mapper.TbOrderMapper;
-import com.pinyougou.mapper.TbPayLogMapper;
 import com.pinyougou.order.service.OrderService;
-import com.pinyougou.pojo.*;
 import com.pinyougou.pojo.TbItem;
 import com.pinyougou.pojo.TbOrder;
 import com.pinyougou.pojo.TbOrderItem;
@@ -28,9 +22,6 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
-
-import static java.util.Collections.addAll;
-import static java.util.Collections.newSetFromMap;
 
 
 /**
@@ -711,8 +702,6 @@ public class OrderServiceImpl implements OrderService {
         }
 
         return resultList;
-
-        return null;
     }
 
     /**

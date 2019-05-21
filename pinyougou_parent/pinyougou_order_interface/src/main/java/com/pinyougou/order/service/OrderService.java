@@ -105,20 +105,12 @@ public interface OrderService {
 	public  void modification (TbOrder TbOrder);
 
 	/**
-	 * 分页统计
+	 * 订单统计
 	 * @param order
 	 * @return
 	 */
 	List<TbItem> findCount(Order order);
 
-    /**
-     * 分页统计
-     * @param order
-     * @param pageNum
-     * @param pageSize
-     * @return
-     */
-	PageResult findCountPage(Order order, int pageNum, int pageSize);
 	/**
 	 * 每天的销售量
 	 * @param start
