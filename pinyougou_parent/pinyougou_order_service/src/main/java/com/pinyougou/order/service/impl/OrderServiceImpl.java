@@ -573,8 +573,14 @@ public class OrderServiceImpl implements OrderService {
         //构建查询条件
         Example example = new Example(TbOrder.class);
         Example.Criteria criteria = example.createCriteria();
+        //操作时间类
+        Calendar calendar = Calendar.getInstance();
+        //一天24小时  24点---23:59:59点
+        calendar.setTime(end);
+        calendar.add(Calendar.SECOND, 24 * 60 * 60 - 1);
+        Date endTime = calendar.getTime();
         criteria.andGreaterThanOrEqualTo("paymentTime", start);//大于等于
-        criteria.andLessThanOrEqualTo("paymentTime", end);//小于等于
+        criteria.andLessThanOrEqualTo("paymentTime", endTime);//小于等于
         List<TbOrder> orderList = orderMapper.selectByExample(example);
 
         //2.拿到每个订单下的商品
@@ -593,16 +599,22 @@ public class OrderServiceImpl implements OrderService {
         List<TbOrderItem> orderItems = null;
         for (TbItem tbItem : itemList) {
             orderItems = new ArrayList<>();
+            BigDecimal totalMoney = BigDecimal.valueOf(0);
             for (TbOrderItem tbOrderItem : orderItemList) {
                 if (tbItem.getId().equals(tbOrderItem.getItemId())) {
                     orderItems.add(tbOrderItem);
                 }
             }
-            if (orderItems.size()>0){
+            if (orderItems.size() > 0) {
                 tbItem.setOrderItemList(orderItemList);
+                for (TbOrderItem tbOrderItem : orderItemList) {
+                    totalMoney = totalMoney.add(tbOrderItem.getTotalFee());
+                }
+                tbItem.setItemTotalFee(totalMoney);
                 tbItemList.add(tbItem);
             }
         }
         return tbItemList;
     }
+
 }

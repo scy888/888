@@ -153,44 +153,8 @@ app.controller('orderController', function ($scope, $controller, orderService) {
     $scope.searchDayGoodsSale = function () {
         orderService.searchDayGoodsSale($scope.startTime, $scope.endTime).success(
             function (response) {
-                console.log(response)
-                $scope.list =response;
-                console.log($scope.list)
-                for (var i = 0; i < $scope.list.length; i++) {
-                    //总销售额
-                    $scope.list[i].sumFee = 0;
-                    for (var j = 0; j < $scope.list[i].orderItemList.length; j++) {
-                        $scope.list[i].sumFee += $scope.list[i].orderItemList[j].totalFee;
-
-                    }
-                }
+                $scope.itemList = response;
             }
-        )
+        );
     }
-
-    //统计
-    /*$scope.searchCount = function () {
-        alert(JSON.stringify($scope.searchEntity))
-        orderService.searchCount($scope.searchEntity).success(
-            function (response) {
-                $scope.list = response;
-                alert("有销量SKU"+response.length+"个");
-                for (var i = 0; i <= $scope.list.length-1; i++) {
-                    $scope.list[i].sumNum=0;
-                    $scope.list[i].sumFee=0;
-                    for (var j = 0; j <= $scope.list[i].tbOrderItemList.length-1; j++) {
-                        $scope.list[i].sumNum+=$scope.list[i].tbOrderItemList[j].num;
-                        $scope.list[i].sumFee+=$scope.list[i].tbOrderItemList[j].totalFee;
-                    }
-
-                }
-
-            })
-    };*/
-
-
-
-
-
-
 })

@@ -113,6 +113,17 @@ public class TbItem implements Serializable {
     @Transient
     private List<TbOrderItem> orderItemList;
 
+    @Transient
+    private BigDecimal itemTotalFee;
+
+    public BigDecimal getItemTotalFee() {
+        return itemTotalFee;
+    }
+
+    public void setItemTotalFee(BigDecimal itemTotalFee) {
+        this.itemTotalFee = itemTotalFee;
+    }
+
     public List<TbOrderItem> getOrderItemList() {
         return orderItemList;
     }

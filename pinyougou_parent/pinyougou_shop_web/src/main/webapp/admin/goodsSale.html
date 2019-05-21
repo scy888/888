@@ -16,10 +16,8 @@
 
     <script src="../plugins/angularjs/angular.min.js"></script>
 
-    <script src="../plugins/angularjs/pagination.js"></script>
-    <link rel="stylesheet" href="../plugins/angularjs/pagination.css">
 
-    <script src="../js/base_pagination.js"></script>
+    <script src="../js/base.js"></script>
     <script src="../js/service/orderService.js"></script>
     <script src="../js/controller/baseController.js"></script>
     <script src="../js/controller/orderController.js"></script>
@@ -47,9 +45,6 @@
         <table id="dataList" class="table table-bordered table-striped table-hover dataTable">
             <thead>
             <tr>
-                <th class="" style="padding-right:0px">
-                    <input id="selall" type="checkbox" class="icheckbox_square-blue">
-                </th>
                 <th class="sorting_asc">商品ID</th>
                 <th class="sorting">分类</th>
                 <th class="sorting">品牌</th>
@@ -61,17 +56,17 @@
             </tr>
             </thead>
             <tbody>
-            <tr ng-repeat="item in list">
-                <td><input ng-click="updateSelection($event,order.orderIdStr)" type="checkbox"></td>
+
+            <tr ng-repeat="item in itemList">
                 <td>{{item.id}}</td>
                 <td>{{item.category}}</td>
                 <td>{{item.brand}}</td>
                 <td>{{item.spec}}</td>
                 <td>{{item.price}}</td>
                 <td>{{item.num}}</td>
-                <td>{{item.sumFee}}</td>
+                <td>{{item.itemTotalFee}}</td>
                 <td class="text-center">
-                    <button type="button" ng-click="findOne(order.id)" class="btn bg-olive btn-xs" data-toggle="modal" data-target="#editModal">修改
+                    <button type="button" class="btn bg-olive btn-xs" data-toggle="modal" data-target="#editModal">修改
                     </button>
                 </td>
             </tr>
@@ -79,9 +74,7 @@
         </table>
         <!--数据列表/-->
     </div>
-    <!-- 数据表格 /-->
-    <!-- 分页，paginationConf可以随便起个名字，主要是用于设置页面分页参数用的，要与$scope完成绑定 -->
-    <tm-pagination conf="paginationConf"></tm-pagination>
+
 </div>
 <!-- /.box-body -->
 
