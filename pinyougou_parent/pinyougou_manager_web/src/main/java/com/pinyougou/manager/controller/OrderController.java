@@ -118,4 +118,9 @@ public class OrderController {
 	public List<TbItem> searchCount(@RequestBody Order order){
 		return orderService.findCount(order);
 	}
+
+	@RequestMapping("/createPie")
+	public List<TbItem> createPie(@RequestBody Order order){
+		return orderService.createPie(order);
+	}
 }

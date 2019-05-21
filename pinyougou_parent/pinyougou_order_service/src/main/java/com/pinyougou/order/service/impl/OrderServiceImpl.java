@@ -303,11 +303,7 @@ public class OrderServiceImpl implements OrderService {
         Example.Criteria criteria = example.createCriteria();
         TbOrder order = border.getTbOrder();
         Map dateMap = border.getDateMap();
-        Map propertyMap = border.getPropertyMap();
 
-        if (propertyMap != null) {
-
-        }
 
         //如果时间数据dateMap不为空,调用addTimeCriteria构建查询条件
         if (dateMap != null && dateMap.size() > 0) {
@@ -612,8 +608,29 @@ public class OrderServiceImpl implements OrderService {
         //list用于返回值
         List<TbItem> resultList =null;
         if (tbOrderItemList != null && tbOrderItemList.size() > 0) {
+            //找出字段条件下的item
+//            Map propertyMap = order.getPropertyMap();
+            TbItem where = null;
+//
+//            if (propertyMap != null&&propertyMap.size()>0) {
+//                Long category1Id = (Long) propertyMap.get("category1Id");
+//                Long category2Id = (Long) propertyMap.get("category2Id");
+//                //....其他省略
+//                Long categoryId = category1Id;
+//                if (category2Id!=null&&category2Id>0){
+//                    categoryId = category2Id;
+//                }
+//                try {
+//                    where.setCategoryid(categoryId);
+//                }catch (Exception e){
+//                    System.out.println("分类id为空或不正确");
+//                }
+//
+//            }
+
+
+            List<TbItem> tbItemList1 = itemMapper.select(where);
             //先找出有订单的item
-            List<TbItem> tbItemList1 = itemMapper.select(null);
 
             if (tbItemList1 != null&&tbItemList1.size()>0) {
                 //构建返回的list
@@ -622,6 +639,70 @@ public class OrderServiceImpl implements OrderService {
                 for (TbItem item : tbItemList1) {
                     List<TbOrderItem> orderItemList= new ArrayList<>();
                     for (TbOrderItem orderItem : tbOrderItemList) {
+                        if (orderItem.getItemId().equals(item.getId())){
+                            orderItemList.add(orderItem);
+                        }
+                    }
+                    if (orderItemList.size()>0){
+                        item.setTbOrderItemList(orderItemList);
+                        //添加一行数据
+                        resultList.add(item);
+                    }
+                }
+            }
+        }
+
+        return resultList;
+
+    }
+
+    @Override
+    public List<TbItem> createPie(Order order) {
+
+        Map propertyMap = order.getPropertyMap();
+        //生成订单和订单商品数据
+        List<TbOrder>   tbOrderList = findOrderAndOrderItem(order);
+
+        List<TbOrderItem> tbOrderItemList = null;
+        if (tbOrderList != null && tbOrderList.size() > 0) {
+            tbOrderItemList = new ArrayList<>();
+            for (TbOrder tbOrder : tbOrderList) {
+                TbOrderItem where = new TbOrderItem();
+                where.setOrderId(tbOrder.getOrderId());
+                List<TbOrderItem> set = orderItemMapper.select(where);
+                tbOrderItemList.addAll(set);
+            }
+        }
+        //list用于返回值
+        List<TbItem> resultList =null;
+        if (tbOrderItemList != null && tbOrderItemList.size() > 0) {
+            //找出字段条件下的item
+            List<TbItem> tbItemList =null;
+            Example example = new Example(TbItem.class);
+            Example.Criteria criteria = example.createCriteria();
+            //分类
+            if (propertyMap != null&&propertyMap.size()>0) {
+                List<Object> categoryIds = (List) propertyMap.get("categoryIdList");
+                //....其他省略
+                if (categoryIds!=null&&categoryIds.size()>0){
+                    criteria.andIn("categoryid",categoryIds);
+                    tbItemList = itemMapper.selectByExample(example);
+                }
+
+            }
+
+
+
+            //先找出有订单的item
+
+            if (tbItemList != null&&tbItemList.size()>0) {
+                //构建返回的list
+                resultList = new ArrayList<>();
+                //添加orderItemList
+                for (TbItem item : tbItemList) {
+                    List<TbOrderItem> orderItemList= new ArrayList<>();
+                    for (TbOrderItem orderItem : tbOrderItemList) {
+
                         if (orderItem.getItemId().equals(item.getId())){
                             orderItemList.add(orderItem);
                         }

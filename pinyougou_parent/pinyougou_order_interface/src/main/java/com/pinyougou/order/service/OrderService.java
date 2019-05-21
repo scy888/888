@@ -108,4 +108,11 @@ public interface OrderService {
 	 * @return
 	 */
 	List<TbItem> findCount(Order order);
+
+	/**
+	 * 生成饼图
+	 * @param order
+	 * @return
+	 */
+	public List<TbItem> createPie(Order order);
 }

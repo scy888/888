@@ -29,10 +29,6 @@ app.controller("baseController", function ($scope) {
             //$scope.searchEntity = {dateMap: {timeType: '3', byYear: '='}, propertyMap: {propertyType: '0'}};
             // searchEntity.dateMap.timeType='3';searchEntity.dateMap.byYear='';searchEntity.propertyMap.propertyType='0';
         }
-        if($scope.searchType===3){
-            // $scope.pieCount();
-        }
-
     }
 
     //选中的id列表

@@ -129,22 +129,4 @@ app.controller('itemCatController' ,function($scope,$controller,itemCatService){
 	}
 
 
-    //加载商品分类一级目录
-    $scope.selectItemCat1List=function () {
-        itemCatService.findByParentId(0).success(function (response) {
-            $scope.itemCat1List = response;
-
-        })
-    }
-
-    //二级分类加载
-    //$watch(监听的变量名，函数(新的值,原来的值))
-    $scope.$watch("searchEntity.category1Id",function (newValue,oldValue) {
-        itemCatService.findByParentId(newValue).success(function (response) {
-            $scope.itemCat2List = response;
-            //$scope.entity.goods.category2Id = -1;
-
-            // $scope.itemCat3List = [];
-        })
-    });
 });	

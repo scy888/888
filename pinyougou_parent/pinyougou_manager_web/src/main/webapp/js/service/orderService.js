@@ -33,5 +33,9 @@ app.service('orderService',function($http){
 	this.searchCount=function (searchEntity) {
 		return $http.post('../order/searchCount.do',searchEntity);
     }
+    //饼图
+	this.createPie=function (searchEntity) {
+		return $http.post('../order/createPie.do',searchEntity)
+    }
 
 });
