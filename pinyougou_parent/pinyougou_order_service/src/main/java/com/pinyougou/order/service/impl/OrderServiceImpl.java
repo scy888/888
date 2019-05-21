@@ -881,13 +881,11 @@ public class OrderServiceImpl implements OrderService {
             for (TbOrderItem tbOrderItem : orderItemList) {
                 if (tbItem.getId().equals(tbOrderItem.getItemId())) {
                     orderItems.add(tbOrderItem);
+                    totalMoney = totalMoney.add(tbOrderItem.getTotalFee());
                 }
             }
             if (orderItems.size() > 0) {
                 tbItem.setOrderItemList(orderItemList);
-                for (TbOrderItem tbOrderItem : orderItemList) {
-                    totalMoney = totalMoney.add(tbOrderItem.getTotalFee());
-                }
                 tbItem.setItemTotalFee(totalMoney);
                 tbItemList.add(tbItem);
             }

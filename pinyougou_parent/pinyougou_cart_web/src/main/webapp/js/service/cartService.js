@@ -19,8 +19,8 @@ app.service('cartService',function($http){
         return $http.post("order/add.do",order);
     }
 
-    this.addGoodsToMyFavorite=function (goodsId) {
-        return $http.post("order/addGoodsToMyFavorite.do",goodsId);
+    this.addGoodsToMyFavorite=function (itemId) {
+        return $http.post("cart/addGoodsToMyFavorite.do?itemId="+itemId);
     }
 
 });
