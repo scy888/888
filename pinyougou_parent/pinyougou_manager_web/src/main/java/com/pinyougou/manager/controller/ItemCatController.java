@@ -1,12 +1,18 @@
 package com.pinyougou.manager.controller;
+
 import com.alibaba.dubbo.config.annotation.Reference;
 import com.pinyougou.pojo.TbItemCat;
 import com.pinyougou.sellergoods.service.ItemCatService;
+import com.pinyougou.sellergoods.service.TypeTemplateService;
 import entity.PageResult;
 import entity.Result;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 /**
@@ -20,6 +26,8 @@ public class ItemCatController {
 
 	@Reference
 	private ItemCatService itemCatService;
+	@Reference
+    private TypeTemplateService typeTemplateService;
 	
 	/**
 	 * 返回全部列表
@@ -132,5 +140,54 @@ public class ItemCatController {
 			e.printStackTrace();
 		}
 		return new Result(false, "审核操作失败！");
+	}
+
+	@RequestMapping("upload")
+	public Result upload(MultipartFile file){
+		try {
+			//解析.xlsx文件
+			//1.加载Excel文件对象,xlsx对应XSSFWorkbook,xls对应HSSFWorkbook
+			//如果是File类
+//          HSSFWorkbook hssfWorkbook = new HSSFWorkbook(new FileInputStream(brandFile));
+			XSSFWorkbook xssfWorkbook = new XSSFWorkbook(file.getInputStream());
+			//2.读取第一个sheet
+			XSSFSheet sheet = xssfWorkbook.getSheetAt(0);
+			//3.读取每一行,对应一个Brand对象
+			for (Row row : sheet) {
+				//跳过第一行的表头
+				if (row.getRowNum() == 0) continue;
+                String parentCateName = row.getCell(0).getStringCellValue();
+                List<TbItemCat> itemCatList=  itemCatService.findAll();
+                Long parentCateId=null;
+                //遍历所有分类
+                for (TbItemCat tbItemCat : itemCatList) {
+                    if (parentCateName.equals(tbItemCat.getName())){
+                        parentCateId = tbItemCat.getParentId();
+                    }
+                }
+                //遍历完所有一级分类,如果parentCateId还是mnull,代表不存在当前excel里的父分类,需要新建父分类
+                if (parentCateId==null){
+                    TbItemCat tbItemCat = new TbItemCat();
+                    tbItemCat.setParentId(new Long(0));
+                    tbItemCat.setName(parentCateName);
+                    Long tempId=typeTemplateService.findTempIdByTempName(row.getCell(1).getStringCellValue());
+                    tbItemCat.setTypeId(tempId);
+                    tbItemCat.setStatus(1);
+                    parentCateId = itemCatService.add(tbItemCat);
+                }
+
+                TbItemCat tbItemCat = new TbItemCat();
+                tbItemCat.setParentId(parentCateId);
+                tbItemCat.setName(row.getCell(2).getStringCellValue());
+                Long tempId=typeTemplateService.findTempIdByTempName(row.getCell(3).getStringCellValue());
+                tbItemCat.setTypeId(tempId);
+                itemCatService.add(tbItemCat);
+			}
+			xssfWorkbook.close();
+			return new Result(true, "导入成功");
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new Result(false, "导入失败");
+		}
 	}
 }

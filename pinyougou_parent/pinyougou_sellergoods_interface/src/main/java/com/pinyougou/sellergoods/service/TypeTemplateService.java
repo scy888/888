@@ -83,4 +83,11 @@ public interface TypeTemplateService {
 	 * @return
 	 */
 	public PageResult sellerFindPage(TbTypeTemplate typeTemplate, int pageNum, int pageSize, String sellerId);
+
+	/**通过模板名查模板Id
+	 * @param tempName
+	 * @return
+	 */
+    Long findTempIdByTempName(String tempName);
+
 }

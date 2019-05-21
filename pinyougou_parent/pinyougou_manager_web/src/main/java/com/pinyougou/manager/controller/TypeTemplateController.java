@@ -8,7 +8,6 @@ import com.pinyougou.sellergoods.service.SpecificationService;
 import com.pinyougou.sellergoods.service.TypeTemplateService;
 import entity.PageResult;
 import entity.Result;
-import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -180,8 +179,6 @@ public class TypeTemplateController {
                 tbTypeTemplate.setSpecIds(JSON.toJSONString(specIds));//设置规格字符串
 
                 String brands = row.getCell(2).getStringCellValue();
-                CellStyle cellStyle = row.getCell(2).getCellStyle();
-                System.out.println(cellStyle);
                 String[] brandNames = brands.split(",");
                 ArrayList<Map> brandIds = new ArrayList<>();
                 for (String brandName : brandNames) {
@@ -197,10 +194,10 @@ public class TypeTemplateController {
                 }
                 tbTypeTemplate.setBrandIds(JSON.toJSONString(brandIds));//设置品牌字符串
 
-                row.getCell(3).setCellStyle(row.getCell(2).getCellStyle());
+
                 String cusItems = row.getCell(3).getStringCellValue();
                 ArrayList<Map> cusItemsList = new ArrayList<>();
-                if (cusItems == null) {
+                if ("null".equals(cusItems)) {
                     tbTypeTemplate.setCustomAttributeItems(JSON.toJSONString(cusItemsList));
                 }else {
                     String[] cusItemNames = cusItems.split(",");

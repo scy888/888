@@ -28,7 +28,7 @@ public interface ItemCatService {
 	/**
 	 * 增加
 	*/
-	public void add(TbItemCat itemCat);
+	public Long add(TbItemCat itemCat);
 	
 	
 	/**
@@ -88,4 +88,7 @@ public interface ItemCatService {
 	 * @return
 	 */
 	public List<TbItemCat> sellerFindByParentId(Long patentId,String sellerId);
+
+	Long findItemCatIdByName(String itemCatname);
+
 }
