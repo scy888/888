@@ -5,6 +5,14 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
+import java.util.List;
+
+import javax.persistence.Column;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.Transient;
 
 @Table(name = "tb_item")
 public class TbItem implements Serializable {
@@ -102,6 +110,29 @@ public class TbItem implements Serializable {
     private String seller;
 
     private static final long serialVersionUID = 1L;
+
+    //这个商品有没有被买  买了就在这个集合里
+    @Transient
+    private List<TbOrderItem> orderItemList;
+
+    @Transient
+    private BigDecimal itemTotalFee;
+
+    public BigDecimal getItemTotalFee() {
+        return itemTotalFee;
+    }
+
+    public void setItemTotalFee(BigDecimal itemTotalFee) {
+        this.itemTotalFee = itemTotalFee;
+    }
+
+    public List<TbOrderItem> getOrderItemList() {
+        return orderItemList;
+    }
+
+    public void setOrderItemList(List<TbOrderItem> orderItemList) {
+        this.orderItemList = orderItemList;
+    }
 
     @Transient
     private List<TbOrderItem> tbOrderItemList;

@@ -1,7 +1,7 @@
-app.controller("baseController",function ($scope,$http) {
+app.controller("baseController", function ($scope, $http) {
 
     //获取用户信息
-    $scope.getUserInfo=function () {
+    $scope.getUserInfo = function () {
         $http.get("../login/name.do").success(function (response) {
             $scope.loginName = response.loginName;
         })
@@ -25,7 +25,7 @@ app.controller("baseController",function ($scope,$http) {
     //重新加载数据
     $scope.reloadList = function () {
         //$scope.findPage($scope.paginationConf.currentPage, $scope.paginationConf.itemsPerPage);
-        $scope.search( $scope.paginationConf.currentPage, $scope.paginationConf.itemsPerPage);
+        $scope.search($scope.paginationConf.currentPage, $scope.paginationConf.itemsPerPage);
     }
 
     //选中的id列表
@@ -49,11 +49,11 @@ app.controller("baseController",function ($scope,$http) {
      * @param jsonString 要提取的json字符
      * @param key 提取的属性
      */
-    $scope.jsonToString=function (jsonString,key) {
+    $scope.jsonToString = function (jsonString, key) {
         var obj = JSON.parse(jsonString);
         var result = "";
-        for(var i = 0; i < obj.length; i++){
-            if(i > 0){
+        for (var i = 0; i < obj.length; i++) {
+            if (i > 0) {
                 result += ",";
             }
             result += obj[i][key];
@@ -68,9 +68,9 @@ app.controller("baseController",function ($scope,$http) {
      * @param value 对比的值
      * @return 查找到的结果，null,代表查找不到
      */
-    $scope.searchObjectByKey=function (list,key,value) {
-        for(var i = 0; i < list.length; i++){
-            if(list[i][key] == value){
+    $scope.searchObjectByKey = function (list, key, value) {
+        for (var i = 0; i < list.length; i++) {
+            if (list[i][key] == value) {
                 return list[i];
             }
         }
