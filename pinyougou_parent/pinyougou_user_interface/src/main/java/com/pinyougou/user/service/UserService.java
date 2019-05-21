@@ -82,7 +82,7 @@ public interface UserService {
 	 * 查询用户订单
 	 * @return
 	 */
-	public PageResult findOrderByUserId(TbOrder tbOrder, int pageNum, int pageSize);
+	public List<Order> findOrderByUserId(String userId,String Status);
 
 
 	/**
