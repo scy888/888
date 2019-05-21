@@ -45,12 +45,17 @@ public class OrderServiceImpl implements OrderService {
     @Autowired
     private TbItemCatMapper itemCatMapper;
 
+    @Autowired
+    private TbGoodsMapper goodsMapper;
+
     /**
-     * 查询全部
+     * 查询全部已付款订单
      */
     @Override
     public List<TbOrder> findAll() {
-        return orderMapper.select(null);
+        TbOrder where = new TbOrder();
+        where.setStatus("1");
+        return orderMapper.select(where);
     }
 
     /**
@@ -608,42 +613,43 @@ public class OrderServiceImpl implements OrderService {
         //set用于去重
         LinkedHashSet<TbItem> resultSet = null;
         //list用于返回值
-        List<TbItem> resultList =null;
+        List<TbItem> resultList = null;
 
         if (tbOrderItemList != null && tbOrderItemList.size() > 0) {
             //找出字段条件下的item
 //            Map propertyMap = order.getPropertyMap();
-            TbItem where = null;
 
-            List<TbItem> tbItemList1 = itemMapper.select(where);
+            List<TbItem> tbItemList1 = itemMapper.select(null);
 
             //先找出有订单的item
-            for (TbItem item : tbItemList1) {
-                for (TbOrderItem orderItem : tbOrderItemList) {
-                    if (orderItem.getItemId().equals(item.getId())) {
-                        resultSet.add(item);//set去重
-                    }
-                }
-            }
-
-            if (tbItemList1 != null&&tbItemList1.size()>0) {
-                //构建返回的list
-                resultList = new ArrayList<>();
-                //便利去重item.添加orderItemList
-                for (TbItem item : resultSet) {
-                    List<TbOrderItem> orderItemList= new ArrayList<>();
+            if (tbItemList1.size() > 0) {
+                resultSet = new LinkedHashSet<>();
+                for (TbItem item : tbItemList1) {
                     for (TbOrderItem orderItem : tbOrderItemList) {
-                        if (orderItem.getItemId().equals(item.getId())){
-                            orderItemList.add(orderItem);
+                        if (orderItem.getItemId().equals(item.getId())) {
+                            resultSet.add(item);//set去重
                         }
                     }
-                    item.setTbOrderItemList(orderItemList);
-                    //添加一行数据
-                    resultList.add(item);
+                }
+
+                if (resultSet.size() > 0) {
+                    //构建返回的list
+                    resultList = new ArrayList<>();
+                    //便利去重item.添加orderItemList
+                    for (TbItem item : resultSet) {
+                        List<TbOrderItem> orderItemList = new ArrayList<>();
+                        for (TbOrderItem orderItem : tbOrderItemList) {
+                            if (orderItem.getItemId().equals(item.getId())) {
+                                orderItemList.add(orderItem);
+                            }
+                        }
+                        item.setTbOrderItemList(orderItemList);
+                        //添加一行数据
+                        resultList.add(item);
+                    }
                 }
             }
         }
-
         return resultList;
 
     }
@@ -653,7 +659,7 @@ public class OrderServiceImpl implements OrderService {
 
         Map propertyMap = order.getPropertyMap();
         //生成订单和订单商品数据
-        List<TbOrder>   tbOrderList = findOrderAndOrderItem(order);
+        List<TbOrder> tbOrderList = findOrderAndOrderItem(order);
 
         List<TbOrderItem> tbOrderItemList = null;
         if (tbOrderList != null && tbOrderList.size() > 0) {
@@ -668,43 +674,55 @@ public class OrderServiceImpl implements OrderService {
         //set用于去重
         LinkedHashSet<TbItem> resultSet = null;
         //list用于返回值
-        List<TbItem> resultList =null;
+        List<TbItem> resultList = null;
         if (tbOrderItemList != null && tbOrderItemList.size() > 0) {
             //找出字段条件下的item
-            List<TbItem> tbItemList =null;
+            List<TbItem> tbItemList = null;
             Example example = new Example(TbItem.class);
             Example.Criteria criteria = example.createCriteria();
             //分类
-            if (propertyMap != null&&propertyMap.size()>0) {
+            if (propertyMap != null && propertyMap.size() > 0) {
                 List<Object> categoryIds = (List) propertyMap.get("categoryIdList");
                 //....其他省略
-                if (categoryIds!=null&&categoryIds.size()>0){
-                    criteria.andIn("categoryid",categoryIds);
+                if (categoryIds != null && categoryIds.size() > 0) {
+                    criteria.andIn("categoryid", categoryIds);
                     tbItemList = itemMapper.selectByExample(example);
                 }
 
             }
 
 
-
             //先找出有订单的item
 
-            if (tbItemList != null&&tbItemList.size()>0) {
+            if (tbItemList != null && tbItemList.size() > 0) {
                 //构建返回的list
-                resultList = new ArrayList<>();
+                resultSet = new LinkedHashSet<>();
                 //便利去重item.添加orderItemList
-                for (TbItem item : resultSet) {
-                    List<TbOrderItem> orderItemList= new ArrayList<>();
+                //先找出有订单的item
+
+                resultSet = new LinkedHashSet<>();
+                for (TbItem item : tbItemList) {
                     for (TbOrderItem orderItem : tbOrderItemList) {
-                        if (orderItem.getItemId().equals(item.getId())){
-                            orderItemList.add(orderItem);
+                        if (orderItem.getItemId().equals(item.getId())) {
+                            resultSet.add(item);//set去重
                         }
                     }
-                    item.setTbOrderItemList(orderItemList);
-                    //添加一行数据
-                    resultList.add(item);
                 }
 
+                if (resultSet.size()>0) {
+                    resultList = new ArrayList<>();
+                    for (TbItem item : resultSet) {
+                        List<TbOrderItem> orderItemList = new ArrayList<>();
+                        for (TbOrderItem orderItem : tbOrderItemList) {
+                            if (orderItem.getItemId().equals(item.getId())) {
+                                orderItemList.add(orderItem);
+                            }
+                        }
+                        item.setTbOrderItemList(orderItemList);
+                        //添加一行数据
+                        resultList.add(item);
+                    }
+                }
             }
         }
 
