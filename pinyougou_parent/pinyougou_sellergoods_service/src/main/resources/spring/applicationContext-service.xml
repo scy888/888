@@ -17,9 +17,6 @@
     <!--配置dubbo的bean的包扫描路径-->
     <dubbo:annotation package="com.pinyougou.sellergoods.service.impl"/>
 
-<<<<<<< HEAD
-   </beans>
-=======
     <!--抽取ID生成器，便于配置机器与数据中心id-->
     <bean id="idWorker" class="com.pinyougou.utils.IdWorker">
         <!-- 工作机器ID -->
@@ -28,4 +25,4 @@
         <constructor-arg index="1" value="2"></constructor-arg>
     </bean>
 </beans>
->>>>>>> origin/zeke
+
