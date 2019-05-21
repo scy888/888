@@ -313,18 +313,22 @@
                     <h3>今日推荐</h3>
                 </div>
             </li>
-            <li class="yui3-u-5-24">
-                <a href="list.html" target="_blank"><img src="img/today01.png"/></a>
+
+
+            <li class="yui3-u-5-24" ng-repeat="entity2 in contentList[2]" style="width: 300px;height: 300px">
+                <a href="{{entity2.url}}">
+                    <img src="{{entity2.pic}}"/>
+                </a>
             </li>
-            <li class="yui3-u-5-24">
-                <img src="img/today02.png"/>
-            </li>
-            <li class="yui3-u-5-24">
-                <img src="img/today03.png"/>
-            </li>
-            <li class="yui3-u-5-24">
-                <img src="img/today04.png"/>
-            </li>
+            <!--<li class="yui3-u-5-24">-->
+                <!--<img src="img/today02.png"/>-->
+            <!--</li>-->
+            <!--<li class="yui3-u-5-24">-->
+                <!--<img src="img/today03.png"/>-->
+            <!--</li>-->
+            <!--<li class="yui3-u-5-24">-->
+                <!--<img src="img/today04.png"/>-->
+            <!--</li>-->
         </ul>
     </div>
 </div>
