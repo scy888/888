@@ -130,6 +130,7 @@ public class BrandServiceImpl implements BrandService {
 
 		return result;
 	}
+
 	//商家的查询另开了一个方法按sellerId查询，不影响运营管理商的全部查询
 	@Override
 	public List<TbBrand> sellerFindAll(String loginName) {

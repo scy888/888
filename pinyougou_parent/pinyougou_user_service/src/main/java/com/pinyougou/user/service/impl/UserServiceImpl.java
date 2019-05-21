@@ -240,13 +240,17 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public List<Order> findOrderByUserId(String userId,String status) {
+	public PageResult findOrderByUserId(TbOrder tbOrderInc, int pageNum, int pageSize) {
 	     List<Order> orderList = new ArrayList<>();
 		TbOrder where = new TbOrder();
-		where.setUserId(userId);
-		if (status!=null&&!status.equals("")) {
-			where.setStatus(status);
+		where.setUserId(tbOrderInc.getUserId());
+		if (tbOrderInc.getStatus()!=null&&!tbOrderInc.getStatus().equals("")) {
+			where.setStatus(tbOrderInc.getStatus());
 		}
+		PageResult<Order> result = new PageResult<Order>();
+		//设置分页条件
+		PageHelper.startPage(pageNum, pageSize);
+
 		List<TbOrder> orders = orderMapper.select(where);
 		for (TbOrder tbOrder : orders) {
 			Order order = new Order();
@@ -276,7 +280,15 @@ public class UserServiceImpl implements UserService {
 
 			orderList.add(order);
 		}
-		return orderList;
+
+
+		//保存数据列表
+		result.setRows(orderList);
+
+		//获取总记录数
+		PageInfo<Order> info = new PageInfo<Order>(orderList);
+		result.setTotal(info.getTotal());
+		return result;
 	}
 
 	@Override

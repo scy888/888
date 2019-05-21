@@ -7,7 +7,7 @@ app.controller("indexController",function ($scope,$location,loginService,payServ
         })
     }
     //查询用户订单
-    $scope.findOrderByUserId=function (status) {
+    $scope.findOrderByUserId=function (page,rows) {
         loginService.findOrderByUserId(status).success(
             function (response) {
                 $scope.orderList=response;
