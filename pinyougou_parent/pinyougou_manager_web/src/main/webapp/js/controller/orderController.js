@@ -143,7 +143,6 @@ app.controller('orderController', function ($scope, $controller, orderService, i
                     }
 
 
-
                     // 使用刚指定的配置项和数据显示图表。
                     // //销量图
                     for (var k = 0; k < $scope.brandSumNum.length; k++) {
@@ -155,7 +154,7 @@ app.controller('orderController', function ($scope, $controller, orderService, i
                         }
                     }
 
-                    $scope.myChart = echarts.init(document.getElementById('main'));
+
                     $scope.option1 = {
                         title: {
                             text: '销量分析(件)',
@@ -198,11 +197,12 @@ app.controller('orderController', function ($scope, $controller, orderService, i
                                 $scope.brandSumFee[k].value += $scope.list[i].sumFee;
                             }
                         }
-                        $scope.brandSumFee[k].value=$scope.brandSumFee[k].value.toFixed(2)
+                        $scope.brandSumFee[k].value = $scope.brandSumFee[k].value.toFixed(2)
                     }
 
-                    $scope.myChart1 = echarts.init(document.getElementById('main1'));
+
                     $scope.option2 = {
+                        color: ['rgb(254,67,101)', 'rgb(252,157,154)', 'rgb(249,205,173)', 'rgb(200,200,169)', 'rgb(131,175,155)'],
                         title: {
                             text: '销售额分析(元)',
                             subtext: '同类商品不同品牌',
@@ -266,6 +266,8 @@ app.controller('orderController', function ($scope, $controller, orderService, i
             $scope.brandList = [];
             $scope.brandSumNum = [];
             $scope.brandSumFee = [];
+            $scope.myChart1 = echarts.init(document.getElementById('main1'));
+            $scope.myChart = echarts.init(document.getElementById('main'));
             itemCatService.findByParentId(newValue).success(function (response) {
                 $scope.itemCat3List = response;
                 $scope.searchEntity.propertyMap.categoryIdList.push($scope.category2Id)
