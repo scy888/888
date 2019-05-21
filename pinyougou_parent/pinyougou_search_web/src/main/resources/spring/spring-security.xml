@@ -10,6 +10,7 @@
     <http pattern="/plugins/**" security="none"/>
     <!--放行注册功能-->
     <http pattern="/cart.html" security="none"/>
+    <http pattern="/search.html" security="none"/>
     <!--<http pattern="/cart/*.do" security="none"/>-->
 
     <!--   entry-point-ref  入口点引用 -->
