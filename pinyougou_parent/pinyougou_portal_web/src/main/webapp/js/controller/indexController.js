@@ -9,6 +9,14 @@ app.controller("indexController",function ($scope,contentService) {
         contentService.findByCategoryId(1).success(function (response) {
             $scope.contentList[1] = response;
         })
+        //加载轮播图广告
+        contentService.findByCategoryId(2).success(function (response) {
+            $scope.contentList[2] = response;
+        })
+        //加载轮播图广告
+        contentService.findByCategoryId(3).success(function (response) {
+            $scope.contentList[3] = response;
+        })
     }
 
     $scope.keywords = "";
