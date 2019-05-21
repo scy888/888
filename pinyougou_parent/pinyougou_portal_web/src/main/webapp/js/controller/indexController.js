@@ -20,4 +20,18 @@ app.controller("indexController",function ($scope,contentService) {
         }
         window.location.href = "http://localhost:8084/search.html#?keywords="+$scope.keywords;
     }
+    //点击分类跳转到搜索页
+    $scope.catClick=function (keywords) {
+        window.location.href = "http://localhost:8084/search.html#?keywords="+keywords;
+    }
+
+    $scope.findAllCats=function () {
+        contentService.findAllCats().success(function (response) {
+            $scope.cats = response;
+        })
+    }
+
+
+
+
 });

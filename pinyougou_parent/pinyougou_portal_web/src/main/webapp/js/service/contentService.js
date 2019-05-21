@@ -3,4 +3,8 @@ app.service("contentService",function($http){
     this.findByCategoryId=function(categoryId){
         return $http.get("content/findByCategoryId.do?categoryId="+categoryId);
     }
+    //查询分类列表
+    this.findAllCats=function () {
+        return $http.get("../content/findAllCats.do");
+    }
 });

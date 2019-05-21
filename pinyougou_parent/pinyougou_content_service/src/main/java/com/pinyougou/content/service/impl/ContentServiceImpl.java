@@ -1,17 +1,22 @@
 package com.pinyougou.content.service.impl;
-import java.util.Arrays;
-import java.util.List;
 
-import com.pinyougou.content.service.ContentService;
-import org.springframework.beans.factory.annotation.Autowired;
 import com.alibaba.dubbo.config.annotation.Service;
 import com.github.abel533.entity.Example;
-import com.github.pagehelper.PageInfo;
 import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+import com.pinyougou.content.service.ContentService;
 import com.pinyougou.mapper.TbContentMapper;
+import com.pinyougou.mapper.TbItemCatMapper;
 import com.pinyougou.pojo.TbContent;
+import com.pinyougou.pojo.TbItemCat;
 import entity.PageResult;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
+
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 业务逻辑实现
@@ -189,5 +194,45 @@ public class ContentServiceImpl implements ContentService {
 		}
 		return contentList;
     }
+
+	@Autowired
+	private TbItemCatMapper itemCatMapper;
+
+	@Override
+	public Map<String, List<TbItemCat>> findAllCats() {
+
+		Map<String, List<TbItemCat>> map =(Map<String, List<TbItemCat>>) redisTemplate.boundHashOps("cats").get("map");
+		if (map == null ){
+			map= new HashMap<>();
+			TbItemCat where = new TbItemCat();
+			where.setParentId(new Long(0));
+			List<TbItemCat> itemCats1 = itemCatMapper.select(where);
+			//放好1级
+			map.put("0", itemCats1);
+			for (TbItemCat cat1: itemCats1) {
+				where.setParentId(cat1.getId());
+				List<TbItemCat> itemCats2 = itemCatMapper.select(where);
+				//放好2级
+				map.put(cat1.getId()+"", itemCats2);
+				for (TbItemCat cat2 : itemCats2) {
+					where.setParentId(cat2.getId());
+					List<TbItemCat> itemCats3= itemCatMapper.select(where);
+					//放好2级
+					map.put(cat2.getId()+"", itemCats3);
+				}
+			}
+			System.out.println("将分类信息存入缓存！");
+			redisTemplate.boundHashOps("cats").put("map", map);
+		}else {
+			System.out.println("从缓存中查找了分类信息！");
+		}
+
+		return map;
+	}
+
+
+
+
+
 
 }

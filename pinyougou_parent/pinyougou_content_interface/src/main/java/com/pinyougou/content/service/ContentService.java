@@ -1,8 +1,12 @@
 package com.pinyougou.content.service;
-import java.util.List;
-import com.pinyougou.pojo.TbContent;
 
+import com.pinyougou.pojo.TbContent;
+import com.pinyougou.pojo.TbItemCat;
 import entity.PageResult;
+
+import java.util.List;
+import java.util.Map;
+
 /**
  * 业务逻辑接口
  * @author Steven
@@ -64,5 +68,11 @@ public interface ContentService {
 	 * @return
 	 */
 	public List<TbContent> findByCategoryId(Long categoryId);
-	
+
+	/**		zeke
+	 * 		查询分类
+
+	 * @return
+	 */
+	public Map<String,List<TbItemCat>> findAllCats( );
 }
