@@ -3,6 +3,7 @@ package com.pinyougou.cart.controller;
 import com.alibaba.dubbo.config.annotation.Reference;
 import com.alibaba.fastjson.JSON;
 import com.pinyougou.cart.service.CartService;
+import com.pinyougou.pojo.TbOrder;
 import com.pinyougou.pojogroup.Cart;
 import com.pinyougou.utils.CookieUtil;
 import entity.Result;
@@ -114,7 +115,7 @@ public class CartController {
                 System.out.println("操作了cookie中的购物车数据...");
             }else{
                 //把数据保存到Redis中
-                cartService.addGoodsToMyFavorite(userName, itemId);
+//                cartService.addGoodsToMyFavorite(userName, itemId);
                 cartService.saveCartListToRedis(userName,cartList);
                 System.out.println("操作了Redis中的购物车数据...");
             }
@@ -126,6 +127,23 @@ public class CartController {
             e.printStackTrace();
         }
         return new Result(false, "购物添加失败！");
+    }
+
+
+    /**
+     * 返回全部列表
+     * @return
+     */
+    @RequestMapping("/addGoodsToMyFavorite")
+    public Result addGoodsToMyFavorite(Long itemId){
+        String name = SecurityContextHolder.getContext().getAuthentication().getName();
+        try {
+            cartService.addGoodsToMyFavorite(name,itemId);
+            return new Result(true, "添加成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return new Result(false, "添加失敗");
     }
 }
 

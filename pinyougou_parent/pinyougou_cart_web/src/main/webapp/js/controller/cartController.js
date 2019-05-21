@@ -77,4 +77,13 @@ app.controller("cartController",function ($scope,cartService) {
             }
         })
     }
+
+    //加入我的關注
+    $scope.addGoodsToMyFavorite=function (itemId) {
+        cartService.addGoodsToMyFavorite(itemId).success(function (response) {
+                alert(response.message);
+        })
+    }
+
+
 });

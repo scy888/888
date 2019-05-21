@@ -96,7 +96,7 @@
                             <li class="yui3-u-1-8"><span class="sum">{{item.totalFee}}</span></li>
                             <li class="yui3-u-1-8">
                                 <a href="javascript:;"  ng-click="addGoodsToCartList(item.itemId,-item.num)">删除</a><br/>
-                                <a href="#none">移到我的关注</a>
+                                <a href=":;"  ng-clic="addGoodsToMyFavorite(item.itemId)">移到我的关注</a>
                             </li>
                         </ul>
                     </div>
@@ -170,7 +170,7 @@
                                             <span>$29.00</span>
                                         </div>
                                         <div class="incar">
-                                            <a href="#" class="sui-btn btn-bordered btn-xlarge btn-default"><i
+                                            <a href=":;" class="sui-btn btn-bordered btn-xlarge btn-default" ng-clic="addGoodsToMyFavorite()"><i
                                                     class="car"></i><span class="cartxt">加入购物车</span></a>
                                         </div>
                                     </li>
